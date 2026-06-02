@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08080f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Subtle & Soul">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="logo-pwa.png">
+<link rel="icon" href="logo-main.png">
+<title>Subtle &amp; Soul</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08080f;--s1:#111120;--s2:#181828;--s3:#1f1f35;
+  --bdr:rgba(255,255,255,.06);--bdr2:rgba(255,255,255,.12);
+  --txt:#eeeeff;--txt2:#8888aa;--txt3:#5555777;
+  --acc:#7c6dff;--acc2:#b09eff;--acc-glow:rgba(124,109,255,.25);
+  --red:#ff5566;--green:#44ddaa;
+}
+.light{
+  --bg:#f2f2f8;--s1:#fff;--s2:#eaeaf5;--s3:#ddddf0;
+  --bdr:rgba(0,0,0,.07);--bdr2:rgba(0,0,0,.14);
+  --txt:#0a0a1a;--txt2:#5a5a7a;--txt3:#9999bb;
+  --acc:#6c5fff;--acc2:#9080ff;--acc-glow:rgba(108,95,255,.15);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--txt);font-family:'DM Sans',system-ui,sans-serif;min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:0}
+img,video{max-width:100%}
+
+/* SCREENS */
+.screen{display:none;flex-direction:column;min-height:100vh;background:var(--bg)}
+.screen.on{display:flex}
+.page-scroll{flex:1;overflow-y:auto;padding:20px 16px 110px}
+
+/* BOTTOM NAV */
+#bnav{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:2px;padding:10px 14px;z-index:90;
+  border-radius:50px;
+  background:rgba(10,10,22,.55);
+  backdrop-filter:blur(40px) saturate(2);-webkit-backdrop-filter:blur(40px) saturate(2);
+  border:1px solid rgba(255,255,255,.11);
+  box-shadow:0 12px 40px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08);
+}
+#bnav.hide{display:none}
+.light #bnav{background:rgba(255,255,255,.62);border-color:rgba(0,0,0,.1);box-shadow:0 8px 32px rgba(0,0,0,.1)}
+.nb{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:8px 16px;border-radius:38px;border:none;cursor:pointer;
+  background:transparent;color:rgba(255,255,255,.4);transition:all .2s;
+  font-family:inherit;font-size:10px;font-weight:500;letter-spacing:.02em;min-width:58px;
+}
+.nb svg{transition:all .2s}
+.nb.on{background:rgba(124,109,255,.22);color:#b09eff}
+.nb.on svg{filter:drop-shadow(0 0 6px rgba(176,158,255,.6))}
+.light .nb{color:rgba(0,0,30,.35)}
+.light .nb.on{color:var(--acc)}
+
+/* HEADER */
+.hdr{
+  display:flex;align-items:center;gap:10px;padding:14px 16px;
+  border-bottom:1px solid var(--bdr);background:var(--s1);
+  position:sticky;top:0;z-index:10;flex-shrink:0;
+}
+.hdr-logo{height:28px;width:auto}
+.hdr-title{font-weight:600;font-size:16px;flex:1;color:var(--txt)}
+.icon-btn{background:none;border:none;color:var(--txt2);cursor:pointer;padding:6px;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:18px}
+.icon-btn:hover{background:var(--s2);color:var(--txt)}
+
+/* INPUTS */
+.inp{background:var(--s2);border:1px solid var(--bdr);border-radius:12px;padding:12px 14px;color:var(--txt);font-size:14px;width:100%;outline:none;font-family:inherit;line-height:1.5;transition:border-color .2s}
+.inp:focus{border-color:rgba(124,109,255,.5)}
+.inp::placeholder{color:var(--txt2)}
+textarea.inp{resize:none}
+select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%238888aa' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+
+/* BUTTONS */
+.btn{background:linear-gradient(135deg,#7c6dff,#b09eff);border:none;border-radius:13px;padding:15px 20px;color:#fff;font-weight:700;font-size:15px;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;font-family:inherit;letter-spacing:.01em}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 6px 20px var(--acc-glow)}
+.btn-outline{background:transparent;border:1px solid var(--bdr2);border-radius:12px;padding:12px 16px;color:var(--txt);font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;transition:all .2s}
+.btn-outline:hover{border-color:var(--acc);color:var(--acc)}
+
+/* CARD */
+.card{background:var(--s1);border:1px solid var(--bdr);border-radius:16px}
+
+/* CHIP */
+.chip{padding:8px 14px;border-radius:100px;background:var(--s2);border:1px solid var(--bdr);color:var(--txt2);font-size:13px;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:inherit}
+.chip.on,.chip:hover{background:rgba(124,109,255,.18);border-color:rgba(124,109,255,.45);color:var(--acc2)}
+
+/* LABEL */
+.lbl{font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:8px}
+
+/* CHAT */
+.chat-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:84%;padding:12px 15px;font-size:14px;line-height:1.6;word-break:break-word;white-space:pre-wrap}
+.msg-u{align-self:flex-end;background:linear-gradient(135deg,#7c6dff,#b09eff);color:#fff;border-radius:18px 18px 4px 18px}
+.msg-a{align-self:flex-start;background:var(--s2);border:1px solid var(--bdr);color:var(--txt);border-radius:4px 18px 18px 18px}
+.msg-img{max-width:200px;border-radius:12px;display:block;margin-bottom:6px}
+.typing-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--txt2);margin:0 2px}
+@keyframes td{0%,80%,100%{transform:scale(0.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+.typing-dot:nth-child(1){animation:td 1.2s .0s infinite}
+.typing-dot:nth-child(2){animation:td 1.2s .2s infinite}
+.typing-dot:nth-child(3){animation:td 1.2s .4s infinite}
+
+/* SIDEBAR */
+#sidebar{position:fixed;top:0;left:-310px;width:300px;height:100vh;background:var(--s1);border-right:1px solid var(--bdr);z-index:201;transition:left .3s ease;display:flex;flex-direction:column}
+#sidebar.on{left:0}
+#sovl{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:none}
+#sovl.on{display:block}
+.sbar-session{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:10px;cursor:pointer;transition:background .15s;margin-bottom:2px}
+.sbar-session:hover,.sbar-session.on{background:var(--s2)}
+.sbar-session.on .sbar-title{color:var(--acc2)}
+
+/* HERO */
+.hero{position:relative;border-radius:20px;overflow:hidden;margin:16px 16px 0;height:200px;background:var(--s2)}
+.hero-slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1s}
+.hero-slide.on{opacity:1}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65),transparent 55%)}
+.hero-caption{position:absolute;bottom:16px;left:16px}
+.hero-dots{position:absolute;bottom:12px;right:16px;display:flex;gap:4px}
+.hdot{height:5px;border-radius:3px;background:rgba(255,255,255,.35);cursor:pointer;transition:all .3s}
+.hdot.on{width:18px;background:#fff}
+.hdot:not(.on){width:5px}
+
+/* FEATURE GRID */
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 16px}
+.feat-card{background:var(--s1);border:1px solid var(--bdr);border-radius:16px;padding:18px 14px;cursor:pointer;transition:all .2s;text-align:left}
+.feat-card:hover{border-color:rgba(124,109,255,.35);box-shadow:0 4px 20px var(--acc-glow)}
+.feat-icon{font-size:26px;margin-bottom:10px}
+.feat-name{font-size:14px;font-weight:600;color:var(--txt)}
+.feat-sub{font-size:12px;color:var(--txt2);margin-top:3px}
+
+/* GALLERY */
+.gal{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gal-item{position:relative;border-radius:14px;overflow:hidden;background:var(--s2)}
+.gal-item img,.gal-item video{width:100%;aspect-ratio:9/16;object-fit:cover;display:block}
+.gal-btns{position:absolute;top:6px;right:6px;display:flex;gap:4px}
+.gal-btn{background:rgba(0,0,0,.65);border:none;border-radius:7px;padding:6px 8px;color:#fff;cursor:pointer;font-size:12px;backdrop-filter:blur(10px);transition:background .15s}
+.gal-btn:hover{background:rgba(0,0,0,.85)}
+.gal-meta{padding:8px 10px;background:var(--s1)}
+.gal-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--acc2)}
+.gal-prompt{font-size:11px;color:var(--txt2);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* UPLOAD BOX */
+.upload-box{border:2px dashed var(--bdr2);border-radius:16px;overflow:hidden;cursor:pointer;transition:border-color .2s}
+.upload-box:hover{border-color:var(--acc)}
+.upload-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;padding:36px;color:var(--txt2);text-align:center}
+
+/* RESULT */
+.result-wrap{border-radius:16px;overflow:hidden;border:1px solid var(--bdr)}
+.result-wrap img,.result-wrap video{width:100%;display:block}
+.result-actions{display:flex;gap:8px;padding:12px;background:var(--s1)}
+.ract{flex:1;padding:10px;background:var(--s2);border:1px solid var(--bdr);border-radius:10px;color:var(--txt);font-size:13px;cursor:pointer;font-weight:500;font-family:inherit;transition:all .15s;text-align:center}
+.ract:hover{border-color:rgba(124,109,255,.4)}
+.ract.acc{background:rgba(124,109,255,.15);border-color:rgba(124,109,255,.3);color:var(--acc2)}
+
+/* PROFILE */
+.prof-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;transition:background .15s;cursor:pointer}
+.prof-row:hover{background:var(--s2)}
+
+/* ERROR */
+.err-box{background:rgba(255,85,102,.1);border:1px solid rgba(255,85,102,.3);border-radius:12px;padding:12px 14px;color:var(--red);font-size:13px}
+
+/* TOGGLE */
+.tgl{width:46px;height:26px;border-radius:13px;border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.tgl-knob{position:absolute;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.tgl.on{background:var(--acc)}.tgl:not(.on){background:var(--s3)}
+.tgl.on .tgl-knob{left:23px}.tgl:not(.on) .tgl-knob{left:3px}
+
+/* SPINNER */
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+.spin.dark{border-color:rgba(124,109,255,.3);border-top-color:var(--acc)}
+
+/* VOICE CARD */
+.vc{padding:14px 16px;border-radius:12px;border:1px solid var(--bdr);background:var(--s1);cursor:pointer;transition:all .15s;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.vc.on{background:rgba(124,109,255,.15);border-color:rgba(124,109,255,.4)}
+.vc-name{font-weight:600;font-size:14px;color:var(--txt)}
+.vc.on .vc-name{color:var(--acc2)}
+.vc-desc{font-size:12px;color:var(--txt2);margin-top:2px}
+
+/* SAMPLES ROW */
+.samples{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.sample{position:relative;flex-shrink:0;cursor:pointer}
+.sample img{width:90px;height:130px;object-fit:cover;border-radius:12px;border:2px solid transparent;transition:border-color .2s}
+.sample.on img{border-color:var(--acc)}
+.sample-lbl{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.6);color:#fff;font-size:10px;padding:2px 7px;border-radius:5px;white-space:nowrap;backdrop-filter:blur(6px)}
+
+/* SIGN IN SCREEN */
+#screen-signin{align-items:center;justify-content:center;padding:40px 24px}
+.signin-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;gap:20px}
+.app-brand{text-align:center;margin-bottom:4px}
+.app-brand img{height:70px}
+.app-name{font-family:'DM Serif Display',serif;font-size:28px;color:var(--txt);margin-top:8px}
+.app-tag{font-size:14px;color:var(--txt2)}
+.signin-card{width:100%;background:var(--s1);border:1px solid var(--bdr);border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px}
+.signin-card h2{font-family:'DM Serif Display',serif;font-size:20px;color:var(--txt);text-align:center}
+</style>
+</head>
+<body>
+
+<!-- SIGN IN -->
+<div id="screen-signin" class="screen on">
+  <div class="signin-box">
+    <div class="app-brand">
+      <img src="logo-main.png" alt="Subtle & Soul" onerror="this.style.display='none'">
+      <div class="app-name">Subtle &amp; Soul</div>
+      <div class="app-tag">AI Creative Studio</div>
+    </div>
+    <div class="signin-card">
+      <h2>Welcome</h2>
+      <div>
+        <label class="lbl">Your Name</label>
+        <input id="si-name" class="inp" type="text" placeholder="Enter your name..." autocomplete="name">
+      </div>
+      <button class="btn" onclick="signIn()">Enter Studio</button>
+    </div>
+    <p style="font-size:12px;color:var(--txt2);text-align:center;line-height:1.6">Your API keys are stored locally in your browser only.</p>
+  </div>
+</div>
+
+<!-- HOME -->
+<div id="screen-home" class="screen">
+  <div class="hdr">
+    <div style="flex:1">
+      <div style="font-size:12px;color:var(--txt2);font-weight:500">What would you like to</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--txt);line-height:1.2">create?</div>
+    </div>
+    <button class="tgl" id="theme-tgl" onclick="toggleTheme()"><div class="tgl-knob"></div></button>
+    <div id="home-avatar" style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7c6dff,#b09eff);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;cursor:pointer" onclick="go('profile')"></div>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding-bottom:100px">
+    <!-- Hero -->
+    <div class="hero" id="hero">
+      <div class="hero-slide on" id="hs0" style="background-image:url('https://images.unsplash.com/photo-1686191128892-3b37add4c844?w=600&q=75')"></div>
+      <div class="hero-slide" id="hs1" style="background-image:url('https://images.unsplash.com/photo-1704022472896-c7f2423b3ce7?w=600&q=75')"></div>
+      <div class="hero-slide" id="hs2" style="background-image:url('https://images.unsplash.com/photo-1692978166578-1ab3f7b4cd7c?w=600&q=75')"></div>
+      <div class="hero-slide" id="hs3" style="background-image:url('https://images.unsplash.com/photo-1698047681432-f90fdf4dd0bd?w=600&q=75')"></div>
+      <div class="hero-overlay"></div>
+      <div class="hero-caption">
+        <div style="color:rgba(255,255,255,.55);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:500">AI Creative Studio</div>
+        <div style="color:#fff;font-size:18px;font-weight:600;margin-top:3px;font-family:'DM Serif Display',serif">Generate. Animate. Speak.</div>
+      </div>
+      <div class="hero-dots" id="hero-dots"></div>
+    </div>
+    <!-- Features -->
+    <div class="feat-grid">
+      <div class="feat-card" onclick="go('chat')"><div class="feat-icon">🤖</div><div class="feat-name">AI Chat</div><div class="feat-sub">Write prompts &amp; ideas</div></div>
+      <div class="feat-card" onclick="go('generate')"><div class="feat-icon">🎨</div><div class="feat-name">Image Gen</div><div class="feat-sub">FLUX Pro quality</div></div>
+      <div class="feat-card" onclick="go('video')"><div class="feat-icon">🎬</div><div class="feat-name">Video Gen</div><div class="feat-sub">Kling AI animation</div></div>
+      <div class="feat-card" onclick="go('tts')"><div class="feat-icon">🔊</div><div class="feat-name">Text to Speech</div><div class="feat-sub">Cartesia voices</div></div>
+      <div class="feat-card" onclick="go('library')"><div class="feat-icon">📚</div><div class="feat-name">Library</div><div class="feat-sub">Your creations</div></div>
+      <div class="feat-card" onclick="go('profile')"><div class="feat-icon">👤</div><div class="feat-name">Profile</div><div class="feat-sub">Settings &amp; account</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div id="screen-chat" class="screen">
+  <div class="hdr">
+    <button class="icon-btn" onclick="goBack()">&#8592;</button>
+    <button class="icon-btn" onclick="openSidebar()">&#9776;</button>
+    <span class="hdr-title" id="chat-title">AI Chat</span>
+    <button class="icon-btn" id="tts-play-btn" onclick="speakLast()" title="Read aloud">&#128266;</button>
+    <button class="icon-btn" onclick="newChat()" title="New chat">&#43;</button>
+  </div>
+  <div class="chat-msgs" id="chat-msgs"></div>
+  <!-- Media preview -->
+  <div id="chat-media-preview" style="display:none;padding:8px 16px;display:flex;align-items:center;gap:8px">
+    <img id="chat-media-img" style="height:56px;border-radius:8px;object-fit:cover">
+    <button onclick="clearMedia()" style="background:rgba(255,85,102,.2);border:none;border-radius:50%;width:22px;height:22px;color:var(--red);cursor:pointer;font-size:12px">&#x2715;</button>
+  </div>
+  <div style="padding:10px 12px;border-top:1px solid var(--bdr);background:var(--s1);flex-shrink:0">
+    <div style="display:flex;gap:8px;align-items:flex-end">
+      <input type="file" id="chat-file" accept="image/*" hidden onchange="attachMedia(this)">
+      <button class="icon-btn" onclick="document.getElementById('chat-file').click()" title="Attach image">&#128206;</button>
+      <button class="icon-btn" id="mic-btn" onclick="toggleMic()" title="Voice input">&#127908;</button>
+      <textarea id="chat-input" class="inp" rows="1" placeholder="Message..." style="flex:1" onkeydown="chatKeydown(event)" oninput="autoResize(this)"></textarea>
+      <button class="icon-btn" onclick="sendChat()" style="background:var(--acc);color:#fff;border-radius:10px;padding:10px" id="send-btn">&#8593;</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div id="sovl" onclick="closeSidebar()"></div>
+<div id="sidebar">
+  <div style="padding:16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between">
+    <img src="logo-main.png" style="height:28px" onerror="this.style.display='none'">
+    <button class="icon-btn" onclick="closeSidebar()">&#x2715;</button>
+  </div>
+  <div style="padding:10px">
+    <button class="btn" style="border-radius:10px;padding:12px;font-size:14px" onclick="newChat()">+ New Chat</button>
+  </div>
+  <div id="session-list" style="flex:1;overflow-y:auto;padding:0 10px 10px"></div>
+</div>
+
+<!-- IMAGE GENERATION -->
+<div id="screen-generate" class="screen">
+  <div class="hdr">
+    <button class="icon-btn" onclick="goBack()">&#8592;</button>
+    <span class="hdr-title">Image Generation</span>
+  </div>
+  <div class="page-scroll">
+    <div>
+      <label class="lbl">Scene Prompt</label>
+      <textarea id="gen-prompt" class="inp" rows="4" placeholder="Describe your scene in vivid detail..."></textarea>
+    </div>
+    <div>
+      <label class="lbl">Style</label>
+      <div id="style-chips" style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="chip on" data-val="" onclick="selectChip(this,'style-chips')">None</button>
+        <button class="chip" data-val="cinematic film still, anamorphic, " onclick="selectChip(this,'style-chips')">Cinematic</button>
+        <button class="chip" data-val="fashion editorial, vogue, " onclick="selectChip(this,'style-chips')">Editorial</button>
+        <button class="chip" data-val="anime illustration, studio ghibli, " onclick="selectChip(this,'style-chips')">Anime</button>
+        <button class="chip" data-val="dark fantasy, gothic, dramatic, " onclick="selectChip(this,'style-chips')">Dark Fantasy</button>
+        <button class="chip" data-val="soft pastel, dreamy, ethereal, " onclick="selectChip(this,'style-chips')">Dreamy</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <label class="lbl">Ratio</label>
+        <select id="gen-ratio" class="inp">
+          <option value="portrait_16_9">9:16 Phone</option>
+          <option value="portrait_4_3">4:3 Portrait</option>
+          <option value="square_hd">Square</option>
+          <option value="landscape_4_3">Landscape</option>
+        </select>
+      </div>
+      <div>
+        <label class="lbl">Model</label>
+        <select id="gen-model" class="inp">
+          <option value="fal-ai/flux/dev">FLUX Dev</option>
+          <option value="fal-ai/flux-pro">FLUX Pro</option>
+          <option value="fal-ai/flux/schnell">FLUX Schnell</option>
+        </select>
+      </div>
+    </div>
+    <div>
+      <label class="lbl">Negative Prompt</label>
+      <input id="gen-neg" class="inp" placeholder="blurry, bad anatomy...">
+    </div>
+    <button class="btn" id="gen-btn" onclick="generateImage()">&#10022; Generate Image <span style="font-size:12px;opacity:.7">~$0.05</span></button>
+    <div id="gen-err" class="err-box" style="display:none"></div>
+    <div id="gen-result" style="display:none">
+      <div class="result-wrap">
+        <img id="gen-img" src="" alt="Generated">
+        <div class="result-actions">
+          <button class="ract" onclick="saveToLib('image',document.getElementById('gen-img').src,document.getElementById('gen-prompt').value)">Save</button>
+          <button class="ract" onclick="dlFile(document.getElementById('gen-img').src,'image.jpg')">Download</button>
+          <button class="ract acc" onclick="go('video',{src:document.getElementById('gen-img').src})">Animate &#127926;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VIDEO GENERATION -->
+<div id="screen-video" class="screen">
+  <div class="hdr">
+    <button class="icon-btn" onclick="goBack()">&#8592;</button>
+    <span class="hdr-title">Video Generation</span>
+  </div>
+  <div class="page-scroll">
+    <div>
+      <label class="lbl">Sample Styles</label>
+      <div class="samples" id="vid-samples">
+        <div class="sample on" onclick="pickSample(this,'https://images.unsplash.com/photo-1686191128892-3b37add4c844?w=400&q=75')"><img src="https://images.unsplash.com/photo-1686191128892-3b37add4c844?w=200&q=70"><div class="sample-lbl">Cinematic</div></div>
+        <div class="sample" onclick="pickSample(this,'https://images.unsplash.com/photo-1704022472896-c7f2423b3ce7?w=400&q=75')"><img src="https://images.unsplash.com/photo-1704022472896-c7f2423b3ce7?w=200&q=70"><div class="sample-lbl">Portrait</div></div>
+        <div class="sample" onclick="pickSample(this,'https://images.unsplash.com/photo-1692978166578-1ab3f7b4cd7c?w=400&q=75')"><img src="https://images.unsplash.com/photo-1692978166578-1ab3f7b4cd7c?w=200&q=70"><div class="sample-lbl">Fashion</div></div>
+        <div class="sample" onclick="pickSample(this,'https://images.unsplash.com/photo-1698047681432-f90fdf4dd0bd?w=400&q=75')"><img src="https://images.unsplash.com/photo-1698047681432-f90fdf4dd0bd?w=200&q=70"><div class="sample-lbl">Artistic</div></div>
+      </div>
+    </div>
+    <div>
+      <label class="lbl">Source Image</label>
+      <input type="file" id="vid-file" accept="image/*" hidden onchange="vidPickFile(this)">
+      <div class="upload-box" id="vid-upload-box" onclick="document.getElementById('vid-file').click()">
+        <img id="vid-preview" style="width:100%;max-height:220px;object-fit:cover;display:none">
+        <div class="upload-placeholder" id="vid-placeholder"><span style="font-size:36px">&#128444;</span><span style="font-size:14px">Tap to upload image</span><span style="font-size:12px;color:var(--txt2)">or select a sample above</span></div>
+      </div>
+    </div>
+    <div>
+      <label class="lbl">Motion Prompt</label>
+      <textarea id="vid-prompt" class="inp" rows="3" placeholder="slowly turns head, hair flowing in wind, soft smile..."></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <label class="lbl">Duration</label>
+        <select id="vid-dur" class="inp"><option value="5">5 seconds</option><option value="10">10 seconds</option></select>
+      </div>
+      <div>
+        <label class="lbl">Quality</label>
+        <select id="vid-mode" class="inp"><option value="standard">Standard</option><option value="pro">Pro</option></select>
+      </div>
+    </div>
+    <button class="btn" id="vid-btn" onclick="generateVideo()">&#10022; Animate <span style="font-size:12px;opacity:.7">~$0.28</span></button>
+    <div id="vid-err" class="err-box" style="display:none"></div>
+    <div id="vid-result" style="display:none">
+      <div class="result-wrap">
+        <video id="vid-out" controls loop playsinline></video>
+        <div class="result-actions">
+          <button class="ract" onclick="saveToLib('video',document.getElementById('vid-out').src,document.getElementById('vid-prompt').value)">Save</button>
+          <button class="ract" onclick="dlFile(document.getElementById('vid-out').src,'video.mp4')">Download</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TTS -->
+<div id="screen-tts" class="screen">
+  <div class="hdr">
+    <button class="icon-btn" onclick="goBack()">&#8592;</button>
+    <span class="hdr-title">Text to Speech</span>
+  </div>
+  <div class="page-scroll">
+    <div>
+      <label class="lbl">Voice</label>
+      <div id="voice-list">
+        <div class="vc on" data-id="a0e99841-438c-4a64-b679-ae501e7d6091" onclick="selectVoice(this)"><div><div class="vc-name">Barbra</div><div class="vc-desc">American · Warm &amp; expressive</div></div><span>&#10003;</span></div>
+        <div class="vc" data-id="79a125e8-cd45-4c13-8a67-188112f4dd22" onclick="selectVoice(this)"><div><div class="vc-name">British Lady</div><div class="vc-desc">British · Clear &amp; refined</div></div></div>
+        <div class="vc" data-id="820a3788-2b37-4d21-847a-b65d8a68c99a" onclick="selectVoice(this)"><div><div class="vc-name">Classy British</div><div class="vc-desc">British · Deep &amp; authoritative</div></div></div>
+        <div class="vc" data-id="41534e16-2966-4c6b-9670-111411def906" onclick="selectVoice(this)"><div><div class="vc-name">Calm Female</div><div class="vc-desc">American · Calm &amp; soothing</div></div></div>
+      </div>
+    </div>
+    <div>
+      <label class="lbl">Your Text</label>
+      <textarea id="tts-text" class="inp" rows="6" placeholder="Enter text to convert to speech..." oninput="document.getElementById('tts-counter').textContent=this.value.length+' chars'"></textarea>
+      <div id="tts-counter" style="font-size:12px;color:var(--txt2);margin-top:4px">0 chars</div>
+    </div>
+    <button class="btn" id="tts-btn" onclick="generateTts()">&#128266; Generate Speech</button>
+    <div id="tts-err" class="err-box" style="display:none"></div>
+    <div id="tts-result" style="display:none;background:var(--s1);border:1px solid var(--bdr);border-radius:16px;padding:16px">
+      <audio id="tts-audio" controls style="width:100%;margin-bottom:12px"></audio>
+      <button class="btn-outline" style="width:100%" onclick="dlAudio()">Download MP3</button>
+    </div>
+  </div>
+</div>
+
+<!-- LIBRARY -->
+<div id="screen-library" class="screen">
+  <div class="hdr">
+    <img src="logo-main.png" style="height:26px" onerror="this.style.display='none'">
+    <span class="hdr-title" style="margin-left:4px">Library</span>
+    <span id="lib-count" style="font-size:13px;color:var(--txt2)">0 items</span>
+  </div>
+  <div class="page-scroll">
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <button class="chip on" data-val="all" onclick="libFilter(this)" id="lib-f-all">All</button>
+      <button class="chip" data-val="image" onclick="libFilter(this)">Images</button>
+      <button class="chip" data-val="video" onclick="libFilter(this)">Videos</button>
+    </div>
+    <div class="gal" id="gallery"></div>
+    <div id="lib-empty" style="text-align:center;padding:60px 20px;color:var(--txt2)">
+      <div style="font-size:48px;margin-bottom:12px">&#127912;</div>
+      <div style="font-size:16px;font-weight:600;color:var(--txt);margin-bottom:6px">Nothing here yet</div>
+      <div style="font-size:14px">Generate images or videos to see them here</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div id="screen-profile" class="screen">
+  <div class="hdr">
+    <img src="logo-main.png" style="height:26px" onerror="this.style.display='none'">
+    <span class="hdr-title" style="margin-left:4px">Profile</span>
+  </div>
+  <div class="page-scroll">
+    <!-- User card -->
+    <div style="text-align:center;padding:24px 16px;background:var(--s1);border:1px solid var(--bdr);border-radius:20px;margin-bottom:16px">
+      <div id="prof-avatar" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#7c6dff,#b09eff);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#fff;border:3px solid rgba(124,109,255,.3)"></div>
+      <div id="prof-name" style="font-weight:700;font-size:18px;font-family:'DM Serif Display',serif"></div>
+      <div style="font-size:13px;color:var(--txt2);margin-top:4px">Welcome back</div>
+    </div>
+    <!-- Theme -->
+    <div style="background:var(--s1);border:1px solid var(--bdr);border-radius:16px;margin-bottom:12px;overflow:hidden">
+      <div class="prof-row" onclick="toggleTheme()">
+        <div style="display:flex;align-items:center;gap:12px"><span style="font-size:20px" id="prof-theme-icon">&#127769;</span><span style="font-weight:500">Theme</span></div>
+        <div class="tgl" id="prof-tgl"><div class="tgl-knob"></div></div>
+      </div>
+    </div>
+    <!-- Tools -->
+    <div style="background:var(--s1);border:1px solid var(--bdr);border-radius:16px;margin-bottom:12px;overflow:hidden">
+      <div style="padding:10px 16px;font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid var(--bdr)">Tools</div>
+      <div class="prof-row" onclick="go('generate')"><div style="display:flex;align-items:center;gap:12px"><span>&#127912;</span><span>Image Generation</span></div><span style="color:var(--txt2)">&#8599;</span></div>
+      <div class="prof-row" onclick="go('video')" style="border-top:1px solid var(--bdr)"><div style="display:flex;align-items:center;gap:12px"><span>&#127916;</span><span>Video Generation</span></div><span style="color:var(--txt2)">&#8599;</span></div>
+      <div class="prof-row" onclick="go('tts')" style="border-top:1px solid var(--bdr)"><div style="display:flex;align-items:center;gap:12px"><span>&#128266;</span><span>Text to Speech</span></div><span style="color:var(--txt2)">&#8599;</span></div>
+      <div class="prof-row" onclick="go('library')" style="border-top:1px solid var(--bdr)"><div style="display:flex;align-items:center;gap:12px"><span>&#128218;</span><span>Library</span></div><span style="color:var(--txt2)">&#8599;</span></div>
+    </div>
+    <!-- Sign out -->
+    <button onclick="signOut()" style="width:100%;padding:15px;background:rgba(255,85,102,.08);border:1px solid rgba(255,85,102,.2);border-radius:14px;color:var(--red);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit">Sign Out</button>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav id="bnav">
+  <button class="nb on" id="nb-home" onclick="go('home')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home
+  </button>
+  <button class="nb" id="nb-chat" onclick="go('chat')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>AI Chat
+  </button>
+  <button class="nb" id="nb-library" onclick="go('library')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Library
+  </button>
+  <button class="nb" id="nb-profile" onclick="go('profile')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Profile
+  </button>
+</nav>
+
+<script>
+// ─── CONFIG ──────────────────────────────────────────────
+const ANTHROPIC_KEY = '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';
+const FAL_KEY       = 'afbf97ae-38cb-4a1d-89ef-87317255a7b0:257a4eed59023ec0eef588c2e9560ac0';
+const CARTESIA_KEY  = 'sk_car_KHmoL6vNoaxujoHz489Qff';
+const FAL_HDR       = { 'Authorization': `Key ${FAL_KEY}`, 'Content-Type': 'application/json' };
+
+// ─── STATE ───────────────────────────────────────────────
+let currentScreen = 'signin';
+let prevScreen    = 'home';
+let userName      = '';
+let chatHistory   = [];
+let sessions      = JSON.parse(localStorage.getItem('ss_sessions') || '[]');
+let activeSession = null;
+let mediaBase64   = null;
+let mediaType     = null;
+let vidSourceUrl  = null;
+let selectedVoice = 'a0e99841-438c-4a64-b679-ae501e7d6091';
+let libItems      = JSON.parse(localStorage.getItem('ss_library') || '[]');
+let libFilter_    = 'all';
+let heroIdx       = 0;
+let heroTotal     = 4;
+let ttsAudioBlob  = null;
+let isStreaming   = false;
+
+// ─── INIT ────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('ss_user');
+  if (saved) { userName = saved; initApp(); }
+
+  // Hero dots
+  const dots = document.getElementById('hero-dots');
+  for (let i = 0; i < heroTotal; i++) {
+    const d = document.createElement('div');
+    d.className = 'hdot' + (i === 0 ? ' on' : '');
+    d.onclick = () => setHeroSlide(i);
+    dots.appendChild(d);
+  }
+  setInterval(() => setHeroSlide((heroIdx + 1) % heroTotal), 4000);
+
+  // Theme
+  const t = localStorage.getItem('ss_theme') || 'dark';
+  applyTheme(t);
+});
+
+function initApp() {
+  document.getElementById('home-avatar').textContent = userName[0]?.toUpperCase() || '?';
+  document.getElementById('prof-name').textContent = userName;
+  document.getElementById('prof-avatar').textContent = userName[0]?.toUpperCase() || '?';
+  go('home');
+}
+
+// ─── NAVIGATION ──────────────────────────────────────────
+const INNER = ['chat','generate','video','tts'];
+const NAV_SCREENS = ['home','chat','library','profile'];
+
+function go(screen, params = {}) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  document.getElementById('screen-' + screen)?.classList.add('on');
+
+  const isInner = INNER.includes(screen);
+  document.getElementById('bnav').classList.toggle('hide', isInner);
+
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+  const nb = document.getElementById('nb-' + screen);
+  if (nb) nb.classList.add('on');
+
+  if (screen !== 'signin') prevScreen = currentScreen;
+  currentScreen = screen;
+
+  if (screen === 'library') renderLibrary();
+  if (screen === 'chat') renderSessions();
+  if (screen === 'video' && params.src) {
+    setVidSource(params.src);
+  }
+}
+
+function goBack() { go(prevScreen || 'home'); }
+
+// ─── SIGN IN / OUT ───────────────────────────────────────
+function signIn() {
+  const n = document.getElementById('si-name').value.trim();
+  if (!n) { alert('Enter your name'); return; }
+  userName = n;
+  localStorage.setItem('ss_user', n);
+  initApp();
+}
+
+function signOut() {
+  localStorage.removeItem('ss_user');
+  userName = '';
+  go('signin');
+}
+
+// ─── THEME ───────────────────────────────────────────────
+function toggleTheme() {
+  const cur = document.documentElement.classList.contains('light') ? 'light' : 'dark';
+  applyTheme(cur === 'dark' ? 'light' : 'dark');
+}
+
+function applyTheme(t) {
+  document.documentElement.classList.toggle('light', t === 'light');
+  localStorage.setItem('ss_theme', t);
+  const on = t === 'light';
+  ['theme-tgl','prof-tgl'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('on', on);
+  });
+  const ti = document.getElementById('prof-theme-icon');
+  if (ti) ti.textContent = on ? '☀️' : '🌙';
+}
+
+// ─── HERO SLIDER ─────────────────────────────────────────
+function setHeroSlide(i) {
+  heroIdx = i;
+  document.querySelectorAll('.hero-slide').forEach((s,j) => s.classList.toggle('on', j===i));
+  document.querySelectorAll('.hdot').forEach((d,j) => d.classList.toggle('on', j===i));
+}
+
+// ─── CHAT ────────────────────────────────────────────────
+function renderSessions() {
+  const list = document.getElementById('session-list');
+  list.innerHTML = '';
+  sessions.slice().reverse().forEach(s => {
+    const el = document.createElement('div');
+    el.className = 'sbar-session' + (s.id === activeSession?.id ? ' on' : '');
+    el.innerHTML = `
+      <span class="sbar-title" style="font-size:13px;color:var(--txt);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.title || 'New conversation'}</span>
+      <button onclick="deleteSession('${s.id}',event)" style="background:none;border:none;color:var(--txt2);cursor:pointer;font-size:14px;padding:2px 4px">&#128465;</button>
+    `;
+    el.addEventListener('click', () => { loadSession(s); closeSidebar(); });
+    list.appendChild(el);
+  });
+}
+
+function openSidebar() {
+  renderSessions();
+  document.getElementById('sidebar').classList.add('on');
+  document.getElementById('sovl').classList.add('on');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('on');
+  document.getElementById('sovl').classList.remove('on');
+}
+
+function newChat() {
+  activeSession = null;
+  chatHistory = [];
+  document.getElementById('chat-msgs').innerHTML = '';
+  document.getElementById('chat-title').textContent = 'AI Chat';
+  closeSidebar();
+  renderWelcome();
+}
+
+function renderWelcome() {
+  const msgs = document.getElementById('chat-msgs');
+  msgs.innerHTML = `
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:40px 16px;text-align:center;color:var(--txt2)">
+      <img src="logo-main.png" style="height:52px;opacity:.8" onerror="this.style.display='none'">
+      <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--txt)">How can I help?</div>
+      <div style="font-size:14px">Ask me to write an image prompt, brainstorm creative ideas, or anything else.</div>
+      ${['Write a cinematic image prompt for me','Help me come up with a video concept','What AI art style should I try today?'].map(s=>`<button onclick="sendChatMsg('${s}')" style="background:var(--s2);border:1px solid var(--bdr);border-radius:10px;padding:10px 16px;color:var(--txt);font-size:13px;cursor:pointer;width:100%;max-width:300px;font-family:inherit">${s}</button>`).join('')}
+    </div>
+  `;
+}
+
+function loadSession(s) {
+  activeSession = s;
+  chatHistory = s.messages || [];
+  document.getElementById('chat-title').textContent = s.title || 'Chat';
+  renderMessages();
+}
+
+function deleteSession(id, e) {
+  e.stopPropagation();
+  sessions = sessions.filter(s => s.id !== id);
+  localStorage.setItem('ss_sessions', JSON.stringify(sessions));
+  if (activeSession?.id === id) newChat();
+  renderSessions();
+}
+
+function ensureSession(firstMsg) {
+  if (!activeSession) {
+    activeSession = { id: Date.now().toString(), title: firstMsg.slice(0,50), messages: [], created: Date.now() };
+    sessions.push(activeSession);
+  }
+}
+
+function saveSession() {
+  if (!activeSession) return;
+  activeSession.messages = chatHistory;
+  const idx = sessions.findIndex(s => s.id === activeSession.id);
+  if (idx >= 0) sessions[idx] = activeSession;
+  localStorage.setItem('ss_sessions', JSON.stringify(sessions));
+}
+
+function chatKeydown(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); } }
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 140) + 'px'; }
+
+function attachMedia(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const b64 = reader.result.split(',')[1];
+    mediaBase64 = b64;
+    mediaType = file.type;
+    document.getElementById('chat-media-img').src = reader.result;
+    const prev = document.getElementById('chat-media-preview');
+    prev.style.display = 'flex';
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearMedia() {
+  mediaBase64 = null; mediaType = null;
+  document.getElementById('chat-media-img').src = '';
+  document.getElementById('chat-media-preview').style.display = 'none';
+  document.getElementById('chat-file').value = '';
+}
+
+function sendChatMsg(text) {
+  document.getElementById('chat-input').value = text;
+  sendChat();
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text && !mediaBase64) return;
+  if (isStreaming) return;
+
+  ensureSession(text || 'Image message');
+
+  const userContent = [];
+  if (mediaBase64) userContent.push({ type: 'image', source: { type: 'base64', media_type: mediaType, data: mediaBase64 } });
+  if (text) userContent.push({ type: 'text', text });
+
+  const userMsg = { role: 'user', content: userContent.length === 1 && !mediaBase64 ? text : userContent };
+  chatHistory.push(userMsg);
+
+  input.value = ''; input.style.height = 'auto';
+  clearMedia();
+  renderMessages();
+  isStreaming = true;
+
+  const aiMsg = { role: 'assistant', content: '' };
+  chatHistory.push(aiMsg);
+  renderMessages();
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': ANTHROPIC_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-allow-browser': 'true',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 2048,
+        stream: true,
+        system: 'You are the creative AI assistant for Subtle & Soul, an AI creative studio. Help users write detailed image and video prompts, brainstorm creative ideas, and discuss art and design. Be concise, creative, and helpful. When writing image prompts be very specific about lighting, mood, composition, style, and technical aspects.',
+        messages: chatHistory.slice(0,-1),
+      }),
+    });
+
+    const reader = resp.body.getReader();
+    const dec = new TextDecoder();
+    let buf = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      const lines = buf.split('\n');
+      buf = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6).trim();
+        if (data === '[DONE]') continue;
+        try {
+          const ev = JSON.parse(data);
+          if (ev.type === 'content_block_delta' && ev.delta?.type === 'text_delta') {
+            aiMsg.content += ev.delta.text;
+            chatHistory[chatHistory.length - 1] = aiMsg;
+            renderLastAiMsg();
+          }
+        } catch {}
+      }
+    }
+  } catch (err) {
+    aiMsg.content = `Error: ${err.message}. If this is a CORS error, the Anthropic API doesn't allow browser calls directly. You'll need to deploy with a serverless backend.`;
+    chatHistory[chatHistory.length - 1] = aiMsg;
+    renderLastAiMsg();
+  }
+
+  isStreaming = false;
+  saveSession();
+}
+
+function renderMessages() {
+  const msgs = document.getElementById('chat-msgs');
+  msgs.innerHTML = '';
+  chatHistory.forEach((m, i) => {
+    if (m.role === 'user') {
+      const el = document.createElement('div');
+      el.style.cssText = 'display:flex;flex-direction:column;align-items:flex-end';
+      const content = Array.isArray(m.content) ? m.content : [{ type: 'text', text: m.content }];
+      content.forEach(c => {
+        if (c.type === 'image') {
+          const img = document.createElement('img');
+          img.src = `data:${c.source.media_type};base64,${c.source.data}`;
+          img.className = 'msg-img';
+          el.appendChild(img);
+        } else if (c.type === 'text') {
+          const d = document.createElement('div');
+          d.className = 'msg msg-u';
+          d.textContent = c.text;
+          el.appendChild(d);
+        }
+      });
+      msgs.appendChild(el);
+    } else {
+      const el = document.createElement('div');
+      el.className = 'msg msg-a';
+      el.id = 'ai-msg-' + i;
+      if (!m.content) {
+        el.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+      } else {
+        el.textContent = m.content;
+      }
+      msgs.appendChild(el);
+    }
+  });
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function renderLastAiMsg() {
+  const idx = chatHistory.length - 1;
+  const el = document.getElementById('ai-msg-' + idx);
+  if (el) {
+    el.textContent = chatHistory[idx].content;
+    document.getElementById('chat-msgs').scrollTop = document.getElementById('chat-msgs').scrollHeight;
+  } else {
+    renderMessages();
+  }
+}
+
+// Voice input
+let recognition = null;
+function toggleMic() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { alert('Speech recognition not supported in this browser'); return; }
+  if (recognition) { recognition.stop(); recognition = null; document.getElementById('mic-btn').style.color = ''; return; }
+  recognition = new SR();
+  recognition.continuous = false;
+  recognition.lang = 'en-US';
+  recognition.onresult = e => {
+    document.getElementById('chat-input').value += e.results[0][0].transcript + ' ';
+    autoResize(document.getElementById('chat-input'));
+  };
+  recognition.onend = () => { recognition = null; document.getElementById('mic-btn').style.color = ''; };
+  recognition.start();
+  document.getElementById('mic-btn').style.color = 'var(--red)';
+}
+
+async function speakLast() {
+  const last = [...chatHistory].reverse().find(m => m.role === 'assistant');
+  if (!last) return;
+  const text = (typeof last.content === 'string' ? last.content : '').slice(0, 600);
+  if (!text) return;
+  try {
+    const resp = await fetch('https://api.cartesia.ai/tts/bytes', {
+      method: 'POST',
+      headers: { 'X-API-Key': CARTESIA_KEY, 'Cartesia-Version': '2024-06-10', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model_id: 'sonic-english', transcript: text, voice: { mode: 'id', id: selectedVoice }, output_format: { container: 'mp3', encoding: 'mp3', sample_rate: 44100 } }),
+    });
+    const ab = await resp.arrayBuffer();
+    const blob = new Blob([ab], { type: 'audio/mpeg' });
+    const url = URL.createObjectURL(blob);
+    new Audio(url).play();
+  } catch (e) { console.error('TTS error:', e); }
+}
+
+// ─── IMAGE GENERATION ───────────────────────────────────
+function selectChip(btn, groupId) {
+  document.querySelectorAll('#' + groupId + ' .chip').forEach(c => c.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+async function generateImage() {
+  const prompt = document.getElementById('gen-prompt').value.trim();
+  if (!prompt) { alert('Enter a prompt'); return; }
+  const styleChip = document.querySelector('#style-chips .chip.on');
+  const stylePrefix = styleChip ? styleChip.dataset.val : '';
+  const model = document.getElementById('gen-model').value;
+  const ratio = document.getElementById('gen-ratio').value;
+  const neg = document.getElementById('gen-neg').value;
+  const btn = document.getElementById('gen-btn');
+
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spin"></div> Generating...';
+  document.getElementById('gen-err').style.display = 'none';
+  document.getElementById('gen-result').style.display = 'none';
+
+  try {
+    const modelPath = model.replace('fal-ai/', '');
+    const resp = await fetch(`https://fal.run/${model}`, {
+      method: 'POST', headers: FAL_HDR,
+      body: JSON.stringify({ prompt: stylePrefix + prompt, image_size: ratio, num_images: 1, guidance_scale: 3.5, num_inference_steps: 28, ...(neg ? { negative_prompt: neg } : {}) }),
+    });
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+    const url = data.images?.[0]?.url;
+    if (!url) throw new Error('No image returned');
+    document.getElementById('gen-img').src = url;
+    document.getElementById('gen-result').style.display = 'block';
+  } catch (e) {
+    document.getElementById('gen-err').textContent = 'Error: ' + e.message;
+    document.getElementById('gen-err').style.display = 'block';
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '&#10022; Generate Image <span style="font-size:12px;opacity:.7">~$0.05</span>';
+}
+
+// ─── VIDEO GENERATION ───────────────────────────────────
+function pickSample(el, url) {
+  document.querySelectorAll('.sample').forEach(s => s.classList.remove('on'));
+  el.classList.add('on');
+  setVidSource(url);
+}
+
+function vidPickFile(input) {
+  const file = input.files[0]; if (!file) return;
+  const url = URL.createObjectURL(file);
+  setVidSource(url);
+}
+
+function setVidSource(url) {
+  vidSourceUrl = url;
+  document.getElementById('vid-preview').src = url;
+  document.getElementById('vid-preview').style.display = 'block';
+  document.getElementById('vid-placeholder').style.display = 'none';
+}
+
+async function generateVideo() {
+  if (!vidSourceUrl) { alert('Select or upload a source image'); return; }
+  const prompt = document.getElementById('vid-prompt').value;
+  const dur = document.getElementById('vid-dur').value;
+  const mode = document.getElementById('vid-mode').value;
+  const btn = document.getElementById('vid-btn');
+  const model = mode === 'pro' ? 'fal-ai/kling-video/v1.6/pro/image-to-video' : 'fal-ai/kling-video/v1.6/standard/image-to-video';
+
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spin"></div> Generating (2-5 min)...';
+  document.getElementById('vid-err').style.display = 'none';
+  document.getElementById('vid-result').style.display = 'none';
+
+  try {
+    // Submit to queue
+    const sub = await fetch(`https://queue.fal.run/${model}`, {
+      method: 'POST', headers: FAL_HDR,
+      body: JSON.stringify({ image_url: vidSourceUrl, prompt, duration: dur, aspect_ratio: '9:16' }),
+    });
+    const { request_id } = await sub.json();
+    if (!request_id) throw new Error('Failed to submit job');
+
+    // Poll status
+    while (true) {
+      await new Promise(r => setTimeout(r, 5000));
+      const st = await fetch(`https://queue.fal.run/${model}/requests/${request_id}/status`, { headers: FAL_HDR });
+      const s = await st.json();
+      if (s.status === 'COMPLETED') break;
+      if (s.status === 'FAILED') throw new Error('Video generation failed');
+      const pct = s.progress ? Math.round(s.progress * 100) + '%' : '...';
+      btn.innerHTML = `<div class="spin"></div> ${pct}`;
+    }
+
+    // Get result
+    const res = await fetch(`https://queue.fal.run/${model}/requests/${request_id}`, { headers: FAL_HDR });
+    const data = await res.json();
+    const url = data.video?.url;
+    if (!url) throw new Error('No video URL returned');
+
+    document.getElementById('vid-out').src = url;
+    document.getElementById('vid-result').style.display = 'block';
+  } catch (e) {
+    document.getElementById('vid-err').textContent = 'Error: ' + e.message;
+    document.getElementById('vid-err').style.display = 'block';
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '&#10022; Animate <span style="font-size:12px;opacity:.7">~$0.28</span>';
+}
+
+// ─── TTS ─────────────────────────────────────────────────
+function selectVoice(el) {
+  document.querySelectorAll('.vc').forEach(v => { v.classList.remove('on'); v.querySelector('.vc-name').nextSibling?.remove?.(); });
+  el.classList.add('on');
+  selectedVoice = el.dataset.id;
+  const check = document.createElement('span');
+  check.textContent = '✓';
+  el.appendChild(check);
+}
+
+async function generateTts() {
+  const text = document.getElementById('tts-text').value.trim();
+  if (!text) { alert('Enter some text'); return; }
+  const btn = document.getElementById('tts-btn');
+  btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Generating...';
+  document.getElementById('tts-err').style.display = 'none';
+  document.getElementById('tts-result').style.display = 'none';
+
+  try {
+    const resp = await fetch('https://api.cartesia.ai/tts/bytes', {
+      method: 'POST',
+      headers: { 'X-API-Key': CARTESIA_KEY, 'Cartesia-Version': '2024-06-10', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model_id: 'sonic-english', transcript: text, voice: { mode: 'id', id: selectedVoice }, output_format: { container: 'mp3', encoding: 'mp3', sample_rate: 44100 } }),
+    });
+    if (!resp.ok) throw new Error(await resp.text());
+    const ab = await resp.arrayBuffer();
+    ttsAudioBlob = new Blob([ab], { type: 'audio/mpeg' });
+    document.getElementById('tts-audio').src = URL.createObjectURL(ttsAudioBlob);
+    document.getElementById('tts-result').style.display = 'block';
+  } catch (e) {
+    document.getElementById('tts-err').textContent = 'Error: ' + e.message;
+    document.getElementById('tts-err').style.display = 'block';
+  }
+
+  btn.disabled = false; btn.innerHTML = '&#128266; Generate Speech';
+}
+
+function dlAudio() {
+  if (!ttsAudioBlob) return;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(ttsAudioBlob);
+  a.download = 'speech.mp3'; a.click();
+}
+
+// ─── LIBRARY ─────────────────────────────────────────────
+function saveToLib(type, url, prompt) {
+  const item = { id: Date.now().toString(), type, url, prompt, created: Date.now() };
+  libItems.unshift(item);
+  localStorage.setItem('ss_library', JSON.stringify(libItems));
+  alert('Saved to library!');
+}
+
+function libFilter(btn) {
+  document.querySelectorAll('#screen-library .chip').forEach(c => c.classList.remove('on'));
+  btn.classList.add('on');
+  libFilter_ = btn.dataset.val;
+  renderLibrary();
+}
+
+function renderLibrary() {
+  const filtered = libFilter_ === 'all' ? libItems : libItems.filter(i => i.type === libFilter_);
+  document.getElementById('lib-count').textContent = libItems.length + ' items';
+  const gal = document.getElementById('gallery');
+  const empty = document.getElementById('lib-empty');
+  if (filtered.length === 0) { gal.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  gal.innerHTML = filtered.map(item => `
+    <div class="gal-item">
+      ${item.type === 'video'
+        ? `<video src="${item.url}" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block" muted playsinline></video>`
+        : `<img src="${item.url}" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block">`}
+      <div class="gal-btns">
+        <button class="gal-btn" onclick="dlFile('${item.url}','${item.type === 'video' ? 'video.mp4' : 'image.jpg'}')">&#8595;</button>
+        <button class="gal-btn" onclick="deleteLibItem('${item.id}')" style="background:rgba(255,85,102,.5)">&#x2715;</button>
+      </div>
+      <div class="gal-meta">
+        <div class="gal-type">${item.type}</div>
+        ${item.prompt ? `<div class="gal-prompt">${item.prompt}</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function deleteLibItem(id) {
+  libItems = libItems.filter(i => i.id !== id);
+  localStorage.setItem('ss_library', JSON.stringify(libItems));
+  renderLibrary();
+}
+
+// ─── UTILS ───────────────────────────────────────────────
+function dlFile(url, name) {
+  const a = document.createElement('a');
+  a.href = url; a.download = name; a.target = '_blank'; a.click();
+}
+
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem('ss_user');
+  if (saved) { userName = saved; initApp(); }
+  renderWelcome();
+});
+</script>
+</body>
+</html>

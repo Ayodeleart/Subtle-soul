@@ -12,216 +12,248 @@
 <link rel="icon" href="logo-main.png">
 <title>Subtle &amp; Soul</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#08080f;--s1:#111120;--s2:#181828;--s3:#1f1f35;
-  --bdr:rgba(255,255,255,.06);--bdr2:rgba(255,255,255,.12);
-  --txt:#eeeeff;--txt2:#8888aa;--txt3:#5555777;
-  --acc:#7c6dff;--acc2:#b09eff;--acc-glow:rgba(124,109,255,.25);
-  --red:#ff5566;--green:#44ddaa;
+  --bdr:rgba(255,255,255,.06);--bdr2:rgba(255,255,255,.13);
+  --txt:#eeeeff;--txt2:#8888aa;--txt3:#44445a;
+  --acc:#7c6dff;--acc2:#b09eff;--agl:rgba(124,109,255,.24);
+  --red:#ff5566;--grn:#44ddaa;
+  --nb:rgba(8,8,20,.52);--nbb:rgba(255,255,255,.1);
 }
 .light{
-  --bg:#f2f2f8;--s1:#fff;--s2:#eaeaf5;--s3:#ddddf0;
+  --bg:#f2f2f8;--s1:#ffffff;--s2:#eaeaf5;--s3:#ddddf0;
   --bdr:rgba(0,0,0,.07);--bdr2:rgba(0,0,0,.14);
-  --txt:#0a0a1a;--txt2:#5a5a7a;--txt3:#9999bb;
-  --acc:#6c5fff;--acc2:#9080ff;--acc-glow:rgba(108,95,255,.15);
+  --txt:#0a0a1a;--txt2:#5a5a7a;--txt3:#b0b0cc;
+  --acc:#6c5fff;--acc2:#9080ff;--agl:rgba(108,95,255,.15);
+  --nb:rgba(255,255,255,.65);--nbb:rgba(0,0,0,.1);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{background:var(--bg);color:var(--txt);font-family:'DM Sans',system-ui,sans-serif;min-height:100vh;overflow-x:hidden}
-::-webkit-scrollbar{width:0}
+html,body{background:var(--bg);color:var(--txt);font-family:'DM Sans',system-ui,sans-serif;min-height:100dvh;overflow-x:hidden}
+::-webkit-scrollbar{width:0;height:0}
 img,video{max-width:100%}
+button,input,select,textarea{font-family:inherit}
 
-/* SCREENS */
-.screen{display:none;flex-direction:column;min-height:100vh;background:var(--bg)}
+/* ─── SCREENS ─── */
+.screen{display:none;flex-direction:column;min-height:100dvh;background:var(--bg)}
 .screen.on{display:flex}
-.page-scroll{flex:1;overflow-y:auto;padding:20px 16px 110px}
+.pscroll{flex:1;overflow-y:auto;padding:16px 16px 108px}
 
-/* BOTTOM NAV */
+/* ─── BOTTOM NAV ─── */
 #bnav{
-  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
-  display:flex;align-items:center;gap:2px;padding:10px 14px;z-index:90;
-  border-radius:50px;
-  background:rgba(10,10,22,.55);
-  backdrop-filter:blur(40px) saturate(2);-webkit-backdrop-filter:blur(40px) saturate(2);
-  border:1px solid rgba(255,255,255,.11);
-  box-shadow:0 12px 40px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08);
+  position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:2px;padding:7px 8px;
+  z-index:90;border-radius:50px;
+  background:var(--nb);
+  backdrop-filter:blur(40px) saturate(200%);
+  -webkit-backdrop-filter:blur(40px) saturate(200%);
+  border:1px solid var(--nbb);
+  box-shadow:0 10px 40px rgba(0,0,0,.45),inset 0 1.5px 0 rgba(255,255,255,.08);
+  transition:opacity .2s;
 }
-#bnav.hide{display:none}
-.light #bnav{background:rgba(255,255,255,.62);border-color:rgba(0,0,0,.1);box-shadow:0 8px 32px rgba(0,0,0,.1)}
+#bnav.hide{opacity:0;pointer-events:none}
 .nb{
-  display:flex;flex-direction:column;align-items:center;gap:3px;
-  padding:8px 16px;border-radius:38px;border:none;cursor:pointer;
-  background:transparent;color:rgba(255,255,255,.4);transition:all .2s;
-  font-family:inherit;font-size:10px;font-weight:500;letter-spacing:.02em;min-width:58px;
+  width:52px;height:44px;display:flex;align-items:center;
+  justify-content:center;border-radius:32px;border:none;
+  background:transparent;color:rgba(255,255,255,.34);
+  cursor:pointer;transition:all .22s;
 }
-.nb svg{transition:all .2s}
-.nb.on{background:rgba(124,109,255,.22);color:#b09eff}
-.nb.on svg{filter:drop-shadow(0 0 6px rgba(176,158,255,.6))}
-.light .nb{color:rgba(0,0,30,.35)}
-.light .nb.on{color:var(--acc)}
+.nb.on{background:rgba(255,255,255,.12);color:rgba(255,255,255,.95)}
+.light .nb{color:rgba(0,0,30,.32)}
+.light .nb.on{background:rgba(0,0,0,.09);color:var(--acc)}
 
-/* HEADER */
+/* ─── HEADER ─── */
 .hdr{
-  display:flex;align-items:center;gap:10px;padding:14px 16px;
-  border-bottom:1px solid var(--bdr);background:var(--s1);
+  display:flex;align-items:center;gap:8px;padding:12px 16px;
+  background:var(--s1);border-bottom:1px solid var(--bdr);
   position:sticky;top:0;z-index:10;flex-shrink:0;
 }
-.hdr-logo{height:28px;width:auto}
 .hdr-title{font-weight:600;font-size:16px;flex:1;color:var(--txt)}
-.icon-btn{background:none;border:none;color:var(--txt2);cursor:pointer;padding:6px;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:18px}
-.icon-btn:hover{background:var(--s2);color:var(--txt)}
+.ib{
+  background:none;border:none;color:var(--txt2);cursor:pointer;
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;flex-shrink:0;
+}
+.ib:hover,.ib:active{background:var(--s2);color:var(--txt)}
+.ib.acc{background:var(--acc);color:#fff}
+.ib.acc:hover{background:#9080ff}
 
-/* INPUTS */
-.inp{background:var(--s2);border:1px solid var(--bdr);border-radius:12px;padding:12px 14px;color:var(--txt);font-size:14px;width:100%;outline:none;font-family:inherit;line-height:1.5;transition:border-color .2s}
-.inp:focus{border-color:rgba(124,109,255,.5)}
+/* ─── INPUTS ─── */
+.inp{
+  background:var(--s2);border:1px solid var(--bdr);border-radius:12px;
+  padding:12px 14px;color:var(--txt);font-size:14px;width:100%;outline:none;
+  line-height:1.5;transition:border-color .2s;
+}
+.inp:focus{border-color:rgba(124,109,255,.55)}
 .inp::placeholder{color:var(--txt2)}
 textarea.inp{resize:none}
-select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%238888aa' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%238888aa' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px}
 
-/* BUTTONS */
-.btn{background:linear-gradient(135deg,#7c6dff,#b09eff);border:none;border-radius:13px;padding:15px 20px;color:#fff;font-weight:700;font-size:15px;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;font-family:inherit;letter-spacing:.01em}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-.btn:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 6px 20px var(--acc-glow)}
-.btn-outline{background:transparent;border:1px solid var(--bdr2);border-radius:12px;padding:12px 16px;color:var(--txt);font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;transition:all .2s}
-.btn-outline:hover{border-color:var(--acc);color:var(--acc)}
+/* ─── BUTTONS ─── */
+.btn{
+  background:linear-gradient(135deg,#7c6dff,#b09eff);border:none;
+  border-radius:13px;padding:15px 20px;color:#fff;font-weight:700;
+  font-size:15px;cursor:pointer;width:100%;display:flex;align-items:center;
+  justify-content:center;gap:8px;transition:all .18s;letter-spacing:.01em;
+}
+.btn:disabled{opacity:.42;cursor:not-allowed}
+.btn:not(:disabled):active{transform:scale(.97)}
+.btn-ghost{
+  background:transparent;border:1px solid var(--bdr2);border-radius:12px;
+  padding:12px 16px;color:var(--txt);font-size:14px;cursor:pointer;
+  font-weight:500;transition:all .2s;width:100%;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.btn-ghost:hover{border-color:var(--acc);color:var(--acc)}
+.btn-danger{
+  width:100%;padding:15px;background:rgba(255,85,102,.08);
+  border:1px solid rgba(255,85,102,.2);border-radius:13px;
+  color:var(--red);font-size:15px;font-weight:600;cursor:pointer;
+  transition:all .2s;
+}
+.btn-danger:hover{background:rgba(255,85,102,.15)}
 
-/* CARD */
-.card{background:var(--s1);border:1px solid var(--bdr);border-radius:16px}
-
-/* CHIP */
-.chip{padding:8px 14px;border-radius:100px;background:var(--s2);border:1px solid var(--bdr);color:var(--txt2);font-size:13px;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:inherit}
+/* ─── CHIP ─── */
+.chip{
+  padding:8px 14px;border-radius:100px;background:var(--s2);
+  border:1px solid var(--bdr);color:var(--txt2);font-size:13px;
+  cursor:pointer;transition:all .15s;white-space:nowrap;
+}
 .chip.on,.chip:hover{background:rgba(124,109,255,.18);border-color:rgba(124,109,255,.45);color:var(--acc2)}
-
-/* LABEL */
 .lbl{font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:8px}
+.sec{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.err{background:rgba(255,85,102,.1);border:1px solid rgba(255,85,102,.3);border-radius:12px;padding:12px 14px;color:var(--red);font-size:13px;display:none}
 
-/* CHAT */
+/* ─── TOGGLE ─── */
+.tgl{width:46px;height:26px;border-radius:13px;border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.tgl-k{position:absolute;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.tgl.on{background:var(--acc)}.tgl:not(.on){background:var(--s3)}
+.tgl.on .tgl-k{left:23px}.tgl:not(.on) .tgl-k{left:3px}
+
+/* ─── SPINNER ─── */
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+
+/* ─── CHAT ─── */
+.chat-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden}
 .chat-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
 .msg{max-width:84%;padding:12px 15px;font-size:14px;line-height:1.6;word-break:break-word;white-space:pre-wrap}
 .msg-u{align-self:flex-end;background:linear-gradient(135deg,#7c6dff,#b09eff);color:#fff;border-radius:18px 18px 4px 18px}
 .msg-a{align-self:flex-start;background:var(--s2);border:1px solid var(--bdr);color:var(--txt);border-radius:4px 18px 18px 18px}
-.msg-img{max-width:200px;border-radius:12px;display:block;margin-bottom:6px}
-.typing-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--txt2);margin:0 2px}
-@keyframes td{0%,80%,100%{transform:scale(0.6);opacity:.4}40%{transform:scale(1);opacity:1}}
-.typing-dot:nth-child(1){animation:td 1.2s .0s infinite}
-.typing-dot:nth-child(2){animation:td 1.2s .2s infinite}
-.typing-dot:nth-child(3){animation:td 1.2s .4s infinite}
+.msg-img{max-width:190px;border-radius:12px;display:block;margin-bottom:6px}
+@keyframes td{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+.td{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--txt2);margin:0 2px}
+.td:nth-child(1){animation:td 1.2s 0s infinite}.td:nth-child(2){animation:td 1.2s .2s infinite}.td:nth-child(3){animation:td 1.2s .4s infinite}
+.chat-input-bar{padding:10px 12px;border-top:1px solid var(--bdr);background:var(--s1);flex-shrink:0}
 
-/* SIDEBAR */
-#sidebar{position:fixed;top:0;left:-310px;width:300px;height:100vh;background:var(--s1);border-right:1px solid var(--bdr);z-index:201;transition:left .3s ease;display:flex;flex-direction:column}
+/* ─── SIDEBAR ─── */
+#sidebar{position:fixed;top:0;left:-310px;width:300px;height:100dvh;background:var(--s1);border-right:1px solid var(--bdr);z-index:201;transition:left .3s cubic-bezier(.25,.1,.25,1);display:flex;flex-direction:column}
 #sidebar.on{left:0}
-#sovl{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:none}
+#sovl{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none}
 #sovl.on{display:block}
-.sbar-session{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:10px;cursor:pointer;transition:background .15s;margin-bottom:2px}
-.sbar-session:hover,.sbar-session.on{background:var(--s2)}
-.sbar-session.on .sbar-title{color:var(--acc2)}
+.si{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:10px;cursor:pointer;margin-bottom:2px;transition:background .15s}
+.si:hover,.si.on{background:var(--s2)}
+.si.on .si-title{color:var(--acc2)}
+.si-title{font-size:14px;font-weight:500;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
+.si-del{background:none;border:none;color:var(--txt3);cursor:pointer;width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.si-del:hover{background:rgba(255,85,102,.15);color:var(--red)}
 
-/* HERO */
-.hero{position:relative;border-radius:20px;overflow:hidden;margin:16px 16px 0;height:200px;background:var(--s2)}
-.hero-slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1s}
-.hero-slide.on{opacity:1}
-.hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65),transparent 55%)}
-.hero-caption{position:absolute;bottom:16px;left:16px}
-.hero-dots{position:absolute;bottom:12px;right:16px;display:flex;gap:4px}
+/* ─── HERO ─── */
+.hero{position:relative;border-radius:20px;overflow:hidden;margin:16px 16px 0;height:195px;background:var(--s2)}
+.hs{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1s ease}
+.hs.on{opacity:1}
+.hero-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.72),transparent 52%)}
+.hero-cap{position:absolute;bottom:16px;left:16px}
+.hero-dots{position:absolute;bottom:14px;right:16px;display:flex;gap:4px;align-items:center}
 .hdot{height:5px;border-radius:3px;background:rgba(255,255,255,.35);cursor:pointer;transition:all .3s}
-.hdot.on{width:18px;background:#fff}
-.hdot:not(.on){width:5px}
+.hdot.on{width:18px;background:#fff}.hdot:not(.on){width:5px}
 
-/* FEATURE GRID */
+/* ─── FEAT GRID ─── */
 .feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 16px}
-.feat-card{background:var(--s1);border:1px solid var(--bdr);border-radius:16px;padding:18px 14px;cursor:pointer;transition:all .2s;text-align:left}
-.feat-card:hover{border-color:rgba(124,109,255,.35);box-shadow:0 4px 20px var(--acc-glow)}
-.feat-icon{font-size:26px;margin-bottom:10px}
-.feat-name{font-size:14px;font-weight:600;color:var(--txt)}
-.feat-sub{font-size:12px;color:var(--txt2);margin-top:3px}
+.fc{background:var(--s1);border:1px solid var(--bdr);border-radius:16px;padding:18px 14px;cursor:pointer;transition:all .2s}
+.fc:active{border-color:rgba(124,109,255,.4);box-shadow:0 4px 20px var(--agl);transform:translateY(-1px)}
+.fi{width:40px;height:40px;background:rgba(124,109,255,.12);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.fn{font-size:14px;font-weight:600;color:var(--txt)}
+.fs{font-size:12px;color:var(--txt2);margin-top:3px;line-height:1.4}
 
-/* GALLERY */
+/* ─── GALLERY ─── */
 .gal{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.gal-item{position:relative;border-radius:14px;overflow:hidden;background:var(--s2)}
-.gal-item img,.gal-item video{width:100%;aspect-ratio:9/16;object-fit:cover;display:block}
-.gal-btns{position:absolute;top:6px;right:6px;display:flex;gap:4px}
-.gal-btn{background:rgba(0,0,0,.65);border:none;border-radius:7px;padding:6px 8px;color:#fff;cursor:pointer;font-size:12px;backdrop-filter:blur(10px);transition:background .15s}
-.gal-btn:hover{background:rgba(0,0,0,.85)}
-.gal-meta{padding:8px 10px;background:var(--s1)}
-.gal-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--acc2)}
-.gal-prompt{font-size:11px;color:var(--txt2);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gi{position:relative;border-radius:14px;overflow:hidden;background:var(--s2)}
+.gi img,.gi video{width:100%;aspect-ratio:9/16;object-fit:cover;display:block}
+.gi-btns{position:absolute;top:8px;right:8px;display:flex;gap:4px}
+.gb{background:rgba(0,0,0,.65);border:none;border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer;backdrop-filter:blur(10px);transition:background .15s}
+.gb:hover{background:rgba(0,0,0,.88)}
+.gb.del:hover{background:rgba(255,85,102,.75)}
+.gi-meta{padding:8px 10px;background:var(--s1)}
+.gi-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--acc2)}
+.gi-p{font-size:11px;color:var(--txt2);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-/* UPLOAD BOX */
+/* ─── UPLOAD BOX ─── */
 .upload-box{border:2px dashed var(--bdr2);border-radius:16px;overflow:hidden;cursor:pointer;transition:border-color .2s}
 .upload-box:hover{border-color:var(--acc)}
-.upload-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;padding:36px;color:var(--txt2);text-align:center}
+.uph{display:flex;flex-direction:column;align-items:center;gap:8px;padding:36px;color:var(--txt2);text-align:center}
 
-/* RESULT */
-.result-wrap{border-radius:16px;overflow:hidden;border:1px solid var(--bdr)}
-.result-wrap img,.result-wrap video{width:100%;display:block}
-.result-actions{display:flex;gap:8px;padding:12px;background:var(--s1)}
-.ract{flex:1;padding:10px;background:var(--s2);border:1px solid var(--bdr);border-radius:10px;color:var(--txt);font-size:13px;cursor:pointer;font-weight:500;font-family:inherit;transition:all .15s;text-align:center}
-.ract:hover{border-color:rgba(124,109,255,.4)}
-.ract.acc{background:rgba(124,109,255,.15);border-color:rgba(124,109,255,.3);color:var(--acc2)}
+/* ─── RESULT ─── */
+.res-wrap{border-radius:16px;overflow:hidden;border:1px solid var(--bdr)}
+.res-wrap img,.res-wrap video{width:100%;display:block}
+.res-actions{display:flex;gap:8px;padding:12px;background:var(--s1)}
+.ra{flex:1;padding:10px;background:var(--s2);border:1px solid var(--bdr);border-radius:10px;color:var(--txt);font-size:13px;cursor:pointer;font-weight:500;transition:all .15s;text-align:center}
+.ra:hover{border-color:rgba(124,109,255,.4)}
+.ra.acc{background:rgba(124,109,255,.15);border-color:rgba(124,109,255,.3);color:var(--acc2)}
 
-/* PROFILE */
-.prof-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;transition:background .15s;cursor:pointer}
-.prof-row:hover{background:var(--s2)}
+/* ─── PROFILE ─── */
+.psec{background:var(--s1);border:1px solid var(--bdr);border-radius:16px;overflow:hidden;margin-bottom:12px}
+.psec-h{padding:10px 16px;font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid var(--bdr)}
+.pr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--bdr)}
+.pr:last-child{border-bottom:none}
+.pr:hover{background:var(--s2)}
+.pr-l{display:flex;align-items:center;gap:12px;color:var(--txt);font-size:15px}
+.pr-ic{width:26px;height:26px;display:flex;align-items:center;justify-content:center;color:var(--txt2)}
+.pr-arr{color:var(--txt3)}
 
-/* ERROR */
-.err-box{background:rgba(255,85,102,.1);border:1px solid rgba(255,85,102,.3);border-radius:12px;padding:12px 14px;color:var(--red);font-size:13px}
-
-/* TOGGLE */
-.tgl{width:46px;height:26px;border-radius:13px;border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
-.tgl-knob{position:absolute;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,.3)}
-.tgl.on{background:var(--acc)}.tgl:not(.on){background:var(--s3)}
-.tgl.on .tgl-knob{left:23px}.tgl:not(.on) .tgl-knob{left:3px}
-
-/* SPINNER */
-@keyframes spin{to{transform:rotate(360deg)}}
-.spin{width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
-.spin.dark{border-color:rgba(124,109,255,.3);border-top-color:var(--acc)}
-
-/* VOICE CARD */
+/* ─── VOICE CARD ─── */
 .vc{padding:14px 16px;border-radius:12px;border:1px solid var(--bdr);background:var(--s1);cursor:pointer;transition:all .15s;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
 .vc.on{background:rgba(124,109,255,.15);border-color:rgba(124,109,255,.4)}
-.vc-name{font-weight:600;font-size:14px;color:var(--txt)}
-.vc.on .vc-name{color:var(--acc2)}
-.vc-desc{font-size:12px;color:var(--txt2);margin-top:2px}
+.vc-n{font-weight:600;font-size:14px;color:var(--txt)}.vc.on .vc-n{color:var(--acc2)}
+.vc-d{font-size:12px;color:var(--txt2);margin-top:2px}
 
-/* SAMPLES ROW */
+/* ─── SAMPLES ─── */
 .samples{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
-.sample{position:relative;flex-shrink:0;cursor:pointer}
-.sample img{width:90px;height:130px;object-fit:cover;border-radius:12px;border:2px solid transparent;transition:border-color .2s}
-.sample.on img{border-color:var(--acc)}
-.sample-lbl{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.6);color:#fff;font-size:10px;padding:2px 7px;border-radius:5px;white-space:nowrap;backdrop-filter:blur(6px)}
+.sc{flex-shrink:0;cursor:pointer;border-radius:14px;overflow:hidden;border:2px solid transparent;transition:border-color .2s}
+.sc.on{border-color:var(--acc)}
+.sc img,.sc video{width:100px;height:160px;object-fit:cover;display:block}
+.sc-lbl{background:var(--s1);padding:6px 8px;font-size:11px;font-weight:500;color:var(--txt2);text-align:center}
 
-/* SIGN IN SCREEN */
-#screen-signin{align-items:center;justify-content:center;padding:40px 24px}
-.signin-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;gap:20px}
-.app-brand{text-align:center;margin-bottom:4px}
-.app-brand img{height:70px}
-.app-name{font-family:'DM Serif Display',serif;font-size:28px;color:var(--txt);margin-top:8px}
-.app-tag{font-size:14px;color:var(--txt2)}
-.signin-card{width:100%;background:var(--s1);border:1px solid var(--bdr);border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px}
-.signin-card h2{font-family:'DM Serif Display',serif;font-size:20px;color:var(--txt);text-align:center}
+/* ─── MOTION CHIPS ─── */
+.mchips{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.mc{padding:10px 6px;border-radius:10px;background:var(--s2);border:1px solid var(--bdr);color:var(--txt2);font-size:12px;cursor:pointer;transition:all .15s;font-weight:500;text-align:center}
+.mc.on{background:rgba(124,109,255,.18);border-color:rgba(124,109,255,.45);color:var(--acc2)}
+
+/* ─── SIGN IN ─── */
+#screen-signin{align-items:center;justify-content:center;background:var(--bg)}
+.sb-brand{text-align:center;margin-bottom:28px}
+.sb-brand img{height:70px;width:70px;object-fit:contain}
+.sb-brand .sbn{font-family:'DM Serif Display',serif;font-size:28px;color:var(--txt);margin-top:10px;line-height:1.1}
+.sb-brand .sbt{font-size:14px;color:var(--txt2);margin-top:6px}
+
+/* ─── CLERK OVERRIDES ─── */
+#clerk-container{width:100%;max-width:380px}
+.cl-card{background:var(--s1)!important;border:1px solid var(--bdr)!important;border-radius:20px!important}
 </style>
 </head>
 <body>
 
 <!-- SIGN IN -->
 <div id="screen-signin" class="screen on">
-  <div class="signin-box">
-    <div class="app-brand">
-      <img src="logo-main.png" alt="Subtle & Soul" onerror="this.style.display='none'">
-      <div class="app-name">Subtle &amp; Soul</div>
-      <div class="app-tag">AI Creative Studio</div>
+  <div style="width:100%;max-width:400px;padding:32px 24px;display:flex;flex-direction:column;align-items:center">
+    <div class="sb-brand">
+      <img src="logo-main.png" alt="" onerror="this.style.display='none'">
+      <div class="sbn">Subtle &amp; Soul</div>
+      <div class="sbt">AI Creative Studio</div>
     </div>
-    <div class="signin-card">
-      <h2>Welcome</h2>
-      <div>
-        <label class="lbl">Your Name</label>
-        <input id="si-name" class="inp" type="text" placeholder="Enter your name..." autocomplete="name">
-      </div>
-      <button class="btn" onclick="signIn()">Enter Studio</button>
-    </div>
-    <p style="font-size:12px;color:var(--txt2);text-align:center;line-height:1.6">Your API keys are stored locally in your browser only.</p>
+    <div id="clerk-container"></div>
   </div>
 </div>
 
@@ -230,214 +262,402 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
   <div class="hdr">
     <div style="flex:1">
       <div style="font-size:12px;color:var(--txt2);font-weight:500">What would you like to</div>
-      <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--txt);line-height:1.2">create?</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--txt);line-height:1.15">create?</div>
     </div>
-    <button class="tgl" id="theme-tgl" onclick="toggleTheme()"><div class="tgl-knob"></div></button>
-    <div id="home-avatar" style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7c6dff,#b09eff);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;cursor:pointer" onclick="go('profile')"></div>
+    <button class="ib" id="theme-btn" onclick="toggleTheme()">
+      <svg id="theme-ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+    </button>
+    <div id="home-av" onclick="go('profile')" style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7c6dff,#b09eff);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;cursor:pointer;flex-shrink:0;overflow:hidden">
+      <img id="home-av-img" style="width:100%;height:100%;object-fit:cover;display:none" alt="">
+      <span id="home-av-txt"></span>
+    </div>
   </div>
   <div style="flex:1;overflow-y:auto;padding-bottom:100px">
-    <!-- Hero -->
     <div class="hero" id="hero">
-      <div class="hero-slide on" id="hs0" style="background-image:url('https://images.unsplash.com/photo-1686191128892-3b37add4c844?w=600&q=75')"></div>
-      <div class="hero-slide" id="hs1" style="background-image:url('https://images.unsplash.com/photo-1704022472896-c7f2423b3ce7?w=600&q=75')"></div>
-      <div class="hero-slide" id="hs2" style="background-image:url('https://images.unsplash.com/photo-1692978166578-1ab3f7b4cd7c?w=600&q=75')"></div>
-      <div class="hero-slide" id="hs3" style="background-image:url('https://images.unsplash.com/photo-1698047681432-f90fdf4dd0bd?w=600&q=75')"></div>
-      <div class="hero-overlay"></div>
-      <div class="hero-caption">
-        <div style="color:rgba(255,255,255,.55);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:500">AI Creative Studio</div>
-        <div style="color:#fff;font-size:18px;font-weight:600;margin-top:3px;font-family:'DM Serif Display',serif">Generate. Animate. Speak.</div>
+      <div class="hs on" id="hs0"></div>
+      <div class="hs" id="hs1"></div>
+      <div class="hs" id="hs2"></div>
+      <div class="hs" id="hs3"></div>
+      <div class="hero-ov"></div>
+      <div class="hero-cap">
+        <div style="color:rgba(255,255,255,.55);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600">AI Creative Studio</div>
+        <div style="color:#fff;font-size:18px;font-weight:700;margin-top:4px;font-family:'DM Serif Display',serif">Generate. Animate. Speak.</div>
       </div>
       <div class="hero-dots" id="hero-dots"></div>
     </div>
-    <!-- Features -->
     <div class="feat-grid">
-      <div class="feat-card" onclick="go('chat')"><div class="feat-icon">🤖</div><div class="feat-name">AI Chat</div><div class="feat-sub">Write prompts &amp; ideas</div></div>
-      <div class="feat-card" onclick="go('generate')"><div class="feat-icon">🎨</div><div class="feat-name">Image Gen</div><div class="feat-sub">FLUX Pro quality</div></div>
-      <div class="feat-card" onclick="go('video')"><div class="feat-icon">🎬</div><div class="feat-name">Video Gen</div><div class="feat-sub">Kling AI animation</div></div>
-      <div class="feat-card" onclick="go('tts')"><div class="feat-icon">🔊</div><div class="feat-name">Text to Speech</div><div class="feat-sub">Cartesia voices</div></div>
-      <div class="feat-card" onclick="go('library')"><div class="feat-icon">📚</div><div class="feat-name">Library</div><div class="feat-sub">Your creations</div></div>
-      <div class="feat-card" onclick="go('profile')"><div class="feat-icon">👤</div><div class="feat-name">Profile</div><div class="feat-sub">Settings &amp; account</div></div>
+      <div class="fc" onclick="go('tts')">
+        <div class="fi"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc2)" stroke-width="1.8" stroke-linecap="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+        <div class="fn">Text to Speech</div><div class="fs">Natural voices</div>
+      </div>
+      <div class="fc" onclick="go('pimg')">
+        <div class="fi"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc2)" stroke-width="1.8" stroke-linecap="round"><path d="M5 3l14 0a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M12 8v8M8 12h8" stroke="var(--acc)"/></svg></div>
+        <div class="fn">Prompt to Image</div><div class="fs">FLUX Pro quality</div>
+      </div>
+      <div class="fc" onclick="go('pvid')">
+        <div class="fi"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc2)" stroke-width="1.8" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+        <div class="fn">Prompt to Video</div><div class="fs">Text to animation</div>
+      </div>
+      <div class="fc" onclick="go('i2v')">
+        <div class="fi"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc2)" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+        <div class="fn">Image to Video</div><div class="fs">Animate stills</div>
+      </div>
+      <div class="fc" onclick="go('motion')">
+        <div class="fi"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc2)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
+        <div class="fn">Motion</div><div class="fs">Camera presets</div>
+      </div>
+      <div class="fc" onclick="go('refimg')">
+        <div class="fi"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc2)" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="7" width="14" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2H5a2 2 0 00-2 2v9a2 2 0 002 2h2"/></svg></div>
+        <div class="fn">Image Reference</div><div class="fs">Style transfer</div>
+      </div>
     </div>
   </div>
+</div>
+
+<!-- CHAT SIDEBAR OVERLAY -->
+<div id="sovl" onclick="closeSidebar()"></div>
+<div id="sidebar">
+  <div style="padding:14px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+    <span style="font-weight:700;font-size:16px;font-family:'DM Serif Display',serif">Chat History</span>
+    <button class="ib" onclick="closeSidebar()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div style="padding:10px 10px 6px">
+    <button class="btn" style="border-radius:10px;padding:11px;font-size:14px" onclick="newChat()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New Chat
+    </button>
+  </div>
+  <div id="session-list" style="flex:1;overflow-y:auto;padding:0 10px 10px"></div>
 </div>
 
 <!-- CHAT -->
 <div id="screen-chat" class="screen">
   <div class="hdr">
-    <button class="icon-btn" onclick="goBack()">&#8592;</button>
-    <button class="icon-btn" onclick="openSidebar()">&#9776;</button>
+    <button class="ib" onclick="goBack()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+    <button class="ib" onclick="openSidebar()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
     <span class="hdr-title" id="chat-title">AI Chat</span>
-    <button class="icon-btn" id="tts-play-btn" onclick="speakLast()" title="Read aloud">&#128266;</button>
-    <button class="icon-btn" onclick="newChat()" title="New chat">&#43;</button>
+    <button class="ib" onclick="newChat()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
   </div>
-  <div class="chat-msgs" id="chat-msgs"></div>
-  <!-- Media preview -->
-  <div id="chat-media-preview" style="display:none;padding:8px 16px;display:flex;align-items:center;gap:8px">
-    <img id="chat-media-img" style="height:56px;border-radius:8px;object-fit:cover">
-    <button onclick="clearMedia()" style="background:rgba(255,85,102,.2);border:none;border-radius:50%;width:22px;height:22px;color:var(--red);cursor:pointer;font-size:12px">&#x2715;</button>
-  </div>
-  <div style="padding:10px 12px;border-top:1px solid var(--bdr);background:var(--s1);flex-shrink:0">
-    <div style="display:flex;gap:8px;align-items:flex-end">
-      <input type="file" id="chat-file" accept="image/*" hidden onchange="attachMedia(this)">
-      <button class="icon-btn" onclick="document.getElementById('chat-file').click()" title="Attach image">&#128206;</button>
-      <button class="icon-btn" id="mic-btn" onclick="toggleMic()" title="Voice input">&#127908;</button>
-      <textarea id="chat-input" class="inp" rows="1" placeholder="Message..." style="flex:1" onkeydown="chatKeydown(event)" oninput="autoResize(this)"></textarea>
-      <button class="icon-btn" onclick="sendChat()" style="background:var(--acc);color:#fff;border-radius:10px;padding:10px" id="send-btn">&#8593;</button>
+  <div class="chat-wrap">
+    <div class="chat-msgs" id="chat-msgs"></div>
+    <div id="chat-media-prev" style="display:none;padding:8px 16px 0;display:flex;align-items:center;gap:8px">
+      <img id="chat-media-img" style="height:54px;border-radius:8px;object-fit:cover" alt="">
+      <button onclick="clearMedia()" style="background:rgba(255,85,102,.2);border:none;border-radius:50%;width:22px;height:22px;color:var(--red);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
-  </div>
-</div>
-
-<!-- SIDEBAR -->
-<div id="sovl" onclick="closeSidebar()"></div>
-<div id="sidebar">
-  <div style="padding:16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between">
-    <img src="logo-main.png" style="height:28px" onerror="this.style.display='none'">
-    <button class="icon-btn" onclick="closeSidebar()">&#x2715;</button>
-  </div>
-  <div style="padding:10px">
-    <button class="btn" style="border-radius:10px;padding:12px;font-size:14px" onclick="newChat()">+ New Chat</button>
-  </div>
-  <div id="session-list" style="flex:1;overflow-y:auto;padding:0 10px 10px"></div>
-</div>
-
-<!-- IMAGE GENERATION -->
-<div id="screen-generate" class="screen">
-  <div class="hdr">
-    <button class="icon-btn" onclick="goBack()">&#8592;</button>
-    <span class="hdr-title">Image Generation</span>
-  </div>
-  <div class="page-scroll">
-    <div>
-      <label class="lbl">Scene Prompt</label>
-      <textarea id="gen-prompt" class="inp" rows="4" placeholder="Describe your scene in vivid detail..."></textarea>
-    </div>
-    <div>
-      <label class="lbl">Style</label>
-      <div id="style-chips" style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="chip on" data-val="" onclick="selectChip(this,'style-chips')">None</button>
-        <button class="chip" data-val="cinematic film still, anamorphic, " onclick="selectChip(this,'style-chips')">Cinematic</button>
-        <button class="chip" data-val="fashion editorial, vogue, " onclick="selectChip(this,'style-chips')">Editorial</button>
-        <button class="chip" data-val="anime illustration, studio ghibli, " onclick="selectChip(this,'style-chips')">Anime</button>
-        <button class="chip" data-val="dark fantasy, gothic, dramatic, " onclick="selectChip(this,'style-chips')">Dark Fantasy</button>
-        <button class="chip" data-val="soft pastel, dreamy, ethereal, " onclick="selectChip(this,'style-chips')">Dreamy</button>
+    <div class="chat-input-bar">
+      <div style="display:flex;gap:8px;align-items:flex-end">
+        <input type="file" id="chat-file" accept="image/*" hidden onchange="attachMedia(this)">
+        <button class="ib" onclick="document.getElementById('chat-file').click()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></button>
+        <textarea id="chat-inp" class="inp" rows="1" placeholder="Message..." style="flex:1" onkeydown="chatKey(event)" oninput="autoH(this)"></textarea>
+        <button class="ib acc" onclick="sendChat()" id="send-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></button>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+  </div>
+</div>
+
+<!-- TEXT TO SPEECH -->
+<div id="screen-tts" class="screen">
+  <div class="hdr">
+    <button class="ib" onclick="goBack()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+    <span class="hdr-title">Text to Speech</span>
+  </div>
+  <div class="pscroll">
+    <div class="sec">
+      <label class="lbl">Voice</label>
+      <div id="voice-list">
+        <div class="vc on" data-id="a0e99841-438c-4a64-b679-ae501e7d6091" onclick="pickVoice(this)">
+          <div><div class="vc-n">Barbra</div><div class="vc-d">American · Warm &amp; expressive</div></div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc2)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="vc" data-id="79a125e8-cd45-4c13-8a67-188112f4dd22" onclick="pickVoice(this)">
+          <div><div class="vc-n">British Lady</div><div class="vc-d">British · Clear &amp; refined</div></div>
+        </div>
+        <div class="vc" data-id="820a3788-2b37-4d21-847a-b65d8a68c99a" onclick="pickVoice(this)">
+          <div><div class="vc-n">Classy British</div><div class="vc-d">British · Deep &amp; authoritative</div></div>
+        </div>
+        <div class="vc" data-id="41534e16-2966-4c6b-9670-111411def906" onclick="pickVoice(this)">
+          <div><div class="vc-n">Calm Female</div><div class="vc-d">American · Calm &amp; soothing</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="sec">
+      <label class="lbl">Text</label>
+      <textarea id="tts-text" class="inp" rows="6" placeholder="Enter text to convert to speech..."></textarea>
+      <div id="tts-cnt" style="font-size:12px;color:var(--txt2);margin-top:4px">0 characters</div>
+    </div>
+    <button class="btn" id="tts-btn" onclick="doTts()">Generate Speech</button>
+    <div id="tts-err" class="err" style="margin-top:12px"></div>
+    <div id="tts-res" style="display:none;margin-top:12px;background:var(--s1);border:1px solid var(--bdr);border-radius:16px;padding:16px">
+      <audio id="tts-audio" controls style="width:100%;margin-bottom:12px"></audio>
+      <button class="btn-ghost" onclick="dlAudio()">Download MP3</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROMPT TO IMAGE -->
+<div id="screen-pimg" class="screen">
+  <div class="hdr">
+    <button class="ib" onclick="goBack()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+    <span class="hdr-title">Prompt to Image</span>
+  </div>
+  <div class="pscroll">
+    <div class="sec">
+      <label class="lbl">Scene Prompt</label>
+      <textarea id="pimg-prompt" class="inp" rows="4" placeholder="Describe your scene in vivid detail..."></textarea>
+    </div>
+    <div class="sec">
+      <label class="lbl">Style</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="style-chips">
+        <button class="chip on" data-val="" onclick="pickChip(this,'style-chips')">None</button>
+        <button class="chip" data-val="cinematic film still, anamorphic lens, " onclick="pickChip(this,'style-chips')">Cinematic</button>
+        <button class="chip" data-val="fashion editorial, vogue magazine, " onclick="pickChip(this,'style-chips')">Editorial</button>
+        <button class="chip" data-val="anime illustration, studio ghibli style, " onclick="pickChip(this,'style-chips')">Anime</button>
+        <button class="chip" data-val="dark fantasy, gothic, dramatic lighting, " onclick="pickChip(this,'style-chips')">Dark Fantasy</button>
+        <button class="chip" data-val="soft pastel, dreamy, ethereal mood, " onclick="pickChip(this,'style-chips')">Dreamy</button>
+        <button class="chip" data-val="photorealistic, 8k, ultra detailed, " onclick="pickChip(this,'style-chips')">Hyper Real</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" class="sec">
       <div>
-        <label class="lbl">Ratio</label>
-        <select id="gen-ratio" class="inp">
-          <option value="portrait_16_9">9:16 Phone</option>
-          <option value="portrait_4_3">4:3 Portrait</option>
-          <option value="square_hd">Square</option>
+        <label class="lbl">Aspect Ratio</label>
+        <select id="pimg-ratio" class="inp">
+          <option value="portrait_16_9">9:16 Portrait</option>
+          <option value="square_hd" selected>Square</option>
           <option value="landscape_4_3">Landscape</option>
         </select>
       </div>
       <div>
         <label class="lbl">Model</label>
-        <select id="gen-model" class="inp">
+        <select id="pimg-model" class="inp">
           <option value="fal-ai/flux/dev">FLUX Dev</option>
           <option value="fal-ai/flux-pro">FLUX Pro</option>
           <option value="fal-ai/flux/schnell">FLUX Schnell</option>
         </select>
       </div>
     </div>
-    <div>
+    <div class="sec">
       <label class="lbl">Negative Prompt</label>
-      <input id="gen-neg" class="inp" placeholder="blurry, bad anatomy...">
+      <input id="pimg-neg" class="inp" placeholder="blurry, low quality, watermark...">
     </div>
-    <button class="btn" id="gen-btn" onclick="generateImage()">&#10022; Generate Image <span style="font-size:12px;opacity:.7">~$0.05</span></button>
-    <div id="gen-err" class="err-box" style="display:none"></div>
-    <div id="gen-result" style="display:none">
-      <div class="result-wrap">
-        <img id="gen-img" src="" alt="Generated">
-        <div class="result-actions">
-          <button class="ract" onclick="saveToLib('image',document.getElementById('gen-img').src,document.getElementById('gen-prompt').value)">Save</button>
-          <button class="ract" onclick="dlFile(document.getElementById('gen-img').src,'image.jpg')">Download</button>
-          <button class="ract acc" onclick="go('video',{src:document.getElementById('gen-img').src})">Animate &#127926;</button>
+    <button class="btn" id="pimg-btn" onclick="doImage()">Generate Image</button>
+    <div id="pimg-err" class="err" style="margin-top:12px"></div>
+    <div id="pimg-res" style="display:none;margin-top:12px">
+      <div class="res-wrap">
+        <img id="pimg-out" src="" alt="Generated">
+        <div class="res-actions">
+          <button class="ra" onclick="saveLib('image',document.getElementById('pimg-out').src,document.getElementById('pimg-prompt').value)">Save</button>
+          <button class="ra" onclick="dlFile(document.getElementById('pimg-out').src,'image.jpg')">Download</button>
+          <button class="ra acc" onclick="go('i2v',{src:document.getElementById('pimg-out').src})">Animate</button>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- VIDEO GENERATION -->
-<div id="screen-video" class="screen">
+<!-- PROMPT TO VIDEO -->
+<div id="screen-pvid" class="screen">
   <div class="hdr">
-    <button class="icon-btn" onclick="goBack()">&#8592;</button>
-    <span class="hdr-title">Video Generation</span>
+    <button class="ib" onclick="goBack()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+    <span class="hdr-title">Prompt to Video</span>
   </div>
-  <div class="page-scroll">
-    <div>
-      <label class="lbl">Sample Styles</label>
-      <div class="samples" id="vid-samples">
-        <div class="sample on" onclick="pickSample(this,'https://images.unsplash.com/photo-1686191128892-3b37add4c844?w=400&q=75')"><img src="https://images.unsplash.com/photo-1686191128892-3b37add4c844?w=200&q=70"><div class="sample-lbl">Cinematic</div></div>
-        <div class="sample" onclick="pickSample(this,'https://images.unsplash.com/photo-1704022472896-c7f2423b3ce7?w=400&q=75')"><img src="https://images.unsplash.com/photo-1704022472896-c7f2423b3ce7?w=200&q=70"><div class="sample-lbl">Portrait</div></div>
-        <div class="sample" onclick="pickSample(this,'https://images.unsplash.com/photo-1692978166578-1ab3f7b4cd7c?w=400&q=75')"><img src="https://images.unsplash.com/photo-1692978166578-1ab3f7b4cd7c?w=200&q=70"><div class="sample-lbl">Fashion</div></div>
-        <div class="sample" onclick="pickSample(this,'https://images.unsplash.com/photo-1698047681432-f90fdf4dd0bd?w=400&q=75')"><img src="https://images.unsplash.com/photo-1698047681432-f90fdf4dd0bd?w=200&q=70"><div class="sample-lbl">Artistic</div></div>
-      </div>
+  <div class="pscroll">
+    <div class="sec">
+      <label class="lbl">Video Prompt</label>
+      <textarea id="pvid-prompt" class="inp" rows="5" placeholder="A woman walking through a neon-lit city at night, cinematic, slow motion..."></textarea>
     </div>
-    <div>
-      <label class="lbl">Source Image</label>
-      <input type="file" id="vid-file" accept="image/*" hidden onchange="vidPickFile(this)">
-      <div class="upload-box" id="vid-upload-box" onclick="document.getElementById('vid-file').click()">
-        <img id="vid-preview" style="width:100%;max-height:220px;object-fit:cover;display:none">
-        <div class="upload-placeholder" id="vid-placeholder"><span style="font-size:36px">&#128444;</span><span style="font-size:14px">Tap to upload image</span><span style="font-size:12px;color:var(--txt2)">or select a sample above</span></div>
-      </div>
-    </div>
-    <div>
-      <label class="lbl">Motion Prompt</label>
-      <textarea id="vid-prompt" class="inp" rows="3" placeholder="slowly turns head, hair flowing in wind, soft smile..."></textarea>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" class="sec">
       <div>
         <label class="lbl">Duration</label>
-        <select id="vid-dur" class="inp"><option value="5">5 seconds</option><option value="10">10 seconds</option></select>
+        <select id="pvid-dur" class="inp">
+          <option value="5">5 seconds</option>
+          <option value="10">10 seconds</option>
+        </select>
       </div>
       <div>
         <label class="lbl">Quality</label>
-        <select id="vid-mode" class="inp"><option value="standard">Standard</option><option value="pro">Pro</option></select>
+        <select id="pvid-mode" class="inp">
+          <option value="standard">Standard</option>
+          <option value="pro">Pro</option>
+        </select>
       </div>
     </div>
-    <button class="btn" id="vid-btn" onclick="generateVideo()">&#10022; Animate <span style="font-size:12px;opacity:.7">~$0.28</span></button>
-    <div id="vid-err" class="err-box" style="display:none"></div>
-    <div id="vid-result" style="display:none">
-      <div class="result-wrap">
-        <video id="vid-out" controls loop playsinline></video>
-        <div class="result-actions">
-          <button class="ract" onclick="saveToLib('video',document.getElementById('vid-out').src,document.getElementById('vid-prompt').value)">Save</button>
-          <button class="ract" onclick="dlFile(document.getElementById('vid-out').src,'video.mp4')">Download</button>
+    <button class="btn" id="pvid-btn" onclick="doPVid()">Generate Video</button>
+    <div id="pvid-err" class="err" style="margin-top:12px"></div>
+    <div id="pvid-res" style="display:none;margin-top:12px">
+      <div class="res-wrap">
+        <video id="pvid-out" controls loop playsinline></video>
+        <div class="res-actions">
+          <button class="ra" onclick="saveLib('video',document.getElementById('pvid-out').src,document.getElementById('pvid-prompt').value)">Save</button>
+          <button class="ra" onclick="dlFile(document.getElementById('pvid-out').src,'video.mp4')">Download</button>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- TTS -->
-<div id="screen-tts" class="screen">
+<!-- IMAGE TO VIDEO -->
+<div id="screen-i2v" class="screen">
   <div class="hdr">
-    <button class="icon-btn" onclick="goBack()">&#8592;</button>
-    <span class="hdr-title">Text to Speech</span>
+    <button class="ib" onclick="goBack()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+    <span class="hdr-title">Image to Video</span>
   </div>
-  <div class="page-scroll">
-    <div>
-      <label class="lbl">Voice</label>
-      <div id="voice-list">
-        <div class="vc on" data-id="a0e99841-438c-4a64-b679-ae501e7d6091" onclick="selectVoice(this)"><div><div class="vc-name">Barbra</div><div class="vc-desc">American · Warm &amp; expressive</div></div><span>&#10003;</span></div>
-        <div class="vc" data-id="79a125e8-cd45-4c13-8a67-188112f4dd22" onclick="selectVoice(this)"><div><div class="vc-name">British Lady</div><div class="vc-desc">British · Clear &amp; refined</div></div></div>
-        <div class="vc" data-id="820a3788-2b37-4d21-847a-b65d8a68c99a" onclick="selectVoice(this)"><div><div class="vc-name">Classy British</div><div class="vc-desc">British · Deep &amp; authoritative</div></div></div>
-        <div class="vc" data-id="41534e16-2966-4c6b-9670-111411def906" onclick="selectVoice(this)"><div><div class="vc-name">Calm Female</div><div class="vc-desc">American · Calm &amp; soothing</div></div></div>
+  <div class="pscroll">
+    <div class="sec">
+      <label class="lbl">Sample Images</label>
+      <div class="samples" id="i2v-samples">
+        <div class="sc on" onclick="pickSample(this,'https://images.unsplash.com/photo-1686191128892-3b37add4c844?w=600&q=75','i2v')">
+          <img src="https://images.unsplash.com/photo-1686191128892-3b37add4c844?w=200&q=70" alt="Cinematic">
+          <div class="sc-lbl">Cinematic</div>
+        </div>
+        <div class="sc" onclick="pickSample(this,'https://images.unsplash.com/photo-1704022472896-c7f2423b3ce7?w=600&q=75','i2v')">
+          <img src="https://images.unsplash.com/photo-1704022472896-c7f2423b3ce7?w=200&q=70" alt="Portrait">
+          <div class="sc-lbl">Portrait</div>
+        </div>
+        <div class="sc" onclick="pickSample(this,'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=75','i2v')">
+          <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&q=70" alt="Nature">
+          <div class="sc-lbl">Nature</div>
+        </div>
+        <div class="sc" onclick="pickSample(this,'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&q=75','i2v')">
+          <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=200&q=70" alt="Abstract">
+          <div class="sc-lbl">Abstract</div>
+        </div>
+        <div class="sc" onclick="pickSample(this,'https://images.unsplash.com/photo-1541516160071-4bb0c5af65ba?w=600&q=75','i2v')">
+          <img src="https://images.unsplash.com/photo-1541516160071-4bb0c5af65ba?w=200&q=70" alt="Fashion">
+          <div class="sc-lbl">Fashion</div>
+        </div>
+        <div class="sc" onclick="pickSample(this,'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=75','i2v')">
+          <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=200&q=70" alt="Landscape">
+          <div class="sc-lbl">Landscape</div>
+        </div>
       </div>
     </div>
-    <div>
-      <label class="lbl">Your Text</label>
-      <textarea id="tts-text" class="inp" rows="6" placeholder="Enter text to convert to speech..." oninput="document.getElementById('tts-counter').textContent=this.value.length+' chars'"></textarea>
-      <div id="tts-counter" style="font-size:12px;color:var(--txt2);margin-top:4px">0 chars</div>
+    <div class="sec">
+      <label class="lbl">Source Image</label>
+      <input type="file" id="i2v-file" accept="image/*" hidden onchange="i2vPickFile(this)">
+      <div class="upload-box" onclick="document.getElementById('i2v-file').click()">
+        <img id="i2v-prev" style="width:100%;max-height:220px;object-fit:cover;display:none" alt="">
+        <div class="uph" id="i2v-ph">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <span style="font-size:14px">Tap to upload image</span>
+          <span style="font-size:12px">or select a sample above</span>
+        </div>
+      </div>
     </div>
-    <button class="btn" id="tts-btn" onclick="generateTts()">&#128266; Generate Speech</button>
-    <div id="tts-err" class="err-box" style="display:none"></div>
-    <div id="tts-result" style="display:none;background:var(--s1);border:1px solid var(--bdr);border-radius:16px;padding:16px">
-      <audio id="tts-audio" controls style="width:100%;margin-bottom:12px"></audio>
-      <button class="btn-outline" style="width:100%" onclick="dlAudio()">Download MP3</button>
+    <div class="sec">
+      <label class="lbl">Motion Prompt</label>
+      <textarea id="i2v-prompt" class="inp" rows="3" placeholder="slowly turns head, hair flowing in wind, soft smile..."></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" class="sec">
+      <div><label class="lbl">Duration</label><select id="i2v-dur" class="inp"><option value="5">5 seconds</option><option value="10">10 seconds</option></select></div>
+      <div><label class="lbl">Quality</label><select id="i2v-mode" class="inp"><option value="standard">Standard</option><option value="pro">Pro</option></select></div>
+    </div>
+    <button class="btn" id="i2v-btn" onclick="doI2V()">Animate</button>
+    <div id="i2v-err" class="err" style="margin-top:12px"></div>
+    <div id="i2v-res" style="display:none;margin-top:12px">
+      <div class="res-wrap">
+        <video id="i2v-out" controls loop playsinline></video>
+        <div class="res-actions">
+          <button class="ra" onclick="saveLib('video',document.getElementById('i2v-out').src,document.getElementById('i2v-prompt').value)">Save</button>
+          <button class="ra" onclick="dlFile(document.getElementById('i2v-out').src,'video.mp4')">Download</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MOTION -->
+<div id="screen-motion" class="screen">
+  <div class="hdr">
+    <button class="ib" onclick="goBack()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+    <span class="hdr-title">Motion</span>
+  </div>
+  <div class="pscroll">
+    <div class="sec">
+      <label class="lbl">Upload Image</label>
+      <input type="file" id="mot-file" accept="image/*" hidden onchange="motPickFile(this)">
+      <div class="upload-box" onclick="document.getElementById('mot-file').click()">
+        <img id="mot-prev" style="width:100%;max-height:200px;object-fit:cover;display:none" alt="">
+        <div class="uph" id="mot-ph">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <span style="font-size:14px">Upload your image</span>
+        </div>
+      </div>
+    </div>
+    <div class="sec">
+      <label class="lbl">Motion Preset</label>
+      <div class="mchips" id="mot-chips">
+        <button class="mc on" data-v="dolly zoom in, " onclick="pickMC(this)">Dolly In</button>
+        <button class="mc" data-v="dolly zoom out, " onclick="pickMC(this)">Dolly Out</button>
+        <button class="mc" data-v="pan left smoothly, " onclick="pickMC(this)">Pan Left</button>
+        <button class="mc" data-v="pan right smoothly, " onclick="pickMC(this)">Pan Right</button>
+        <button class="mc" data-v="tilt up slowly, " onclick="pickMC(this)">Tilt Up</button>
+        <button class="mc" data-v="tilt down slowly, " onclick="pickMC(this)">Tilt Down</button>
+        <button class="mc" data-v="orbit around subject, " onclick="pickMC(this)">Orbit</button>
+        <button class="mc" data-v="handheld camera shake, " onclick="pickMC(this)">Handheld</button>
+        <button class="mc" data-v="smooth parallax effect, " onclick="pickMC(this)">Parallax</button>
+      </div>
+    </div>
+    <div class="sec">
+      <label class="lbl">Additional Prompt</label>
+      <textarea id="mot-prompt" class="inp" rows="2" placeholder="slow motion, cinematic..."></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" class="sec">
+      <div><label class="lbl">Duration</label><select id="mot-dur" class="inp"><option value="5">5 seconds</option><option value="10">10 seconds</option></select></div>
+      <div><label class="lbl">Quality</label><select id="mot-mode" class="inp"><option value="standard">Standard</option><option value="pro">Pro</option></select></div>
+    </div>
+    <button class="btn" id="mot-btn" onclick="doMotion()">Apply Motion</button>
+    <div id="mot-err" class="err" style="margin-top:12px"></div>
+    <div id="mot-res" style="display:none;margin-top:12px">
+      <div class="res-wrap">
+        <video id="mot-out" controls loop playsinline></video>
+        <div class="res-actions">
+          <button class="ra" onclick="saveLib('video',document.getElementById('mot-out').src,'motion')">Save</button>
+          <button class="ra" onclick="dlFile(document.getElementById('mot-out').src,'motion.mp4')">Download</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- IMAGE REFERENCE TO IMAGE -->
+<div id="screen-refimg" class="screen">
+  <div class="hdr">
+    <button class="ib" onclick="goBack()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+    <span class="hdr-title">Image Reference</span>
+  </div>
+  <div class="pscroll">
+    <div class="sec">
+      <label class="lbl">Reference Image</label>
+      <input type="file" id="ref-file" accept="image/*" hidden onchange="refPickFile(this)">
+      <div class="upload-box" onclick="document.getElementById('ref-file').click()">
+        <img id="ref-prev" style="width:100%;max-height:200px;object-fit:cover;display:none" alt="">
+        <div class="uph" id="ref-ph">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="7" width="14" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2H5a2 2 0 00-2 2v9a2 2 0 002 2h2"/></svg>
+          <span style="font-size:14px">Upload reference image</span>
+          <span style="font-size:12px">Style or content reference</span>
+        </div>
+      </div>
+    </div>
+    <div class="sec">
+      <label class="lbl">Transform Prompt</label>
+      <textarea id="ref-prompt" class="inp" rows="4" placeholder="Transform into a watercolor painting, warm sunset light..."></textarea>
+    </div>
+    <div class="sec">
+      <label class="lbl">Transformation Strength</label>
+      <div style="display:flex;align-items:center;gap:12px">
+        <input type="range" id="ref-strength" min="0.1" max="1" step="0.05" value="0.75" style="flex:1;accent-color:var(--acc)" oninput="document.getElementById('ref-sv').textContent=this.value">
+        <span id="ref-sv" style="font-size:14px;font-weight:600;color:var(--acc2);min-width:36px">0.75</span>
+      </div>
+    </div>
+    <button class="btn" id="ref-btn" onclick="doRefImg()">Generate</button>
+    <div id="ref-err" class="err" style="margin-top:12px"></div>
+    <div id="ref-res" style="display:none;margin-top:12px">
+      <div class="res-wrap">
+        <img id="ref-out" src="" alt="Generated">
+        <div class="res-actions">
+          <button class="ra" onclick="saveLib('image',document.getElementById('ref-out').src,document.getElementById('ref-prompt').value)">Save</button>
+          <button class="ra" onclick="dlFile(document.getElementById('ref-out').src,'image.jpg')">Download</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -445,21 +665,22 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 <!-- LIBRARY -->
 <div id="screen-library" class="screen">
   <div class="hdr">
-    <img src="logo-main.png" style="height:26px" onerror="this.style.display='none'">
-    <span class="hdr-title" style="margin-left:4px">Library</span>
-    <span id="lib-count" style="font-size:13px;color:var(--txt2)">0 items</span>
+    <img src="logo-main.png" style="height:26px;width:auto" onerror="this.style.display='none'" alt="">
+    <span class="hdr-title" style="margin-left:2px">Library</span>
+    <span id="lib-count" style="font-size:13px;color:var(--txt2);flex-shrink:0">0 items</span>
   </div>
-  <div class="page-scroll">
-    <div style="display:flex;gap:8px;margin-bottom:16px">
-      <button class="chip on" data-val="all" onclick="libFilter(this)" id="lib-f-all">All</button>
+  <div class="pscroll">
+    <div style="display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:2px">
+      <button class="chip on" data-val="all" onclick="libFilter(this)">All</button>
       <button class="chip" data-val="image" onclick="libFilter(this)">Images</button>
       <button class="chip" data-val="video" onclick="libFilter(this)">Videos</button>
+      <button class="chip" data-val="audio" onclick="libFilter(this)">Audio</button>
     </div>
-    <div class="gal" id="gallery"></div>
+    <div class="gal" id="lib-gal"></div>
     <div id="lib-empty" style="text-align:center;padding:60px 20px;color:var(--txt2)">
-      <div style="font-size:48px;margin-bottom:12px">&#127912;</div>
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="1.2" stroke-linecap="round" style="margin-bottom:16px"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
       <div style="font-size:16px;font-weight:600;color:var(--txt);margin-bottom:6px">Nothing here yet</div>
-      <div style="font-size:14px">Generate images or videos to see them here</div>
+      <div style="font-size:14px">Generate content and save it here</div>
     </div>
   </div>
 </div>
@@ -467,113 +688,303 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 <!-- PROFILE -->
 <div id="screen-profile" class="screen">
   <div class="hdr">
-    <img src="logo-main.png" style="height:26px" onerror="this.style.display='none'">
-    <span class="hdr-title" style="margin-left:4px">Profile</span>
+    <img src="logo-main.png" style="height:26px;width:auto" onerror="this.style.display='none'" alt="">
+    <span class="hdr-title" style="margin-left:2px">Profile</span>
   </div>
-  <div class="page-scroll">
-    <!-- User card -->
-    <div style="text-align:center;padding:24px 16px;background:var(--s1);border:1px solid var(--bdr);border-radius:20px;margin-bottom:16px">
-      <div id="prof-avatar" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#7c6dff,#b09eff);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#fff;border:3px solid rgba(124,109,255,.3)"></div>
+  <div class="pscroll">
+    <!-- User Card -->
+    <div style="text-align:center;padding:28px 16px;background:var(--s1);border:1px solid var(--bdr);border-radius:20px;margin-bottom:16px">
+      <div id="prof-av" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#7c6dff,#b09eff);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#fff;border:3px solid rgba(124,109,255,.3);overflow:hidden">
+        <img id="prof-av-img" style="width:100%;height:100%;object-fit:cover;display:none" alt="">
+        <span id="prof-av-txt"></span>
+      </div>
       <div id="prof-name" style="font-weight:700;font-size:18px;font-family:'DM Serif Display',serif"></div>
-      <div style="font-size:13px;color:var(--txt2);margin-top:4px">Welcome back</div>
+      <div id="prof-email" style="font-size:13px;color:var(--txt2);margin-top:4px"></div>
+      <div id="prof-id" style="font-size:11px;color:var(--txt3);margin-top:4px"></div>
     </div>
-    <!-- Theme -->
-    <div style="background:var(--s1);border:1px solid var(--bdr);border-radius:16px;margin-bottom:12px;overflow:hidden">
-      <div class="prof-row" onclick="toggleTheme()">
-        <div style="display:flex;align-items:center;gap:12px"><span style="font-size:20px" id="prof-theme-icon">&#127769;</span><span style="font-weight:500">Theme</span></div>
-        <div class="tgl" id="prof-tgl"><div class="tgl-knob"></div></div>
+
+    <!-- API Keys -->
+    <div class="psec">
+      <div class="psec-h">API Keys</div>
+      <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+        <div>
+          <label class="lbl">Anthropic Key</label>
+          <input class="inp" id="key-ant" type="password" placeholder="sk-ant-api03-..." autocomplete="off">
+        </div>
+        <div>
+          <label class="lbl">FAL.ai Key</label>
+          <input class="inp" id="key-fal" type="password" placeholder="xxxxxxxx-xxxx-..." autocomplete="off">
+        </div>
+        <div>
+          <label class="lbl">Cartesia Key</label>
+          <input class="inp" id="key-car" type="password" placeholder="sk_car_..." autocomplete="off">
+        </div>
+        <button class="btn" style="margin-top:4px" onclick="saveKeys()">Save Keys</button>
+        <div id="keys-saved" style="text-align:center;font-size:13px;color:var(--grn);display:none">Keys saved</div>
       </div>
     </div>
-    <!-- Tools -->
-    <div style="background:var(--s1);border:1px solid var(--bdr);border-radius:16px;margin-bottom:12px;overflow:hidden">
-      <div style="padding:10px 16px;font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid var(--bdr)">Tools</div>
-      <div class="prof-row" onclick="go('generate')"><div style="display:flex;align-items:center;gap:12px"><span>&#127912;</span><span>Image Generation</span></div><span style="color:var(--txt2)">&#8599;</span></div>
-      <div class="prof-row" onclick="go('video')" style="border-top:1px solid var(--bdr)"><div style="display:flex;align-items:center;gap:12px"><span>&#127916;</span><span>Video Generation</span></div><span style="color:var(--txt2)">&#8599;</span></div>
-      <div class="prof-row" onclick="go('tts')" style="border-top:1px solid var(--bdr)"><div style="display:flex;align-items:center;gap:12px"><span>&#128266;</span><span>Text to Speech</span></div><span style="color:var(--txt2)">&#8599;</span></div>
-      <div class="prof-row" onclick="go('library')" style="border-top:1px solid var(--bdr)"><div style="display:flex;align-items:center;gap:12px"><span>&#128218;</span><span>Library</span></div><span style="color:var(--txt2)">&#8599;</span></div>
+
+    <!-- Contact -->
+    <div class="psec">
+      <div class="psec-h">Contact Us</div>
+      <div class="pr" onclick="copyText('support@subtleandsoul.com')">
+        <div class="pr-l"><div class="pr-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>support@subtleandsoul.com</div>
+        <div class="pr-arr"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></div>
+      </div>
+      <div class="pr" onclick="openUrl('https://discord.gg/')">
+        <div class="pr-l"><div class="pr-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg></div>Discord</div>
+        <div class="pr-arr"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></div>
+      </div>
+      <div class="pr" onclick="openUrl('https://x.com/')">
+        <div class="pr-l"><div class="pr-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></div>Follow on X</div>
+        <div class="pr-arr"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></div>
+      </div>
+      <div class="pr" onclick="openUrl('https://github.com/')">
+        <div class="pr-l"><div class="pr-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg></div>GitHub</div>
+        <div class="pr-arr"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></div>
+      </div>
     </div>
-    <!-- Sign out -->
-    <button onclick="signOut()" style="width:100%;padding:15px;background:rgba(255,85,102,.08);border:1px solid rgba(255,85,102,.2);border-radius:14px;color:var(--red);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit">Sign Out</button>
+
+    <!-- Document -->
+    <div class="psec">
+      <div class="psec-h">Document</div>
+      <div class="pr" onclick="openUrl('#')">
+        <div class="pr-l"><div class="pr-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div>User Guide</div>
+        <div class="pr-arr"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></div>
+      </div>
+      <div class="pr" onclick="openUrl('#')">
+        <div class="pr-l"><div class="pr-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>Changelog</div>
+        <div class="pr-arr"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></div>
+      </div>
+    </div>
+
+    <!-- Legal -->
+    <div class="psec">
+      <div class="psec-h">Legal</div>
+      <div class="pr" onclick="openUrl('#')">
+        <div class="pr-l"><div class="pr-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>Terms of Service</div>
+        <div class="pr-arr"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></div>
+      </div>
+      <div class="pr" onclick="openUrl('#')">
+        <div class="pr-l"><div class="pr-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>Privacy Policy</div>
+        <div class="pr-arr"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></div>
+      </div>
+      <div class="pr" onclick="openUrl('#')">
+        <div class="pr-l"><div class="pr-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>DMCA</div>
+        <div class="pr-arr"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></div>
+      </div>
+    </div>
+
+    <!-- Appearance -->
+    <div class="psec">
+      <div class="psec-h">Appearance</div>
+      <div class="pr" onclick="toggleTheme()" style="cursor:pointer">
+        <div class="pr-l"><div class="pr-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg></div>Dark Mode</div>
+        <button class="tgl on" id="prof-tgl" onclick="event.stopPropagation();toggleTheme()"><div class="tgl-k"></div></button>
+      </div>
+    </div>
+
+    <button class="btn-danger" onclick="signOut()">Sign Out</button>
   </div>
 </div>
 
 <!-- BOTTOM NAV -->
 <nav id="bnav">
   <button class="nb on" id="nb-home" onclick="go('home')">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home
+    <svg width="22" height="22" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+      <path fill="none" d="M0 0h24v24H0z"/>
+      <g fill-rule="evenodd">
+        <path fill="currentColor" opacity=".7" d="M13.6 4.2h-3.2L3 11v12.2h6V15h6v8.2h6V11z"/>
+        <path fill="currentColor" opacity=".9" d="M12 4.2h-1.6L3 11v12.2h6V15h3z"/>
+        <path fill="currentColor" opacity=".5" d="M13.1 4.7 3 15.8V12l9.5-8.4z"/>
+        <path fill="currentColor" d="m12 .9-12 12 1.8 1.8L12 4.5l10.2 10.2 1.8-1.8z"/>
+      </g>
+    </svg>
   </button>
   <button class="nb" id="nb-chat" onclick="go('chat')">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>AI Chat
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M11.999 0c-2.25 0-4.5.06-6.6.21a5.57 5.57 0 00-5.19 5.1c-.24 3.21-.27 6.39-.06 9.6a5.644 5.644 0 005.7 5.19h3.15v-3.9h-3.15c-.93.03-1.74-.63-1.83-1.56-.18-3-.15-6 .06-9 .06-.84.72-1.47 1.56-1.53 2.04-.15 4.2-.21 6.36-.21s4.32.09 6.36.18c.81.06 1.5.69 1.56 1.53.24 3 .24 6 .06 9-.12.93-.9 1.62-1.83 1.59h-3.15l-6 3.9V24l6-3.9h3.15c2.97.03 5.46-2.25 5.7-5.19.21-3.18.18-6.39-.03-9.57a5.57 5.57 0 00-5.19-5.1c-2.13-.18-4.38-.24-6.63-.24zm-5.04 8.76c-.36 0-.66.3-.66.66v2.34c0 .33.18.63.48.78 1.62.78 3.42 1.2 5.22 1.26 1.8-.06 3.6-.48 5.22-1.26.3-.15.48-.45.48-.78V9.42c0-.09-.03-.15-.09-.21a.648.648 0 00-.87-.36c-1.5.66-3.12 1.02-4.77 1.05-1.65-.03-3.27-.42-4.77-1.08a.566.566 0 00-.24-.06z"/>
+    </svg>
   </button>
   <button class="nb" id="nb-library" onclick="go('library')">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Library
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
+      <rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+    </svg>
   </button>
   <button class="nb" id="nb-profile" onclick="go('profile')">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Profile
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+    </svg>
   </button>
 </nav>
 
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js"></script>
 <script>
-// ─── CONFIG ──────────────────────────────────────────────
-const ANTHROPIC_KEY = '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';
-const FAL_KEY       = 'afbf97ae-38cb-4a1d-89ef-87317255a7b0:257a4eed59023ec0eef588c2e9560ac0';
-const CARTESIA_KEY  = 'sk_car_KHmoL6vNoaxujoHz489Qff';
-const FAL_HDR       = { 'Authorization': `Key ${FAL_KEY}`, 'Content-Type': 'application/json' };
+/*
+ SUPABASE SETUP SQL — run in your Supabase dashboard:
 
-// ─── STATE ───────────────────────────────────────────────
-let currentScreen = 'signin';
-let prevScreen    = 'home';
-let userName      = '';
-let chatHistory   = [];
-let sessions      = JSON.parse(localStorage.getItem('ss_sessions') || '[]');
-let activeSession = null;
-let mediaBase64   = null;
-let mediaType     = null;
-let vidSourceUrl  = null;
+ create table chat_sessions (
+   id text primary key default gen_random_uuid()::text,
+   user_id text not null,
+   title text not null default 'New Chat',
+   created_at timestamptz default now()
+ );
+ create table chat_messages (
+   id text primary key default gen_random_uuid()::text,
+   session_id text references chat_sessions(id) on delete cascade,
+   role text not null,
+   content text not null,
+   created_at timestamptz default now()
+ );
+ create table library_items (
+   id text primary key,
+   user_id text not null,
+   type text not null,
+   url text not null,
+   prompt text,
+   created_at timestamptz default now()
+ );
+*/
+
+// ─── CONSTANTS ─────────────────────────────────────────
+const CLERK_KEY = 'pk_test_ZGl2ZXJzZS1kb2Jlcm1hbi02MC5jbGVyay5hY2NvdW50cy5kZXYk';
+const SB_URL    = 'https://qmwlphribvncdtgzbixt.supabase.co';
+const SB_KEY    = 'sb_publishable_mFGaq4PY8uyTNQeebS1aCA_a_8zwW38';
+const FAL_Q     = 'https://queue.fal.run/';
+
+// ─── STATE ─────────────────────────────────────────────
+let clerk, sb, currentUser;
+let currentScreen = 'signin', prevScreen = 'home';
+let sessions = [], activeSession = null, chatHistory = [];
+let libItems = [], libF = 'all';
+let heroIdx = 0;
+let ttsBlob = null, mediaBase64 = null, mediaType = null;
+let i2vSrc = null, motSrc = null, refSrc = null;
 let selectedVoice = 'a0e99841-438c-4a64-b679-ae501e7d6091';
-let libItems      = JSON.parse(localStorage.getItem('ss_library') || '[]');
-let libFilter_    = 'all';
-let heroIdx       = 0;
-let heroTotal     = 4;
-let ttsAudioBlob  = null;
-let isStreaming   = false;
+let motionPreset = 'dolly zoom in, ';
 
-// ─── INIT ────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
-  const saved = localStorage.getItem('ss_user');
-  if (saved) { userName = saved; initApp(); }
+function getKeys() {
+  return {
+    ant: localStorage.getItem('key_ant') || '',
+    fal: localStorage.getItem('key_fal') || '',
+    car: localStorage.getItem('key_car') || ''
+  };
+}
 
-  // Hero dots
-  const dots = document.getElementById('hero-dots');
-  for (let i = 0; i < heroTotal; i++) {
-    const d = document.createElement('div');
-    d.className = 'hdot' + (i === 0 ? ' on' : '');
-    d.onclick = () => setHeroSlide(i);
-    dots.appendChild(d);
-  }
-  setInterval(() => setHeroSlide((heroIdx + 1) % heroTotal), 4000);
-
+// ─── INIT ───────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async () => {
   // Theme
   const t = localStorage.getItem('ss_theme') || 'dark';
   applyTheme(t);
+
+  // Hero slides
+  const slides = [
+    'https://images.unsplash.com/photo-1686191128892-3b37add4c844?w=700&q=75',
+    'https://images.unsplash.com/photo-1704022472896-c7f2423b3ce7?w=700&q=75',
+    'https://images.unsplash.com/photo-1692978166578-1ab3f7b4cd7c?w=700&q=75',
+    'https://images.unsplash.com/photo-1698047681432-f90fdf4dd0bd?w=700&q=75'
+  ];
+  slides.forEach((s,i) => {
+    document.getElementById('hs'+i).style.backgroundImage = `url('${s}')`;
+  });
+  const dotsEl = document.getElementById('hero-dots');
+  slides.forEach((_,i) => {
+    const d = document.createElement('div');
+    d.className = 'hdot' + (i===0?' on':'');
+    d.onclick = () => setSlide(i);
+    dotsEl.appendChild(d);
+  });
+  setInterval(() => setSlide((heroIdx+1)%slides.length), 4500);
+
+  // Supabase
+  sb = window.supabase.createClient(SB_URL, SB_KEY);
+
+  // Clerk
+  try {
+    clerk = new Clerk(CLERK_KEY);
+    await clerk.load();
+    if (clerk.user) {
+      currentUser = clerk.user;
+      initApp();
+    } else {
+      show('signin');
+      mountClerk();
+    }
+    clerk.addListener(({ user }) => {
+      if (user && currentScreen === 'signin') {
+        currentUser = user;
+        initApp();
+      }
+    });
+  } catch(e) {
+    // Clerk load failed — show fallback
+    show('signin');
+    document.getElementById('clerk-container').innerHTML = `<div style="background:var(--s1);border:1px solid var(--bdr);border-radius:16px;padding:20px;text-align:center;color:var(--txt2);font-size:14px">Auth unavailable.<br>Check your network.</div>`;
+  }
+
+  // TTS counter
+  document.getElementById('tts-text').addEventListener('input', function() {
+    document.getElementById('tts-cnt').textContent = this.value.length + ' characters';
+  });
 });
 
+function mountClerk() {
+  const isDark = document.documentElement.classList.contains('dark');
+  clerk.mountSignIn(document.getElementById('clerk-container'), {
+    appearance: {
+      variables: {
+        colorPrimary: '#7c6dff',
+        colorBackground: isDark ? '#111120' : '#ffffff',
+        colorText: isDark ? '#eeeeff' : '#0a0a1a',
+        colorTextSecondary: isDark ? '#8888aa' : '#5a5a7a',
+        colorInputBackground: isDark ? '#181828' : '#f2f2f8',
+        colorInputText: isDark ? '#eeeeff' : '#0a0a1a',
+        borderRadius: '12px',
+        fontFamily: "'DM Sans', system-ui, sans-serif",
+      }
+    }
+  });
+}
+
 function initApp() {
-  document.getElementById('home-avatar').textContent = userName[0]?.toUpperCase() || '?';
-  document.getElementById('prof-name').textContent = userName;
-  document.getElementById('prof-avatar').textContent = userName[0]?.toUpperCase() || '?';
+  const u = currentUser;
+  // Avatar
+  const img = u.imageUrl;
+  const initials = (u.firstName?.[0] || u.emailAddresses?.[0]?.emailAddress?.[0] || '?').toUpperCase();
+  ['home-av-img','prof-av-img'].forEach(id => {
+    const el = document.getElementById(id);
+    if (img) { el.src = img; el.style.display = 'block'; }
+    else el.style.display = 'none';
+  });
+  ['home-av-txt','prof-av-txt'].forEach(id => document.getElementById(id).textContent = img ? '' : initials);
+
+  // Profile info
+  document.getElementById('prof-name').textContent = u.fullName || u.firstName || '';
+  document.getElementById('prof-email').textContent = u.emailAddresses?.[0]?.emailAddress || '';
+  document.getElementById('prof-id').textContent = 'ID · ' + u.id.slice(-8);
+
+  // Load saved keys into inputs
+  const k = getKeys();
+  document.getElementById('key-ant').value = k.ant ? '•'.repeat(12) : '';
+  document.getElementById('key-fal').value = k.fal ? '•'.repeat(12) : '';
+  document.getElementById('key-car').value = k.car ? '•'.repeat(12) : '';
+
   go('home');
 }
 
-// ─── NAVIGATION ──────────────────────────────────────────
-const INNER = ['chat','generate','video','tts'];
-const NAV_SCREENS = ['home','chat','library','profile'];
+// ─── NAVIGATION ─────────────────────────────────────────
+const INNER_SCREENS = ['chat','tts','pimg','pvid','i2v','motion','refimg'];
+const NAV_SCREENS   = ['home','chat','library','profile'];
 
 function go(screen, params = {}) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
-  document.getElementById('screen-' + screen)?.classList.add('on');
+  const el = document.getElementById('screen-' + screen);
+  if (el) el.classList.add('on');
 
-  const isInner = INNER.includes(screen);
+  const isInner = INNER_SCREENS.includes(screen);
   document.getElementById('bnav').classList.toggle('hide', isInner);
 
   document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
@@ -583,533 +994,604 @@ function go(screen, params = {}) {
   if (screen !== 'signin') prevScreen = currentScreen;
   currentScreen = screen;
 
-  if (screen === 'library') renderLibrary();
-  if (screen === 'chat') renderSessions();
-  if (screen === 'video' && params.src) {
-    setVidSource(params.src);
+  if (screen === 'library') { loadLibrary(); }
+  if (screen === 'chat')    { loadSessions(); }
+  if (screen === 'i2v' && params.src) {
+    i2vSrc = params.src;
+    const prev = document.getElementById('i2v-prev');
+    prev.src = params.src; prev.style.display = 'block';
+    document.getElementById('i2v-ph').style.display = 'none';
+    document.querySelectorAll('#i2v-samples .sc').forEach(s => s.classList.remove('on'));
   }
+}
+
+function show(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  document.getElementById('screen-' + screen)?.classList.add('on');
+  currentScreen = screen;
 }
 
 function goBack() { go(prevScreen || 'home'); }
 
-// ─── SIGN IN / OUT ───────────────────────────────────────
-function signIn() {
-  const n = document.getElementById('si-name').value.trim();
-  if (!n) { alert('Enter your name'); return; }
-  userName = n;
-  localStorage.setItem('ss_user', n);
-  initApp();
-}
-
-function signOut() {
-  localStorage.removeItem('ss_user');
-  userName = '';
-  go('signin');
-}
-
-// ─── THEME ───────────────────────────────────────────────
-function toggleTheme() {
-  const cur = document.documentElement.classList.contains('light') ? 'light' : 'dark';
-  applyTheme(cur === 'dark' ? 'light' : 'dark');
-}
-
+// ─── THEME ──────────────────────────────────────────────
 function applyTheme(t) {
-  document.documentElement.classList.toggle('light', t === 'light');
-  localStorage.setItem('ss_theme', t);
-  const on = t === 'light';
-  ['theme-tgl','prof-tgl'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.toggle('on', on);
-  });
-  const ti = document.getElementById('prof-theme-icon');
-  if (ti) ti.textContent = on ? '☀️' : '🌙';
+  document.documentElement.className = t;
+  const tgl = document.getElementById('prof-tgl');
+  if (tgl) tgl.classList.toggle('on', t === 'dark');
+}
+function toggleTheme() {
+  const isDark = document.documentElement.classList.contains('dark');
+  const next = isDark ? 'light' : 'dark';
+  applyTheme(next);
+  localStorage.setItem('ss_theme', next);
 }
 
-// ─── HERO SLIDER ─────────────────────────────────────────
-function setHeroSlide(i) {
-  heroIdx = i;
-  document.querySelectorAll('.hero-slide').forEach((s,j) => s.classList.toggle('on', j===i));
+// ─── HERO ───────────────────────────────────────────────
+function setSlide(i) {
+  document.querySelectorAll('.hs').forEach((s,j) => s.classList.toggle('on', j===i));
   document.querySelectorAll('.hdot').forEach((d,j) => d.classList.toggle('on', j===i));
+  heroIdx = i;
 }
 
-// ─── CHAT ────────────────────────────────────────────────
+// ─── AUTH ───────────────────────────────────────────────
+async function signOut() {
+  await clerk.signOut();
+  currentUser = null;
+  sessions = []; chatHistory = []; libItems = [];
+  show('signin');
+  setTimeout(mountClerk, 200);
+}
+
+// ─── PROFILE / KEYS ─────────────────────────────────────
+function saveKeys() {
+  const ant = document.getElementById('key-ant').value.trim();
+  const fal = document.getElementById('key-fal').value.trim();
+  const car = document.getElementById('key-car').value.trim();
+  if (ant && !ant.startsWith('•')) localStorage.setItem('key_ant', ant);
+  if (fal && !fal.startsWith('•')) localStorage.setItem('key_fal', fal);
+  if (car && !car.startsWith('•')) localStorage.setItem('key_car', car);
+  const saved = document.getElementById('keys-saved');
+  saved.style.display = 'block';
+  setTimeout(() => saved.style.display = 'none', 2500);
+}
+
+function copyText(t) {
+  navigator.clipboard.writeText(t).catch(() => {});
+}
+function openUrl(u) {
+  if (u !== '#') window.open(u, '_blank');
+}
+
+// ─── SIDEBAR ────────────────────────────────────────────
+function openSidebar()  { document.getElementById('sidebar').classList.add('on'); document.getElementById('sovl').classList.add('on'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('on'); document.getElementById('sovl').classList.remove('on'); }
+
+// ─── CHAT ───────────────────────────────────────────────
+async function loadSessions() {
+  if (!currentUser) return;
+  const { data } = await sb.from('chat_sessions')
+    .select('*').eq('user_id', currentUser.id)
+    .order('created_at', { ascending: false });
+  sessions = data || [];
+  renderSessions();
+  if (!activeSession && sessions.length) loadSession(sessions[0].id);
+  else if (!activeSession) newChat();
+}
+
 function renderSessions() {
   const list = document.getElementById('session-list');
-  list.innerHTML = '';
-  sessions.slice().reverse().forEach(s => {
-    const el = document.createElement('div');
-    el.className = 'sbar-session' + (s.id === activeSession?.id ? ' on' : '');
-    el.innerHTML = `
-      <span class="sbar-title" style="font-size:13px;color:var(--txt);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.title || 'New conversation'}</span>
-      <button onclick="deleteSession('${s.id}',event)" style="background:none;border:none;color:var(--txt2);cursor:pointer;font-size:14px;padding:2px 4px">&#128465;</button>
-    `;
-    el.addEventListener('click', () => { loadSession(s); closeSidebar(); });
-    list.appendChild(el);
-  });
-}
-
-function openSidebar() {
-  renderSessions();
-  document.getElementById('sidebar').classList.add('on');
-  document.getElementById('sovl').classList.add('on');
-}
-function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('on');
-  document.getElementById('sovl').classList.remove('on');
-}
-
-function newChat() {
-  activeSession = null;
-  chatHistory = [];
-  document.getElementById('chat-msgs').innerHTML = '';
-  document.getElementById('chat-title').textContent = 'AI Chat';
-  closeSidebar();
-  renderWelcome();
-}
-
-function renderWelcome() {
-  const msgs = document.getElementById('chat-msgs');
-  msgs.innerHTML = `
-    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:40px 16px;text-align:center;color:var(--txt2)">
-      <img src="logo-main.png" style="height:52px;opacity:.8" onerror="this.style.display='none'">
-      <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--txt)">How can I help?</div>
-      <div style="font-size:14px">Ask me to write an image prompt, brainstorm creative ideas, or anything else.</div>
-      ${['Write a cinematic image prompt for me','Help me come up with a video concept','What AI art style should I try today?'].map(s=>`<button onclick="sendChatMsg('${s}')" style="background:var(--s2);border:1px solid var(--bdr);border-radius:10px;padding:10px 16px;color:var(--txt);font-size:13px;cursor:pointer;width:100%;max-width:300px;font-family:inherit">${s}</button>`).join('')}
-    </div>
-  `;
-}
-
-function loadSession(s) {
-  activeSession = s;
-  chatHistory = s.messages || [];
-  document.getElementById('chat-title').textContent = s.title || 'Chat';
-  renderMessages();
-}
-
-function deleteSession(id, e) {
-  e.stopPropagation();
-  sessions = sessions.filter(s => s.id !== id);
-  localStorage.setItem('ss_sessions', JSON.stringify(sessions));
-  if (activeSession?.id === id) newChat();
-  renderSessions();
-}
-
-function ensureSession(firstMsg) {
-  if (!activeSession) {
-    activeSession = { id: Date.now().toString(), title: firstMsg.slice(0,50), messages: [], created: Date.now() };
-    sessions.push(activeSession);
+  if (!sessions.length) {
+    list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--txt2);font-size:13px">No chats yet</div>';
+    return;
   }
+  list.innerHTML = sessions.map(s => `
+    <div class="si${activeSession===s.id?' on':''}" onclick="loadSession('${s.id}')">
+      <div style="flex:1;min-width:0">
+        <div class="si-title">${esc(s.title)}</div>
+        <div style="font-size:11px;color:var(--txt2);margin-top:2px">${relTime(s.created_at)}</div>
+      </div>
+      <button class="si-del" onclick="event.stopPropagation();deleteSession('${s.id}')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6M9 6V4h6v2"/></svg>
+      </button>
+    </div>
+  `).join('');
 }
 
-function saveSession() {
-  if (!activeSession) return;
-  activeSession.messages = chatHistory;
-  const idx = sessions.findIndex(s => s.id === activeSession.id);
-  if (idx >= 0) sessions[idx] = activeSession;
-  localStorage.setItem('ss_sessions', JSON.stringify(sessions));
+async function loadSession(id) {
+  activeSession = id;
+  const s = sessions.find(x => x.id === id);
+  document.getElementById('chat-title').textContent = s?.title || 'AI Chat';
+  const { data } = await sb.from('chat_messages')
+    .select('*').eq('session_id', id)
+    .order('created_at', { ascending: true });
+  chatHistory = (data || []).map(m => ({ role: m.role, content: m.content }));
+  const msgsEl = document.getElementById('chat-msgs');
+  msgsEl.innerHTML = '';
+  chatHistory.forEach(m => appendMsg(m.role, m.content));
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+  renderSessions();
+  closeSidebar();
 }
 
-function chatKeydown(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); } }
-function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 140) + 'px'; }
+async function newChat() {
+  if (!currentUser) return;
+  const { data } = await sb.from('chat_sessions').insert({
+    user_id: currentUser.id, title: 'New Chat'
+  }).select().single();
+  if (data) {
+    sessions.unshift(data);
+    activeSession = data.id;
+    chatHistory = [];
+    document.getElementById('chat-msgs').innerHTML = '';
+    document.getElementById('chat-title').textContent = 'New Chat';
+    renderSessions();
+  }
+  closeSidebar();
+}
 
-function attachMedia(input) {
-  const file = input.files[0]; if (!file) return;
+async function deleteSession(id) {
+  await sb.from('chat_sessions').delete().eq('id', id);
+  sessions = sessions.filter(s => s.id !== id);
+  if (activeSession === id) {
+    activeSession = null;
+    chatHistory = [];
+    document.getElementById('chat-msgs').innerHTML = '';
+    document.getElementById('chat-title').textContent = 'AI Chat';
+    if (sessions.length) loadSession(sessions[0].id);
+  }
+  renderSessions();
+}
+
+function appendMsg(role, content, isTyping = false) {
+  const msgs = document.getElementById('chat-msgs');
+  const d = document.createElement('div');
+  d.className = 'msg ' + (role === 'user' ? 'msg-u' : 'msg-a');
+  if (isTyping) {
+    d.id = 'typing-msg';
+    d.innerHTML = '<span class="td"></span><span class="td"></span><span class="td"></span>';
+  } else {
+    d.textContent = content;
+  }
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+  return d;
+}
+
+function chatKey(e) { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); } }
+function autoH(t) { t.style.height='auto'; t.style.height=Math.min(t.scrollHeight,120)+'px'; }
+
+async function attachMedia(inp) {
+  const file = inp.files[0]; if (!file) return;
   const reader = new FileReader();
-  reader.onload = () => {
-    const b64 = reader.result.split(',')[1];
-    mediaBase64 = b64;
+  reader.onload = e => {
+    const [header, data] = e.target.result.split(',');
+    mediaBase64 = data;
     mediaType = file.type;
-    document.getElementById('chat-media-img').src = reader.result;
-    const prev = document.getElementById('chat-media-preview');
+    const prev = document.getElementById('chat-media-prev');
+    document.getElementById('chat-media-img').src = e.target.result;
     prev.style.display = 'flex';
   };
   reader.readAsDataURL(file);
 }
-
 function clearMedia() {
   mediaBase64 = null; mediaType = null;
-  document.getElementById('chat-media-img').src = '';
-  document.getElementById('chat-media-preview').style.display = 'none';
+  document.getElementById('chat-media-prev').style.display = 'none';
   document.getElementById('chat-file').value = '';
 }
 
-function sendChatMsg(text) {
-  document.getElementById('chat-input').value = text;
-  sendChat();
-}
-
 async function sendChat() {
-  const input = document.getElementById('chat-input');
-  const text = input.value.trim();
+  const inp = document.getElementById('chat-inp');
+  const text = inp.value.trim();
   if (!text && !mediaBase64) return;
-  if (isStreaming) return;
+  const keys = getKeys();
+  if (!keys.ant) { alert('Add your Anthropic API key in Profile > API Keys'); return; }
+  if (!activeSession) await newChat();
 
-  ensureSession(text || 'Image message');
+  inp.value = ''; autoH(inp);
 
-  const userContent = [];
-  if (mediaBase64) userContent.push({ type: 'image', source: { type: 'base64', media_type: mediaType, data: mediaBase64 } });
-  if (text) userContent.push({ type: 'text', text });
+  // Build content
+  let userContent = text;
+  let msgContent;
+  if (mediaBase64) {
+    msgContent = [
+      { type: 'image', source: { type: 'base64', media_type: mediaType, data: mediaBase64 } },
+      ...(text ? [{ type: 'text', text }] : [])
+    ];
+    userContent = text || '[image]';
+    clearMedia();
+  }
 
-  const userMsg = { role: 'user', content: userContent.length === 1 && !mediaBase64 ? text : userContent };
-  chatHistory.push(userMsg);
+  appendMsg('user', userContent);
+  chatHistory.push({ role: 'user', content: msgContent || text });
 
-  input.value = ''; input.style.height = 'auto';
-  clearMedia();
-  renderMessages();
-  isStreaming = true;
+  // Save user message
+  await sb.from('chat_messages').insert({
+    session_id: activeSession, role: 'user', content: userContent
+  });
 
-  const aiMsg = { role: 'assistant', content: '' };
-  chatHistory.push(aiMsg);
-  renderMessages();
+  // Update session title from first message
+  if (chatHistory.length === 1) {
+    const title = userContent.slice(0, 40) + (userContent.length > 40 ? '...' : '');
+    await sb.from('chat_sessions').update({ title }).eq('id', activeSession);
+    document.getElementById('chat-title').textContent = title;
+    const s = sessions.find(x => x.id === activeSession);
+    if (s) s.title = title;
+    renderSessions();
+  }
+
+  // Typing indicator
+  const typingEl = appendMsg('assistant', '', true);
 
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
-        'x-api-key': ANTHROPIC_KEY,
+        'x-api-key': keys.ant,
         'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-allow-browser': 'true',
         'content-type': 'application/json',
+        'anthropic-dangerous-direct-browser-access': 'true'
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 2048,
-        stream: true,
-        system: 'You are the creative AI assistant for Subtle & Soul, an AI creative studio. Help users write detailed image and video prompts, brainstorm creative ideas, and discuss art and design. Be concise, creative, and helpful. When writing image prompts be very specific about lighting, mood, composition, style, and technical aspects.',
-        messages: chatHistory.slice(0,-1),
-      }),
+        model: 'claude-opus-4-6',
+        max_tokens: 1024,
+        messages: chatHistory
+      })
     });
-
-    const reader = resp.body.getReader();
-    const dec = new TextDecoder();
-    let buf = '';
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buf += dec.decode(value, { stream: true });
-      const lines = buf.split('\n');
-      buf = lines.pop();
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        const data = line.slice(6).trim();
-        if (data === '[DONE]') continue;
-        try {
-          const ev = JSON.parse(data);
-          if (ev.type === 'content_block_delta' && ev.delta?.type === 'text_delta') {
-            aiMsg.content += ev.delta.text;
-            chatHistory[chatHistory.length - 1] = aiMsg;
-            renderLastAiMsg();
-          }
-        } catch {}
-      }
-    }
-  } catch (err) {
-    aiMsg.content = `Error: ${err.message}. If this is a CORS error, the Anthropic API doesn't allow browser calls directly. You'll need to deploy with a serverless backend.`;
-    chatHistory[chatHistory.length - 1] = aiMsg;
-    renderLastAiMsg();
-  }
-
-  isStreaming = false;
-  saveSession();
-}
-
-function renderMessages() {
-  const msgs = document.getElementById('chat-msgs');
-  msgs.innerHTML = '';
-  chatHistory.forEach((m, i) => {
-    if (m.role === 'user') {
-      const el = document.createElement('div');
-      el.style.cssText = 'display:flex;flex-direction:column;align-items:flex-end';
-      const content = Array.isArray(m.content) ? m.content : [{ type: 'text', text: m.content }];
-      content.forEach(c => {
-        if (c.type === 'image') {
-          const img = document.createElement('img');
-          img.src = `data:${c.source.media_type};base64,${c.source.data}`;
-          img.className = 'msg-img';
-          el.appendChild(img);
-        } else if (c.type === 'text') {
-          const d = document.createElement('div');
-          d.className = 'msg msg-u';
-          d.textContent = c.text;
-          el.appendChild(d);
-        }
-      });
-      msgs.appendChild(el);
-    } else {
-      const el = document.createElement('div');
-      el.className = 'msg msg-a';
-      el.id = 'ai-msg-' + i;
-      if (!m.content) {
-        el.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
-      } else {
-        el.textContent = m.content;
-      }
-      msgs.appendChild(el);
-    }
-  });
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-function renderLastAiMsg() {
-  const idx = chatHistory.length - 1;
-  const el = document.getElementById('ai-msg-' + idx);
-  if (el) {
-    el.textContent = chatHistory[idx].content;
-    document.getElementById('chat-msgs').scrollTop = document.getElementById('chat-msgs').scrollHeight;
-  } else {
-    renderMessages();
+    const data = await resp.json();
+    typingEl.remove();
+    const reply = data.content?.[0]?.text || 'No response.';
+    appendMsg('assistant', reply);
+    chatHistory.push({ role: 'assistant', content: reply });
+    await sb.from('chat_messages').insert({ session_id: activeSession, role: 'assistant', content: reply });
+  } catch(e) {
+    typingEl.remove();
+    appendMsg('assistant', 'Error: ' + e.message);
   }
 }
 
-// Voice input
-let recognition = null;
-function toggleMic() {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) { alert('Speech recognition not supported in this browser'); return; }
-  if (recognition) { recognition.stop(); recognition = null; document.getElementById('mic-btn').style.color = ''; return; }
-  recognition = new SR();
-  recognition.continuous = false;
-  recognition.lang = 'en-US';
-  recognition.onresult = e => {
-    document.getElementById('chat-input').value += e.results[0][0].transcript + ' ';
-    autoResize(document.getElementById('chat-input'));
-  };
-  recognition.onend = () => { recognition = null; document.getElementById('mic-btn').style.color = ''; };
-  recognition.start();
-  document.getElementById('mic-btn').style.color = 'var(--red)';
-}
+// ─── FAL.AI HELPER ──────────────────────────────────────
+async function falQueue(model, body, btnId, progressLabel) {
+  const keys = getKeys();
+  if (!keys.fal) throw new Error('Add your FAL.ai key in Profile > API Keys');
+  const hdr = { 'Authorization': 'Key ' + keys.fal, 'Content-Type': 'application/json' };
+  const btn = document.getElementById(btnId);
 
-async function speakLast() {
-  const last = [...chatHistory].reverse().find(m => m.role === 'assistant');
-  if (!last) return;
-  const text = (typeof last.content === 'string' ? last.content : '').slice(0, 600);
-  if (!text) return;
-  try {
-    const resp = await fetch('https://api.cartesia.ai/tts/bytes', {
-      method: 'POST',
-      headers: { 'X-API-Key': CARTESIA_KEY, 'Cartesia-Version': '2024-06-10', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model_id: 'sonic-english', transcript: text, voice: { mode: 'id', id: selectedVoice }, output_format: { container: 'mp3', encoding: 'mp3', sample_rate: 44100 } }),
-    });
-    const ab = await resp.arrayBuffer();
-    const blob = new Blob([ab], { type: 'audio/mpeg' });
-    const url = URL.createObjectURL(blob);
-    new Audio(url).play();
-  } catch (e) { console.error('TTS error:', e); }
+  const sub = await fetch(FAL_Q + model, { method: 'POST', headers: hdr, body: JSON.stringify(body) });
+  const { request_id } = await sub.json();
+  if (!request_id) throw new Error('Failed to submit job');
+
+  while (true) {
+    await new Promise(r => setTimeout(r, 5000));
+    const st = await fetch(`${FAL_Q}${model}/requests/${request_id}/status`, { headers: hdr });
+    const s = await st.json();
+    if (s.status === 'COMPLETED') break;
+    if (s.status === 'FAILED') throw new Error('Generation failed');
+    const pct = s.progress ? Math.round(s.progress*100)+'%' : '...';
+    if (btn) btn.innerHTML = `<div class="spin"></div> ${progressLabel} ${pct}`;
+  }
+
+  const res = await fetch(`${FAL_Q}${model}/requests/${request_id}`, { headers: hdr });
+  return await res.json();
 }
 
 // ─── IMAGE GENERATION ───────────────────────────────────
-function selectChip(btn, groupId) {
-  document.querySelectorAll('#' + groupId + ' .chip').forEach(c => c.classList.remove('on'));
-  btn.classList.add('on');
-}
-
-async function generateImage() {
-  const prompt = document.getElementById('gen-prompt').value.trim();
+async function doImage() {
+  const prompt = document.getElementById('pimg-prompt').value.trim();
   if (!prompt) { alert('Enter a prompt'); return; }
-  const styleChip = document.querySelector('#style-chips .chip.on');
-  const stylePrefix = styleChip ? styleChip.dataset.val : '';
-  const model = document.getElementById('gen-model').value;
-  const ratio = document.getElementById('gen-ratio').value;
-  const neg = document.getElementById('gen-neg').value;
-  const btn = document.getElementById('gen-btn');
-
+  const btn = document.getElementById('pimg-btn');
+  const err = document.getElementById('pimg-err');
+  const res = document.getElementById('pimg-res');
   btn.disabled = true;
   btn.innerHTML = '<div class="spin"></div> Generating...';
-  document.getElementById('gen-err').style.display = 'none';
-  document.getElementById('gen-result').style.display = 'none';
-
+  err.style.display = 'none'; res.style.display = 'none';
+  const style = document.querySelector('#style-chips .chip.on')?.dataset.val || '';
   try {
-    const modelPath = model.replace('fal-ai/', '');
-    const resp = await fetch(`https://fal.run/${model}`, {
-      method: 'POST', headers: FAL_HDR,
-      body: JSON.stringify({ prompt: stylePrefix + prompt, image_size: ratio, num_images: 1, guidance_scale: 3.5, num_inference_steps: 28, ...(neg ? { negative_prompt: neg } : {}) }),
-    });
-    const data = await resp.json();
-    if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+    const data = await falQueue(
+      document.getElementById('pimg-model').value,
+      { prompt: style + prompt, negative_prompt: document.getElementById('pimg-neg').value, image_size: document.getElementById('pimg-ratio').value, num_inference_steps: 28, enable_safety_checker: true },
+      'pimg-btn', 'Generating'
+    );
     const url = data.images?.[0]?.url;
-    if (!url) throw new Error('No image returned');
-    document.getElementById('gen-img').src = url;
-    document.getElementById('gen-result').style.display = 'block';
-  } catch (e) {
-    document.getElementById('gen-err').textContent = 'Error: ' + e.message;
-    document.getElementById('gen-err').style.display = 'block';
-  }
-
-  btn.disabled = false;
-  btn.innerHTML = '&#10022; Generate Image <span style="font-size:12px;opacity:.7">~$0.05</span>';
+    if (!url) throw new Error('No image URL');
+    document.getElementById('pimg-out').src = url;
+    res.style.display = 'block';
+  } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
+  btn.disabled = false; btn.innerHTML = 'Generate Image';
 }
 
-// ─── VIDEO GENERATION ───────────────────────────────────
-function pickSample(el, url) {
-  document.querySelectorAll('.sample').forEach(s => s.classList.remove('on'));
-  el.classList.add('on');
-  setVidSource(url);
-}
-
-function vidPickFile(input) {
-  const file = input.files[0]; if (!file) return;
-  const url = URL.createObjectURL(file);
-  setVidSource(url);
-}
-
-function setVidSource(url) {
-  vidSourceUrl = url;
-  document.getElementById('vid-preview').src = url;
-  document.getElementById('vid-preview').style.display = 'block';
-  document.getElementById('vid-placeholder').style.display = 'none';
-}
-
-async function generateVideo() {
-  if (!vidSourceUrl) { alert('Select or upload a source image'); return; }
-  const prompt = document.getElementById('vid-prompt').value;
-  const dur = document.getElementById('vid-dur').value;
-  const mode = document.getElementById('vid-mode').value;
-  const btn = document.getElementById('vid-btn');
-  const model = mode === 'pro' ? 'fal-ai/kling-video/v1.6/pro/image-to-video' : 'fal-ai/kling-video/v1.6/standard/image-to-video';
-
-  btn.disabled = true;
-  btn.innerHTML = '<div class="spin"></div> Generating (2-5 min)...';
-  document.getElementById('vid-err').style.display = 'none';
-  document.getElementById('vid-result').style.display = 'none';
-
+// ─── PROMPT TO VIDEO ────────────────────────────────────
+async function doPVid() {
+  const prompt = document.getElementById('pvid-prompt').value.trim();
+  if (!prompt) { alert('Enter a prompt'); return; }
+  const btn = document.getElementById('pvid-btn');
+  const err = document.getElementById('pvid-err');
+  const res = document.getElementById('pvid-res');
+  btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Submitting...';
+  err.style.display = 'none'; res.style.display = 'none';
+  const mode = document.getElementById('pvid-mode').value;
+  const model = `fal-ai/kling-video/v1.6/${mode}/text-to-video`;
   try {
-    // Submit to queue
-    const sub = await fetch(`https://queue.fal.run/${model}`, {
-      method: 'POST', headers: FAL_HDR,
-      body: JSON.stringify({ image_url: vidSourceUrl, prompt, duration: dur, aspect_ratio: '9:16' }),
-    });
-    const { request_id } = await sub.json();
-    if (!request_id) throw new Error('Failed to submit job');
-
-    // Poll status
-    while (true) {
-      await new Promise(r => setTimeout(r, 5000));
-      const st = await fetch(`https://queue.fal.run/${model}/requests/${request_id}/status`, { headers: FAL_HDR });
-      const s = await st.json();
-      if (s.status === 'COMPLETED') break;
-      if (s.status === 'FAILED') throw new Error('Video generation failed');
-      const pct = s.progress ? Math.round(s.progress * 100) + '%' : '...';
-      btn.innerHTML = `<div class="spin"></div> ${pct}`;
-    }
-
-    // Get result
-    const res = await fetch(`https://queue.fal.run/${model}/requests/${request_id}`, { headers: FAL_HDR });
-    const data = await res.json();
+    const data = await falQueue(model, {
+      prompt, duration: document.getElementById('pvid-dur').value, aspect_ratio: '9:16'
+    }, 'pvid-btn', 'Generating');
     const url = data.video?.url;
-    if (!url) throw new Error('No video URL returned');
-
-    document.getElementById('vid-out').src = url;
-    document.getElementById('vid-result').style.display = 'block';
-  } catch (e) {
-    document.getElementById('vid-err').textContent = 'Error: ' + e.message;
-    document.getElementById('vid-err').style.display = 'block';
-  }
-
-  btn.disabled = false;
-  btn.innerHTML = '&#10022; Animate <span style="font-size:12px;opacity:.7">~$0.28</span>';
+    if (!url) throw new Error('No video URL');
+    document.getElementById('pvid-out').src = url;
+    res.style.display = 'block';
+  } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
+  btn.disabled = false; btn.innerHTML = 'Generate Video';
 }
 
-// ─── TTS ─────────────────────────────────────────────────
-function selectVoice(el) {
-  document.querySelectorAll('.vc').forEach(v => { v.classList.remove('on'); v.querySelector('.vc-name').nextSibling?.remove?.(); });
+// ─── IMAGE TO VIDEO ─────────────────────────────────────
+function pickSample(el, url, prefix) {
+  document.querySelectorAll(`#${prefix}-samples .sc`).forEach(s => s.classList.remove('on'));
+  el.classList.add('on');
+  if (prefix === 'i2v') {
+    i2vSrc = url;
+    const prev = document.getElementById('i2v-prev');
+    prev.src = url; prev.style.display = 'block';
+    document.getElementById('i2v-ph').style.display = 'none';
+  }
+}
+
+function i2vPickFile(inp) {
+  const file = inp.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    i2vSrc = e.target.result;
+    const prev = document.getElementById('i2v-prev');
+    prev.src = e.target.result; prev.style.display = 'block';
+    document.getElementById('i2v-ph').style.display = 'none';
+    document.querySelectorAll('#i2v-samples .sc').forEach(s => s.classList.remove('on'));
+  };
+  reader.readAsDataURL(file);
+}
+
+async function doI2V() {
+  if (!i2vSrc) { alert('Select or upload a source image'); return; }
+  const btn = document.getElementById('i2v-btn');
+  const err = document.getElementById('i2v-err');
+  const res = document.getElementById('i2v-res');
+  btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Submitting...';
+  err.style.display = 'none'; res.style.display = 'none';
+  const mode = document.getElementById('i2v-mode').value;
+  const model = `fal-ai/kling-video/v1.6/${mode}/image-to-video`;
+  try {
+    const data = await falQueue(model, {
+      image_url: i2vSrc,
+      prompt: document.getElementById('i2v-prompt').value,
+      duration: document.getElementById('i2v-dur').value,
+      aspect_ratio: '9:16'
+    }, 'i2v-btn', 'Animating');
+    const url = data.video?.url;
+    if (!url) throw new Error('No video URL');
+    document.getElementById('i2v-out').src = url;
+    res.style.display = 'block';
+  } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
+  btn.disabled = false; btn.innerHTML = 'Animate';
+}
+
+// ─── MOTION ─────────────────────────────────────────────
+function motPickFile(inp) {
+  const file = inp.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    motSrc = e.target.result;
+    const prev = document.getElementById('mot-prev');
+    prev.src = e.target.result; prev.style.display = 'block';
+    document.getElementById('mot-ph').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function pickMC(el) {
+  document.querySelectorAll('.mc').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  motionPreset = el.dataset.v;
+}
+
+async function doMotion() {
+  if (!motSrc) { alert('Upload an image'); return; }
+  const btn = document.getElementById('mot-btn');
+  const err = document.getElementById('mot-err');
+  const res = document.getElementById('mot-res');
+  btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Submitting...';
+  err.style.display = 'none'; res.style.display = 'none';
+  const mode = document.getElementById('mot-mode').value;
+  const model = `fal-ai/kling-video/v1.6/${mode}/image-to-video`;
+  const extra = document.getElementById('mot-prompt').value;
+  try {
+    const data = await falQueue(model, {
+      image_url: motSrc,
+      prompt: motionPreset + extra,
+      duration: document.getElementById('mot-dur').value,
+      aspect_ratio: '9:16'
+    }, 'mot-btn', 'Animating');
+    const url = data.video?.url;
+    if (!url) throw new Error('No video URL');
+    document.getElementById('mot-out').src = url;
+    res.style.display = 'block';
+  } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
+  btn.disabled = false; btn.innerHTML = 'Apply Motion';
+}
+
+// ─── IMAGE REFERENCE ────────────────────────────────────
+function refPickFile(inp) {
+  const file = inp.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    refSrc = e.target.result;
+    const prev = document.getElementById('ref-prev');
+    prev.src = e.target.result; prev.style.display = 'block';
+    document.getElementById('ref-ph').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function doRefImg() {
+  if (!refSrc) { alert('Upload a reference image'); return; }
+  const prompt = document.getElementById('ref-prompt').value.trim();
+  if (!prompt) { alert('Enter a transform prompt'); return; }
+  const btn = document.getElementById('ref-btn');
+  const err = document.getElementById('ref-err');
+  const res = document.getElementById('ref-res');
+  btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Generating...';
+  err.style.display = 'none'; res.style.display = 'none';
+  try {
+    const data = await falQueue('fal-ai/flux/dev/image-to-image', {
+      image_url: refSrc,
+      prompt,
+      strength: parseFloat(document.getElementById('ref-strength').value),
+      num_inference_steps: 28
+    }, 'ref-btn', 'Generating');
+    const url = data.images?.[0]?.url;
+    if (!url) throw new Error('No image URL');
+    document.getElementById('ref-out').src = url;
+    res.style.display = 'block';
+  } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
+  btn.disabled = false; btn.innerHTML = 'Generate';
+}
+
+// ─── TTS ────────────────────────────────────────────────
+function pickVoice(el) {
+  document.querySelectorAll('.vc').forEach(v => {
+    v.classList.remove('on');
+    v.querySelector('svg')?.remove();
+  });
   el.classList.add('on');
   selectedVoice = el.dataset.id;
-  const check = document.createElement('span');
-  check.textContent = '✓';
-  el.appendChild(check);
+  el.insertAdjacentHTML('beforeend', '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc2)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>');
 }
 
-async function generateTts() {
+async function doTts() {
   const text = document.getElementById('tts-text').value.trim();
   if (!text) { alert('Enter some text'); return; }
+  const keys = getKeys();
+  if (!keys.car) { alert('Add your Cartesia key in Profile > API Keys'); return; }
   const btn = document.getElementById('tts-btn');
+  const err = document.getElementById('tts-err');
+  const res = document.getElementById('tts-res');
   btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Generating...';
-  document.getElementById('tts-err').style.display = 'none';
-  document.getElementById('tts-result').style.display = 'none';
-
+  err.style.display = 'none'; res.style.display = 'none';
   try {
     const resp = await fetch('https://api.cartesia.ai/tts/bytes', {
       method: 'POST',
-      headers: { 'X-API-Key': CARTESIA_KEY, 'Cartesia-Version': '2024-06-10', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model_id: 'sonic-english', transcript: text, voice: { mode: 'id', id: selectedVoice }, output_format: { container: 'mp3', encoding: 'mp3', sample_rate: 44100 } }),
+      headers: { 'X-API-Key': keys.car, 'Cartesia-Version': '2024-06-10', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model_id: 'sonic-english', transcript: text, voice: { mode: 'id', id: selectedVoice }, output_format: { container: 'mp3', encoding: 'mp3', sample_rate: 44100 } })
     });
     if (!resp.ok) throw new Error(await resp.text());
     const ab = await resp.arrayBuffer();
-    ttsAudioBlob = new Blob([ab], { type: 'audio/mpeg' });
-    document.getElementById('tts-audio').src = URL.createObjectURL(ttsAudioBlob);
-    document.getElementById('tts-result').style.display = 'block';
-  } catch (e) {
-    document.getElementById('tts-err').textContent = 'Error: ' + e.message;
-    document.getElementById('tts-err').style.display = 'block';
-  }
-
-  btn.disabled = false; btn.innerHTML = '&#128266; Generate Speech';
+    ttsBlob = new Blob([ab], { type: 'audio/mpeg' });
+    document.getElementById('tts-audio').src = URL.createObjectURL(ttsBlob);
+    res.style.display = 'block';
+  } catch(e) { err.textContent = 'Error: ' + e.message; err.style.display = 'block'; }
+  btn.disabled = false; btn.innerHTML = 'Generate Speech';
 }
 
 function dlAudio() {
-  if (!ttsAudioBlob) return;
+  if (!ttsBlob) return;
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(ttsAudioBlob);
+  a.href = URL.createObjectURL(ttsBlob);
   a.download = 'speech.mp3'; a.click();
 }
 
-// ─── LIBRARY ─────────────────────────────────────────────
-function saveToLib(type, url, prompt) {
-  const item = { id: Date.now().toString(), type, url, prompt, created: Date.now() };
-  libItems.unshift(item);
-  localStorage.setItem('ss_library', JSON.stringify(libItems));
-  alert('Saved to library!');
+// ─── LIBRARY ────────────────────────────────────────────
+async function loadLibrary() {
+  if (!currentUser) return;
+  const { data } = await sb.from('library_items')
+    .select('*').eq('user_id', currentUser.id)
+    .order('created_at', { ascending: false });
+  libItems = data || [];
+  renderLibrary();
 }
 
 function libFilter(btn) {
   document.querySelectorAll('#screen-library .chip').forEach(c => c.classList.remove('on'));
-  btn.classList.add('on');
-  libFilter_ = btn.dataset.val;
+  btn.classList.add('on'); libF = btn.dataset.val;
   renderLibrary();
 }
 
 function renderLibrary() {
-  const filtered = libFilter_ === 'all' ? libItems : libItems.filter(i => i.type === libFilter_);
+  const filtered = libF === 'all' ? libItems : libItems.filter(i => i.type === libF);
   document.getElementById('lib-count').textContent = libItems.length + ' items';
-  const gal = document.getElementById('gallery');
+  const gal = document.getElementById('lib-gal');
   const empty = document.getElementById('lib-empty');
-  if (filtered.length === 0) { gal.innerHTML = ''; empty.style.display = 'block'; return; }
+  if (!filtered.length) { gal.innerHTML = ''; empty.style.display = 'block'; return; }
   empty.style.display = 'none';
-  gal.innerHTML = filtered.map(item => `
-    <div class="gal-item">
-      ${item.type === 'video'
-        ? `<video src="${item.url}" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block" muted playsinline></video>`
-        : `<img src="${item.url}" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block">`}
-      <div class="gal-btns">
-        <button class="gal-btn" onclick="dlFile('${item.url}','${item.type === 'video' ? 'video.mp4' : 'image.jpg'}')">&#8595;</button>
-        <button class="gal-btn" onclick="deleteLibItem('${item.id}')" style="background:rgba(255,85,102,.5)">&#x2715;</button>
+  gal.innerHTML = filtered.map(item => {
+    const isVid = item.type === 'video';
+    const isAud = item.type === 'audio';
+    const media = isVid
+      ? `<video src="${esc(item.url)}" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block" muted playsinline></video>`
+      : isAud
+      ? `<div style="aspect-ratio:9/16;display:flex;align-items:center;justify-content:center;background:var(--s3)"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--acc2)" stroke-width="1.5" stroke-linecap="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/></svg></div>`
+      : `<img src="${esc(item.url)}" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block" alt="">`;
+    return `<div class="gi">
+      ${media}
+      <div class="gi-btns">
+        <button class="gb" onclick="dlFileSafe('${esc(item.url)}','${item.type==='video'?'video.mp4':item.type==='audio'?'audio.mp3':'image.jpg'}')" title="Download">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+        </button>
+        <button class="gb del" onclick="deleteLibItem('${item.id}')" title="Delete">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
-      <div class="gal-meta">
-        <div class="gal-type">${item.type}</div>
-        ${item.prompt ? `<div class="gal-prompt">${item.prompt}</div>` : ''}
+      <div class="gi-meta">
+        <div class="gi-type">${item.type}</div>
+        ${item.prompt ? `<div class="gi-p">${esc(item.prompt)}</div>` : ''}
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
-function deleteLibItem(id) {
+async function saveLib(type, url, prompt) {
+  if (!currentUser || !url) return;
+  const item = { id: Date.now().toString(), user_id: currentUser.id, type, url, prompt: prompt || '' };
+  await sb.from('library_items').insert(item);
+  libItems.unshift(item);
+}
+
+async function deleteLibItem(id) {
+  await sb.from('library_items').delete().eq('id', id);
   libItems = libItems.filter(i => i.id !== id);
-  localStorage.setItem('ss_library', JSON.stringify(libItems));
   renderLibrary();
 }
 
-// ─── UTILS ───────────────────────────────────────────────
-function dlFile(url, name) {
-  const a = document.createElement('a');
-  a.href = url; a.download = name; a.target = '_blank'; a.click();
+async function dlFileSafe(url, name) {
+  try {
+    const resp = await fetch(url);
+    const blob = await resp.blob();
+    const obj = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = obj; a.download = name;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(obj), 1000);
+  } catch {
+    const a = document.createElement('a');
+    a.href = url; a.download = name; a.target = '_blank'; a.click();
+  }
 }
 
-window.addEventListener('load', () => {
-  const saved = localStorage.getItem('ss_user');
-  if (saved) { userName = saved; initApp(); }
-  renderWelcome();
-});
+function dlFile(url, name) { dlFileSafe(url, name); }
+
+// ─── CHIPS ──────────────────────────────────────────────
+function pickChip(el, group) {
+  document.querySelectorAll('#'+group+' .chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+}
+
+// ─── UTILS ──────────────────────────────────────────────
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function relTime(ts) {
+  const diff = Date.now() - new Date(ts).getTime();
+  const m = Math.floor(diff/60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return m + 'm ago';
+  const h = Math.floor(m/60);
+  if (h < 24) return h + 'h ago';
+  return Math.floor(h/24) + 'd ago';
+}
 </script>
 </body>
 </html>

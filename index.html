@@ -730,7 +730,7 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 </nav>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="https://diverse-doberman-60.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js" crossorigin="anonymous"></script>
 <script>
 /*
  SUPABASE SETUP — run in SQL Editor:
@@ -788,6 +788,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     clerk = new Clerk(CLERK_KEY);
     await clerk.load();
     clerkReady = true;
+    if (window.location.pathname === '/sso-callback') {
+      try { await clerk.handleRedirectCallback(); } catch(e) { console.warn(e); }
+      window.history.replaceState({}, '', '/');
+    }
     if (clerk.user) { currentUser = clerk.user; initApp(); return; }
     clerk.addListener(({ user }) => {
       if (user && currentScreen === 'signin') { currentUser = user; initApp(); }
@@ -795,7 +799,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   } catch(e) {
     clerkReady = false;
-    console.warn('Clerk init failed — using hosted sign-in fallback');
+    console.warn('Clerk init failed:', e);
   }
   show('signin');
 });
@@ -1001,7 +1005,7 @@ function hideEmailSignIn() { document.getElementById('email-overlay').classList.
 async function signInGoogle() {
   if (clerkReady) {
     try {
-      await clerk.signIn.authenticateWithRedirect({ strategy: 'oauth_google', redirectUrl: window.location.href, redirectUrlComplete: window.location.href });
+      await clerk.signIn.authenticateWithRedirect({ strategy: 'oauth_google', redirectUrl: window.location.origin + '/sso-callback', redirectUrlComplete: window.location.origin });
       return;
     } catch(e) {}
   }
@@ -1011,7 +1015,7 @@ async function signInGoogle() {
 async function signInFacebook() {
   if (clerkReady) {
     try {
-      await clerk.signIn.authenticateWithRedirect({ strategy: 'oauth_facebook', redirectUrl: window.location.href, redirectUrlComplete: window.location.href });
+      await clerk.signIn.authenticateWithRedirect({ strategy: 'oauth_facebook', redirectUrl: window.location.origin + '/sso-callback', redirectUrlComplete: window.location.origin });
       return;
     } catch(e) {}
   }

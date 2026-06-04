@@ -206,7 +206,7 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 .signin-brand{position:absolute;top:calc(env(safe-area-inset-top) + 80px);left:50%;transform:translateX(-50%);text-align:center;z-index:2;width:90%}
 .signin-brand img{height:60px;width:auto;max-width:320px}
 .signin-brand h1{font-family:'DM Serif Display',serif;font-size:26px;font-weight:400;color:#fff;margin-top:14px;line-height:1.2}
-.signin-bottom{position:relative;z-index:2;width:100%;max-width:420px;padding:0 24px 32px}
+.signin-bottom{position:relative;z-index:2;width:100%;max-width:420px;padding:0 24px calc(env(safe-area-inset-bottom,0px) + 16px)}
 .sbtn{display:flex;align-items:center;gap:14px;width:100%;background:rgba(255,255,255,.09);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:15px 20px;color:#fff;font-size:16px;font-weight:500;cursor:pointer;transition:background .15s;margin-bottom:12px;text-align:left}
 .sbtn:active{background:rgba(255,255,255,.15)}
 .sbtn-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -257,6 +257,9 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
       <div class="sbtn-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
       <span class="sbtn-label">Continue with Email</span>
     </button>
+    <div id="auth-error-msg" style="display:none;background:rgba(220,60,60,.15);border:1px solid rgba(220,60,60,.3);border-radius:10px;padding:10px 14px;color:rgba(255,180,180,.9);font-size:13px;text-align:center;margin-bottom:12px">
+      Sign-in is loading — please wait a moment and try again.
+    </div>
     <div class="signin-footer">
       <a onclick="openUrl('#')">Terms of Service</a> &nbsp;·&nbsp; <a onclick="openUrl('#')">Privacy Policy</a><br>
       Octopus Fur 2026
@@ -730,7 +733,7 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 </nav>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@4/dist/clerk.browser.js"></script>
 <script>
 /*
  SUPABASE SETUP — run in SQL Editor:
@@ -973,7 +976,8 @@ async function deleteHeroItem(id) {
 
 // ── SIGN IN ──
 function _hostedFallback() {
-  window.location.href = CLERK_HOSTED + '?redirect_url=' + encodeURIComponent(window.location.href);
+  const el = document.getElementById('auth-error-msg');
+  if (el) { el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 4000); }
 }
 
 function showEmailSignIn() {

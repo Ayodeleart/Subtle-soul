@@ -206,7 +206,7 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 .signin-brand{position:absolute;top:calc(env(safe-area-inset-top) + 80px);left:50%;transform:translateX(-50%);text-align:center;z-index:2;width:90%}
 .signin-brand img{height:60px;width:auto;max-width:320px}
 .signin-brand h1{font-family:'DM Serif Display',serif;font-size:26px;font-weight:400;color:#fff;margin-top:14px;line-height:1.2}
-.signin-bottom{position:relative;z-index:2;width:100%;max-width:420px;padding:0 24px calc(env(safe-area-inset-bottom,0px) + 16px)}
+.signin-bottom{position:relative;z-index:2;width:100%;max-width:420px;padding:0 24px 0}
 .sbtn{display:flex;align-items:center;gap:14px;width:100%;background:rgba(255,255,255,.09);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:15px 20px;color:#fff;font-size:16px;font-weight:500;cursor:pointer;transition:background .15s;margin-bottom:12px;text-align:left}
 .sbtn:active{background:rgba(255,255,255,.15)}
 .sbtn-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -257,9 +257,6 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
       <div class="sbtn-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
       <span class="sbtn-label">Continue with Email</span>
     </button>
-    <div id="auth-error-msg" style="display:none;background:rgba(220,60,60,.15);border:1px solid rgba(220,60,60,.3);border-radius:10px;padding:10px 14px;color:rgba(255,180,180,.9);font-size:13px;text-align:center;margin-bottom:12px">
-      Sign-in is loading — please wait a moment and try again.
-    </div>
     <div class="signin-footer">
       <a onclick="openUrl('#')">Terms of Service</a> &nbsp;·&nbsp; <a onclick="openUrl('#')">Privacy Policy</a><br>
       Octopus Fur 2026
@@ -271,9 +268,24 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 <div id="email-overlay">
   <div class="eo-hdr">
     <button class="ib" onclick="hideEmailSignIn()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
-    <span style="font-size:16px;font-weight:600;flex:1;margin-left:8px">Sign In</span>
+    <span id="eo-title" style="font-size:16px;font-weight:600;flex:1;margin-left:8px">Sign In</span>
   </div>
-  <div id="clerk-email-container"></div>
+  <div style="flex:1;overflow-y:auto;padding:28px 24px 40px;display:flex;flex-direction:column;gap:14px;max-width:480px;width:100%;margin:0 auto">
+    <div id="eo-err" class="err"></div>
+    <div class="sec">
+      <label class="lbl">Email</label>
+      <input id="eo-email" type="email" class="inp" placeholder="you@example.com" autocomplete="email">
+    </div>
+    <div class="sec">
+      <label class="lbl">Password</label>
+      <input id="eo-pass" type="password" class="inp" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button id="eo-submit" class="btn" onclick="submitEmailAuth()">Sign In</button>
+    <div style="text-align:center;color:var(--txt2);font-size:13px;margin-top:4px">
+      <span id="eo-toggle-text">Don't have an account?</span>
+      <button onclick="toggleAuthMode()" style="background:none;border:none;color:var(--txt);font-size:13px;font-weight:600;cursor:pointer;margin-left:4px;text-decoration:underline" id="eo-toggle-btn">Sign Up</button>
+    </div>
+  </div>
 </div>
 
 <!-- ═══════════════ HOME ═══════════════ -->
@@ -733,7 +745,6 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 </nav>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@4/dist/clerk.browser.js"></script>
 <script>
 /*
  SUPABASE SETUP — run in SQL Editor:
@@ -749,16 +760,13 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
  - avatars (public)
 */
 
-const CLERK_KEY     = 'pk_test_ZGl2ZXJzZS1kb2Jlcm1hbi02MC5jbGVyay5hY2NvdW50cy5kZXYk';
-const CLERK_HOSTED  = 'https://diverse-doberman-60.clerk.accounts.dev/sign-in';
 const SB_URL        = 'https://qmwlphribvncdtgzbixt.supabase.co';
 const SB_KEY        = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtd2xwaHJpYnZuY2R0Z3piaXh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzMDkwMjcsImV4cCI6MjA5NTg4NTAyN30.kmXKSrnQxG6n8RdK6ppNvn05vi7Xl68LKUNW5f7CQCU';
 const FAL_Q         = 'https://queue.fal.run/';
 
-let clerk, sb, currentUser;
+let sb, currentUser;
 let currentScreen = 'signin', prevScreen = 'home';
 let sessions = [], activeSession = null, chatHistory = [];
-let libItems = [], libF = 'all';
 let heroSlides = [], heroIdx = 0;
 let ttsBlob = null, mediaBase64 = null, mediaType = null;
 let i2vSrc = null, motSrc = null, refSrc = null;
@@ -776,7 +784,7 @@ function getKeys() {
 }
 
 // ── INIT ──
-let clerkReady = false;
+let authMode = 'signin'; // 'signin' | 'signup'
 
 document.addEventListener('DOMContentLoaded', async () => {
   applyTheme(localStorage.getItem('ss_theme') || 'dark');
@@ -786,35 +794,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('tts-cnt').textContent = this.value.length + ' characters';
   });
 
-  // Try to load Clerk — don't block UI on failure
-  try {
-    clerk = new Clerk(CLERK_KEY);
-    await clerk.load();
-    clerkReady = true;
-    if (window.location.pathname === '/sso-callback') {
-      try { await clerk.handleRedirectCallback(); } catch(e) { console.warn(e); }
-      window.history.replaceState({}, '', '/');
-    }
-    if (clerk.user) { currentUser = clerk.user; initApp(); return; }
-    clerk.addListener(({ user }) => {
-      if (user && currentScreen === 'signin') { currentUser = user; initApp(); }
-      else if (!user && currentScreen !== 'signin') { currentUser = null; show('signin'); }
-    });
-  } catch(e) {
-    clerkReady = false;
-    console.warn('Clerk init failed:', e);
-  }
-  show('signin');
+  // Check existing session
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) { currentUser = session.user; initApp(); return; }
+
+  // Listen for auth changes (e.g. OAuth redirect back)
+  sb.auth.onAuthStateChange((_event, session) => {
+    if (session?.user && currentScreen === 'signin') { currentUser = session.user; initApp(); }
+    else if (!session?.user && currentScreen !== 'signin') { currentUser = null; go('signin'); }
+  });
+
+  go('signin');
 });
 
 function masked(s) { return s.slice(0,6) + '•'.repeat(8); }
 
 function initApp() {
   const u = currentUser;
-  const init = (u.firstName?.[0] || u.emailAddresses?.[0]?.emailAddress?.[0] || '?').toUpperCase();
-  updateAvatar(u.imageUrl, init);
-  document.getElementById('prof-name').textContent = u.fullName || u.firstName || '';
-  document.getElementById('prof-email').textContent = u.emailAddresses?.[0]?.emailAddress || '';
+  const name = u.user_metadata?.full_name || u.email?.split('@')[0] || '';
+  const init = (name[0] || '?').toUpperCase();
+  const avatar = u.user_metadata?.avatar_url || null;
+  updateAvatar(avatar, init);
+  document.getElementById('prof-name').textContent = name;
+  document.getElementById('prof-email').textContent = u.email || '';
   document.getElementById('prof-id').textContent = 'ID · ' + u.id.slice(-8);
   // Load saved keys
   const k = getKeys();
@@ -975,61 +977,69 @@ async function deleteHeroItem(id) {
 }
 
 // ── SIGN IN ──
-function _hostedFallback() {
-  const el = document.getElementById('auth-error-msg');
-  if (el) { el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 4000); }
+function showEmailSignIn() {
+  authMode = 'signin';
+  document.getElementById('eo-title').textContent = 'Sign In';
+  document.getElementById('eo-submit').textContent = 'Sign In';
+  document.getElementById('eo-toggle-text').textContent = "Don't have an account?";
+  document.getElementById('eo-toggle-btn').textContent = 'Sign Up';
+  document.getElementById('eo-err').style.display = 'none';
+  document.getElementById('eo-email').value = '';
+  document.getElementById('eo-pass').value = '';
+  document.getElementById('email-overlay').classList.add('on');
+  setTimeout(() => document.getElementById('eo-email').focus(), 100);
 }
 
-function showEmailSignIn() {
-  if (clerkReady) {
-    document.getElementById('email-overlay').classList.add('on');
-    const container = document.getElementById('clerk-email-container');
-    container.innerHTML = '';
-    const isDark = document.documentElement.classList.contains('dark');
-    clerk.mountSignIn(container, {
-      appearance: {
-        variables: {
-          colorPrimary: isDark ? '#f0f0f0' : '#0f0f0f',
-          colorBackground: isDark ? '#0b0b0b' : '#f5f5f5',
-          colorText: isDark ? '#f0f0f0' : '#0f0f0f',
-          colorTextSecondary: isDark ? '#7a7a7a' : '#666666',
-          colorInputBackground: isDark ? '#191919' : '#efefef',
-          colorInputText: isDark ? '#f0f0f0' : '#0f0f0f',
-          borderRadius: '12px',
-          fontFamily: "'DM Sans', system-ui, sans-serif",
-        }
-      }
-    });
-  } else {
-    _hostedFallback();
-  }
-}
 function hideEmailSignIn() { document.getElementById('email-overlay').classList.remove('on'); }
 
-async function signInGoogle() {
-  if (clerkReady) {
-    try {
-      await clerk.signIn.authenticateWithRedirect({ strategy: 'oauth_google', redirectUrl: window.location.origin + '/sso-callback', redirectUrlComplete: window.location.origin });
+function toggleAuthMode() {
+  authMode = authMode === 'signin' ? 'signup' : 'signin';
+  const isSignUp = authMode === 'signup';
+  document.getElementById('eo-title').textContent = isSignUp ? 'Create Account' : 'Sign In';
+  document.getElementById('eo-submit').textContent = isSignUp ? 'Create Account' : 'Sign In';
+  document.getElementById('eo-toggle-text').textContent = isSignUp ? 'Already have an account?' : "Don't have an account?";
+  document.getElementById('eo-toggle-btn').textContent = isSignUp ? 'Sign In' : 'Sign Up';
+  document.getElementById('eo-err').style.display = 'none';
+}
+
+async function submitEmailAuth() {
+  const email = document.getElementById('eo-email').value.trim();
+  const pass = document.getElementById('eo-pass').value;
+  const errEl = document.getElementById('eo-err');
+  const btn = document.getElementById('eo-submit');
+  errEl.style.display = 'none';
+  if (!email || !pass) { errEl.textContent = 'Please enter your email and password.'; errEl.style.display = 'block'; return; }
+  btn.disabled = true; btn.innerHTML = '<div class="spin"></div>';
+  let error;
+  if (authMode === 'signup') {
+    const r = await sb.auth.signUp({ email, password: pass });
+    error = r.error;
+    if (!error && r.data?.user && !r.data.session) {
+      btn.disabled = false; btn.textContent = 'Create Account';
+      errEl.style.color = 'var(--grn)'; errEl.textContent = 'Check your email to confirm your account.'; errEl.style.display = 'block';
       return;
-    } catch(e) {}
+    }
+  } else {
+    const r = await sb.auth.signInWithPassword({ email, password: pass });
+    error = r.error;
+    if (!error) { currentUser = r.data.user; hideEmailSignIn(); initApp(); return; }
   }
-  _hostedFallback();
+  btn.disabled = false; btn.textContent = authMode === 'signup' ? 'Create Account' : 'Sign In';
+  errEl.style.color = 'var(--red)'; errEl.textContent = error?.message || 'Something went wrong.'; errEl.style.display = 'block';
+}
+
+async function signInGoogle() {
+  await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } });
 }
 
 async function signInFacebook() {
-  if (clerkReady) {
-    try {
-      await clerk.signIn.authenticateWithRedirect({ strategy: 'oauth_facebook', redirectUrl: window.location.origin + '/sso-callback', redirectUrlComplete: window.location.origin });
-      return;
-    } catch(e) {}
-  }
-  _hostedFallback();
+  await sb.auth.signInWithOAuth({ provider: 'facebook', options: { redirectTo: window.location.origin } });
 }
 
 async function signOut() {
-  if (clerkReady && clerk) await clerk.signOut();
+  await sb.auth.signOut();
   currentUser = null; sessions = []; libItems = [];
-  show('signin');
+  go('signin');
 }
 
 // ── API KEYS ──

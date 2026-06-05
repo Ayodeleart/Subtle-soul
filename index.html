@@ -240,14 +240,8 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 </head>
 <body>
 
-<!-- ═══════════════ SPLASH ═══════════════ -->
-<div id="screen-splash" class="screen on" style="display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0f0f0f;min-height:100dvh">
-  <img src="logo-main.png" style="height:56px;width:auto;margin-bottom:20px;opacity:.9" onerror="this.style.display='none'" alt="">
-  <div style="width:28px;height:28px;border:2px solid rgba(255,255,255,.15);border-top-color:rgba(255,255,255,.7);border-radius:50%;animation:spin .7s linear infinite"></div>
-</div>
-
 <!-- ═══════════════ SIGN IN ═══════════════ -->
-<div id="screen-signin" class="screen">
+<div id="screen-signin" class="screen on">
   <video id="signin-bg-vid" class="signin-vid" autoplay muted loop playsinline>
     <source src="" type="video/mp4">
   </video>
@@ -885,40 +879,56 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('tts-cnt').textContent = this.value.length + ' characters';
   });
 
-  // Load admin content in background (non-blocking)
   loadLoginBackground();
   loadTemplates();
 
-  // Check existing session — splash screen shows while this resolves
-  try {
-    const { data: { session } } = await sb.auth.getSession();
-    if (session?.user) { currentUser = session.user; initApp(); return; }
-  } catch(e) {}
+  // Check localStorage synchronously — no spinner, no delay
+  const stored = localStorage.getItem('sb-qmwlphribvncdtgzbixt-auth-token');
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      if (parsed?.access_token && parsed?.user) {
+        currentUser = parsed.user;
+        sb.auth.setSession({ access_token: parsed.access_token, refresh_token: parsed.refresh_token });
+        initApp();
+        return;
+      }
+    } catch(e) {}
+  }
 
+  // No cached session — show signin immediately
+  go('signin');
+
+  // Still verify in background for token refresh
   sb.auth.onAuthStateChange((_event, session) => {
     if (session?.user && currentScreen === 'signin') { currentUser = session.user; initApp(); }
     else if (!session?.user && currentScreen !== 'signin') { currentUser = null; go('signin'); }
   });
-
-  // No session — show signin
-  go('signin');
 });
 
 async function loadLoginBackground() {
   try {
-    const { data, error } = await sb.from('login_background').select('*').eq('active', true).order('created_at', { ascending: false }).limit(1);
+    const { data, error } = await sb.from('login_background')
+      .select('*').eq('active', true)
+      .order('created_at', { ascending: false }).limit(1);
     if (error || !data?.length) return;
     const bg = data[0];
+    if (!bg?.url) return;
     const vid = document.getElementById('signin-bg-vid');
     const img = document.getElementById('signin-bg-img');
-    if (bg.type === 'video' && bg.url) {
+    if (bg.type === 'video') {
       if (vid) { vid.querySelector('source').src = bg.url; vid.load(); vid.style.display = 'block'; }
       if (img) img.style.display = 'none';
-    } else if (bg.url) {
-      if (img) { img.src = bg.url; img.style.display = 'block'; }
+    } else {
+      if (img) {
+        img.onload = () => { img.style.display = 'block'; };
+        img.src = bg.url;
+        // If already cached, show immediately
+        if (img.complete) img.style.display = 'block';
+      }
       if (vid) vid.style.display = 'none';
     }
-  } catch(e) {}
+  } catch(e) { console.warn('loadLoginBackground:', e); }
 }
 
 async function loadTemplates() {
@@ -1042,6 +1052,7 @@ function go(screen, params = {}) {
   if (screen === 'library') loadLibrary();
   if (screen === 'chat') loadSessions();
   if (screen === 'heromanage') loadHeroManage();
+  if (screen === 'signin') loadLoginBackground();
   if (screen === 'i2v' && params.src) {
     i2vSrc = params.src;
     const p = document.getElementById('i2v-prev');

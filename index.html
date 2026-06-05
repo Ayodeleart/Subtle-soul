@@ -1568,7 +1568,7 @@ async function doPVid() {
   const btn = document.getElementById('pvid-btn'); const err = document.getElementById('pvid-err'); const res = document.getElementById('pvid-res');
   btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Submitting...'; err.style.display = 'none'; res.style.display = 'none';
   try {
-    const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('pvid-mode').value}/text-to-video`, { prompt, duration: document.getElementById('pvid-dur').value, aspect_ratio: document.getElementById('pvid-ratio').value }, 'pvid-btn', 'Generating');
+    const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('pvid-mode').value}/text-to-video`, { prompt, duration: parseInt(document.getElementById('pvid-dur').value, 10), aspect_ratio: document.getElementById('pvid-ratio').value }, 'pvid-btn', 'Generating');
     const url = data.video?.url; if (!url) throw new Error('No video URL');
     document.getElementById('pvid-out').src = url; res.style.display = 'block';
     saveLib('video', url, document.getElementById('pvid-prompt').value); showSaveToast();
@@ -1588,7 +1588,7 @@ async function doI2V() {
   try {
     const imageUrl = await toPublicUrl(i2vSrc);
     btn.innerHTML = '<div class="spin"></div> Submitting...';
-    const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('i2v-mode').value}/image-to-video`, { image_url: imageUrl, prompt: document.getElementById('i2v-prompt').value, duration: document.getElementById('i2v-dur').value, aspect_ratio: document.getElementById('i2v-ratio').value }, 'i2v-btn', 'Animating');
+    const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('i2v-mode').value}/image-to-video`, { image_url: imageUrl, prompt: document.getElementById('i2v-prompt').value, duration: parseInt(document.getElementById('i2v-dur').value, 10), aspect_ratio: document.getElementById('i2v-ratio').value }, 'i2v-btn', 'Animating');
     const url = data.video?.url; if (!url) throw new Error('No video URL');
     document.getElementById('i2v-out').src = url; res.style.display = 'block';
     saveLib('video', url, document.getElementById('i2v-prompt').value); showSaveToast();
@@ -1624,7 +1624,7 @@ async function doMotion() {
   try {
     const imageUrl = await toPublicUrl(motSrc);
     btn.innerHTML = '<div class="spin"></div> Animating...';
-    const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('mot-mode').value}/image-to-video`, { image_url: imageUrl, prompt, duration: document.getElementById('mot-dur').value, aspect_ratio: document.getElementById('mot-ratio').value }, 'mot-btn', 'Animating');
+    const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('mot-mode').value}/image-to-video`, { image_url: imageUrl, prompt, duration: parseInt(document.getElementById('mot-dur').value, 10), aspect_ratio: document.getElementById('mot-ratio').value }, 'mot-btn', 'Animating');
     const url = data.video?.url; if (!url) throw new Error('No video URL');
     document.getElementById('mot-out').src = url; res.style.display = 'block';
     saveLib('video', url, document.getElementById('mot-prompt').value || 'motion'); showSaveToast();

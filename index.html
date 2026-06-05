@@ -1485,18 +1485,10 @@ async function falQueue(model, body, btnId, label) {
   const subData = await sub.json();
   // Surface the real FAL validation error instead of generic 'Failed to submit'
   if (!subData.request_id) {
-    // FAL pydantic errors are arrays: [{loc:[...], msg:"...", type:"..."}]
-    // Surface the field name + message so we know exactly what failed
-    let msg;
-    if (Array.isArray(subData) && subData[0]?.msg) {
-      msg = subData.map(e => {
-        const field = e.loc ? e.loc.filter(x => x !== 'body').join('.') : '';
-        return field ? `[${field}] ${e.msg}` : e.msg;
-      }).join('\n');
-    } else {
-      msg = subData.detail || subData.error || subData.message || JSON.stringify(subData);
-    }
-    throw new Error(typeof msg === 'string' ? msg : JSON.stringify(msg));
+    const raw = JSON.stringify(subData, null, 2);
+    const loc = Array.isArray(subData) ? subData.map(e => (e.loc ? '[' + e.loc.filter(x => x !== 'body').join('.') + '] ' : '') + (e.msg || '')).join(' | ') : null;
+    const friendly = subData.detail || subData.error || subData.message || loc || raw;
+    throw new Error((typeof friendly === 'string' ? friendly : raw) + '\n--- raw ---\n' + raw);
   }
   const { request_id } = subData;
   while (true) {

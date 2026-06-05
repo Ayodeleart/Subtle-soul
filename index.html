@@ -232,7 +232,14 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 .eo-hdr{display:flex;align-items:center;padding:calc(14px + env(safe-area-inset-top)) 16px 14px;border-bottom:1px solid var(--bdr);flex-shrink:0}
 #clerk-email-container{flex:1;overflow-y:auto;padding:20px}
 
-/* ── HERO MEDIA MANAGER ── */
+/* ── AUDIO LIBRARY CARD ── */
+.gi-audio{background:var(--s1);border:1px solid var(--bdr);border-radius:14px;padding:14px;margin-bottom:10px}
+.gi-audio audio{width:100%;margin-bottom:8px}
+
+/* ── SAVE TOAST ── */
+#save-toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--s1);border:1px solid var(--bdr2);border-radius:100px;padding:10px 18px;font-size:13px;font-weight:600;color:var(--txt);display:flex;align-items:center;gap:7px;box-shadow:0 8px 32px rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:all .3s;z-index:500;white-space:nowrap}
+#save-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
 .hm-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--s1);border:1px solid var(--bdr);border-radius:12px;margin-bottom:8px}
 .hm-thumb{width:48px;height:48px;border-radius:8px;object-fit:cover;background:var(--s2);flex-shrink:0}
 .hm-del{background:none;border:none;color:var(--txt3);cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;transition:all .15s;flex-shrink:0}
@@ -240,6 +247,8 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 </style>
 </head>
 <body>
+<!-- Save toast -->
+<div id="save-toast"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Saved to Library</div>
 
 <!-- ═══════════════ SIGN IN ═══════════════ -->
 <div id="screen-signin" class="screen on">
@@ -416,13 +425,49 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
           <label class="lbl">Preset Voices</label>
           <div style="display:flex;flex-direction:column;gap:6px" id="voice-presets">
             <button class="vc" data-id="a0e99841-438c-4a64-b679-ae501e7d6091" onclick="pickPresetVoice(this)">
-              <div><div class="vc-n">Barbra</div><div class="vc-d">American · Warm</div></div>
+              <div><div class="vc-n">Barbra</div><div class="vc-d">American · Warm Female</div></div>
             </button>
             <button class="vc" data-id="79a125e8-cd45-4c13-8a67-188112f4dd22" onclick="pickPresetVoice(this)">
-              <div><div class="vc-n">British Lady</div><div class="vc-d">British · Refined</div></div>
+              <div><div class="vc-n">British Lady</div><div class="vc-d">British · Refined Female</div></div>
             </button>
             <button class="vc" data-id="41534e16-2966-4c6b-9670-111411def906" onclick="pickPresetVoice(this)">
               <div><div class="vc-n">Calm Female</div><div class="vc-d">American · Soothing</div></div>
+            </button>
+            <button class="vc" data-id="156fb8d2-335b-4950-9cb3-a2d33befec77" onclick="pickPresetVoice(this)">
+              <div><div class="vc-n">Helpful Woman</div><div class="vc-d">American · Friendly</div></div>
+            </button>
+            <button class="vc" data-id="5c42302c-194b-4d0c-ba1a-8cb485c84ab9" onclick="pickPresetVoice(this)">
+              <div><div class="vc-n">Newsman</div><div class="vc-d">American · Authoritative Male</div></div>
+            </button>
+            <button class="vc" data-id="729651dc-c6b3-4b55-a43c-8f3ae64f5a2d" onclick="pickPresetVoice(this)">
+              <div><div class="vc-n">Pleasant Man</div><div class="vc-d">American · Conversational Male</div></div>
+            </button>
+            <button class="vc" data-id="21b81c14-f85b-436d-aff5-43072529f9f0" onclick="pickPresetVoice(this)">
+              <div><div class="vc-n">Laidback Woman</div><div class="vc-d">American · Casual Female</div></div>
+            </button>
+            <button class="vc" data-id="e13cae5c-ec59-4f71-b0a6-266df3c9bb8e" onclick="pickPresetVoice(this)">
+              <div><div class="vc-n">Madame Mischief</div><div class="vc-d">Expressive · Playful Female</div></div>
+            </button>
+            <button class="vc" data-id="996a8b96-4804-46f0-8e05-3fd4ef1a87cd" onclick="pickPresetVoice(this)">
+              <div><div class="vc-n">Storyteller Lady</div><div class="vc-d">American · Narrative Female</div></div>
+            </button>
+            <button class="vc" data-id="87748186-23bb-4158-a1eb-332911b0b708" onclick="pickPresetVoice(this)">
+              <div><div class="vc-n">Jazz Man</div><div class="vc-d">American · Smooth Male</div></div>
+            </button>
+            <button class="vc" data-id="15a9cd88-84b0-4a8b-95f2-5d583b54c72e" onclick="pickPresetVoice(this)">
+              <div><div class="vc-n">Southern Belle</div><div class="vc-d">American South · Warm Female</div></div>
+            </button>
+          </div>
+          <!-- Custom voices saved by user -->
+          <div id="custom-voice-list" style="display:flex;flex-direction:column;gap:6px;margin-top:6px"></div>
+          <!-- Add custom voice -->
+          <div style="margin-top:10px;padding:12px;background:var(--s2);border:1px solid var(--bdr);border-radius:12px">
+            <label class="lbl" style="margin-bottom:6px">Add Your Own Voice</label>
+            <input id="cv-name" class="inp" placeholder="Name (e.g. My Clone)" style="margin-bottom:6px">
+            <input id="cv-id" class="inp" placeholder="Cartesia Voice ID" style="margin-bottom:8px" oninput="this.value=this.value.trim()">
+            <button class="btn-ghost" onclick="addCustomVoice()" style="padding:10px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Voice
             </button>
           </div>
           <p style="font-size:11px;color:var(--txt3);margin-top:8px">Preset IDs are from Cartesia's public library. They may not work if unavailable on your account.</p>
@@ -656,8 +701,8 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 <!-- ═══════════════ LIBRARY ═══════════════ -->
 <div id="screen-library" class="screen">
   <div class="hdr">
-    <img src="logo-main.png" style="height:22px;width:auto" onerror="this.style.display='none'" alt="">
-    <span class="hdr-title" style="margin-left:4px">Library</span>
+    <button class="ib" onclick="goBack()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+    <span class="hdr-title">Library</span>
     <span id="lib-count" style="font-size:13px;color:var(--txt2);flex-shrink:0">0 items</span>
   </div>
   <div class="pscroll">
@@ -707,7 +752,7 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
       <div class="pr" onclick="showChangePassword()">
-        <div class="pr-l"><div class="pr-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>Change Password</div>
+        <div class="pr-l"><div class="pr-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></div>Change Password</div>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
     </div>
@@ -1056,6 +1101,7 @@ function go(screen, params = {}) {
   if (screen !== 'signin') prevScreen = currentScreen;
   currentScreen = screen;
   if (screen === 'library') loadLibrary();
+  if (screen === 'tts') renderCustomVoices();
   if (screen === 'chat') loadSessions();
   if (screen === 'heromanage') loadHeroManage();
   if (screen === 'signin') loadLoginBackground();
@@ -1429,6 +1475,7 @@ async function doImage() {
     const url = data.images?.[0]?.url || data.image?.url;
     if (!url) throw new Error('No image returned. Check your FAL key and try again.');
     document.getElementById('pimg-out').src = url; res.style.display = 'block';
+    saveLib('image', url, rawPrompt); showSaveToast();
   } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
   btn.disabled = false; btn.innerHTML = 'Generate Image';
 }
@@ -1443,11 +1490,10 @@ async function doPVid() {
     const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('pvid-mode').value}/text-to-video`, { prompt, duration: document.getElementById('pvid-dur').value, aspect_ratio: '9:16' }, 'pvid-btn', 'Generating');
     const url = data.video?.url; if (!url) throw new Error('No video URL');
     document.getElementById('pvid-out').src = url; res.style.display = 'block';
+    saveLib('video', url, document.getElementById('pvid-prompt').value); showSaveToast();
   } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
   btn.disabled = false; btn.innerHTML = 'Generate Video';
 }
-
-// ── IMAGE TO VIDEO ──
 function pickSample(el, url, prefix) {
   document.querySelectorAll(`#${prefix}-samples .sc`).forEach(s => s.classList.remove('on'));
   el.classList.add('on');
@@ -1462,11 +1508,10 @@ async function doI2V() {
     const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('i2v-mode').value}/image-to-video`, { image_url: i2vSrc, prompt: document.getElementById('i2v-prompt').value, duration: document.getElementById('i2v-dur').value, aspect_ratio: '9:16' }, 'i2v-btn', 'Animating');
     const url = data.video?.url; if (!url) throw new Error('No video URL');
     document.getElementById('i2v-out').src = url; res.style.display = 'block';
+    saveLib('video', url, document.getElementById('i2v-prompt').value); showSaveToast();
   } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
   btn.disabled = false; btn.innerHTML = 'Animate';
 }
-
-// ── IMAGE REFERENCE ──
 function refPickFile(inp) { readFile(inp, r => { refSrc = r; const p = document.getElementById('ref-prev'); p.src = r; p.style.display = 'block'; document.getElementById('ref-ph').style.display = 'none'; }); }
 function pickRefMode(el) { document.querySelectorAll('#ref-mode-chips .chip').forEach(c => c.classList.remove('on')); el.classList.add('on'); refMode = el.dataset.mode; }
 async function doRefImg() {
@@ -1480,6 +1525,7 @@ async function doRefImg() {
     const data = await falQueue('fal-ai/flux/dev/image-to-image', { image_url: refTargetSrc, prompt, strength: parseFloat(document.getElementById('ref-strength').value), num_inference_steps: 28 }, 'ref-btn', 'Transforming');
     const url = data.images?.[0]?.url; if (!url) throw new Error('No image URL');
     document.getElementById('ref-out').src = url; res.style.display = 'block';
+    saveLib('image', url, extraPrompt); showSaveToast();
   } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
   btn.disabled = false; btn.innerHTML = 'Transform';
 }
@@ -1503,6 +1549,7 @@ async function doMotion() {
     const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('mot-mode').value}/image-to-video`, { image_url: motSrc, prompt: prompt || 'smooth natural motion, cinematic', duration: document.getElementById('mot-dur').value, aspect_ratio: '9:16' }, 'mot-btn', 'Animating');
     const url = data.video?.url; if (!url) throw new Error('No video URL');
     document.getElementById('mot-out').src = url; res.style.display = 'block';
+    saveLib('video', url, document.getElementById('mot-prompt').value || 'motion'); showSaveToast();
   } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
   btn.disabled = false; btn.innerHTML = 'Apply Motion';
 }
@@ -1529,12 +1576,54 @@ async function submitChangePassword() {
   else { document.getElementById('chpw-overlay').style.display = 'none'; alert('Password updated successfully!'); }
 }
 
+// ── SAVE TOAST ──
+function showSaveToast() {
+  const t = document.getElementById('save-toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── CUSTOM VOICES ──
+function loadCustomVoices() {
+  try { return JSON.parse(localStorage.getItem('customVoices') || '[]'); } catch { return []; }
+}
+function saveCustomVoices(arr) { localStorage.setItem('customVoices', JSON.stringify(arr)); }
+function renderCustomVoices() {
+  const voices = loadCustomVoices();
+  const list = document.getElementById('custom-voice-list');
+  if (!list) return;
+  list.innerHTML = voices.map((v, i) => `
+    <button class="vc" data-id="${esc(v.id)}" onclick="pickPresetVoice(this)" style="padding-right:8px">
+      <div style="flex:1"><div class="vc-n">${esc(v.name)}</div><div class="vc-d">Custom · Your Voice</div></div>
+      <button onclick="event.stopPropagation();deleteCustomVoice(${i})" style="background:none;border:none;color:var(--txt3);cursor:pointer;width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0" title="Remove">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </button>`).join('');
+}
+function addCustomVoice() {
+  const name = document.getElementById('cv-name').value.trim();
+  const id = document.getElementById('cv-id').value.trim();
+  if (!name || !id) { alert('Enter both a name and Voice ID'); return; }
+  const voices = loadCustomVoices();
+  voices.push({ name, id });
+  saveCustomVoices(voices);
+  document.getElementById('cv-name').value = '';
+  document.getElementById('cv-id').value = '';
+  renderCustomVoices();
+}
+function deleteCustomVoice(i) {
+  const voices = loadCustomVoices();
+  voices.splice(i, 1);
+  saveCustomVoices(voices);
+  renderCustomVoices();
+}
+
 // ── TTS ──
 function pickPresetVoice(el) {
-  document.querySelectorAll('#voice-presets .vc').forEach(v => { v.classList.remove('on'); const s = v.querySelector('svg'); if(s) s.remove(); });
+  document.querySelectorAll('#voice-presets .vc, #custom-voice-list .vc').forEach(v => { v.classList.remove('on'); const s = v.querySelector('svg.vc-check'); if(s) s.remove(); });
   el.classList.add('on');
   document.getElementById('tts-voice-id').value = el.dataset.id;
-  el.insertAdjacentHTML('beforeend', '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--txt)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>');
+  el.insertAdjacentHTML('beforeend', '<svg class="vc-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--txt)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>');
 }
 
 async function doTts() {
@@ -1557,6 +1646,10 @@ async function doTts() {
     ttsBlob = new Blob([ab], { type: 'audio/mpeg' });
     document.getElementById('tts-audio').src = URL.createObjectURL(ttsBlob);
     res.style.display = 'block';
+    // Auto-save to library as data URL so it persists
+    const reader = new FileReader();
+    reader.onload = e => { saveLib('audio', e.target.result, text.slice(0, 80)); showSaveToast(); };
+    reader.readAsDataURL(ttsBlob);
   } catch(e) { err.textContent = 'Error: ' + e.message; err.style.display = 'block'; }
   btn.disabled = false; btn.innerHTML = 'Generate Speech';
 }
@@ -1576,13 +1669,37 @@ function renderLibrary() {
   const gal = document.getElementById('lib-gal'); const empty = document.getElementById('lib-empty');
   if (!filtered.length) { gal.innerHTML = ''; empty.style.display = 'block'; return; }
   empty.style.display = 'none';
-  gal.innerHTML = filtered.map(item => {
+  // Split audio vs media
+  const audioItems = filtered.filter(i => i.type === 'audio');
+  const mediaItems = filtered.filter(i => i.type !== 'audio');
+  let html = '';
+  // Audio cards span full width above the grid
+  if (audioItems.length) {
+    html += `<div style="grid-column:1/-1;display:flex;flex-direction:column;gap:8px;margin-bottom:4px">` +
+      audioItems.map(item => `
+        <div class="gi-audio">
+          <audio src="${esc(item.url)}" controls></audio>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+            <div>
+              <div class="gi-type">audio</div>
+              ${item.prompt ? `<div class="gi-p" style="white-space:normal;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${esc(item.prompt)}</div>` : ''}
+            </div>
+            <div style="display:flex;gap:6px;flex-shrink:0">
+              <button class="gb" onclick="dlFileSafe('${esc(item.url)}','speech.mp3')" title="Download"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg></button>
+              <button class="gb" onclick="deleteLibItem('${item.id}')" title="Delete"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+          </div>
+        </div>`).join('') + `</div>`;
+  }
+  // Image/video grid
+  html += mediaItems.map(item => {
     const isVid = item.type === 'video';
     const media = isVid
       ? `<video src="${esc(item.url)}" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block" muted playsinline></video>`
       : `<img src="${esc(item.url)}" style="width:100%;aspect-ratio:9/16;object-fit:cover;display:block" alt="">`;
     return `<div class="gi">${media}<div class="gi-btns"><button class="gb" onclick="dlFileSafe('${esc(item.url)}','${isVid?'video.mp4':'image.jpg'}')" title="Download"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg></button><button class="gb" onclick="deleteLibItem('${item.id}')" title="Delete"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="gi-meta"><div class="gi-type">${item.type}</div>${item.prompt?`<div class="gi-p">${esc(item.prompt)}</div>`:''}</div></div>`;
   }).join('');
+  gal.innerHTML = html;
 }
 async function saveLib(type, url, prompt) {
   if (!currentUser || !url) return;

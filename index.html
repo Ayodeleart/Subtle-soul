@@ -509,7 +509,13 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
       </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" class="sec">
-      <div><label class="lbl">Ratio</label><select id="pimg-ratio" class="inp"><option value="portrait_16_9">9:16 Portrait</option><option value="square_hd" selected>Square</option><option value="landscape_4_3">Landscape</option></select></div>
+      <div><label class="lbl">Ratio</label><select id="pimg-ratio" class="inp">
+        <option value="portrait_16_9">9:16 Portrait</option>
+        <option value="portrait_4_3">3:4 Portrait</option>
+        <option value="square_hd" selected>Square</option>
+        <option value="landscape_4_3">4:3 Landscape</option>
+        <option value="landscape_16_9">16:9 Landscape</option>
+      </select></div>
       <div><label class="lbl">Model</label><select id="pimg-model" class="inp">
         <optgroup label="FLUX">
           <option value="fal-ai/flux/dev">FLUX Dev</option>
@@ -557,8 +563,11 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
   <div class="pscroll">
     <div class="sec"><label class="lbl">Video Prompt</label><textarea id="pvid-prompt" class="inp" rows="5" placeholder="A woman walking through a neon-lit city at night, cinematic, slow motion..."></textarea></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" class="sec">
-      <div><label class="lbl">Duration</label><select id="pvid-dur" class="inp"><option value="5">5 sec</option><option value="10">10 sec</option><option value="15">15 sec</option><option value="30">30 sec</option><option value="60">60 sec</option></select></div>
+      <div><label class="lbl">Duration</label><select id="pvid-dur" class="inp"><option value="5">5 sec</option><option value="10" selected>10 sec</option></select></div>
       <div><label class="lbl">Quality</label><select id="pvid-mode" class="inp"><option value="standard">Standard</option><option value="pro">Pro</option></select></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" class="sec">
+      <div><label class="lbl">Aspect Ratio</label><select id="pvid-ratio" class="inp"><option value="9:16" selected>9:16 Portrait</option><option value="16:9">16:9 Landscape</option><option value="1:1">1:1 Square</option></select></div>
     </div>
     <button class="btn" id="pvid-btn" onclick="doPVid()">Generate Video</button>
     <div id="pvid-err" class="err" style="margin-top:12px"></div>
@@ -591,8 +600,11 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
     </div>
     <div class="sec"><label class="lbl">Motion Prompt</label><textarea id="i2v-prompt" class="inp" rows="3" placeholder="slowly turns head, hair flowing in wind..."></textarea></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" class="sec">
-      <div><label class="lbl">Duration</label><select id="i2v-dur" class="inp"><option value="5">5 seconds</option><option value="10">10 seconds</option></select></div>
+      <div><label class="lbl">Duration</label><select id="i2v-dur" class="inp"><option value="5">5 seconds</option><option value="10" selected>10 seconds</option></select></div>
       <div><label class="lbl">Quality</label><select id="i2v-mode" class="inp"><option value="standard">Standard</option><option value="pro">Pro</option></select></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" class="sec">
+      <div><label class="lbl">Aspect Ratio</label><select id="i2v-ratio" class="inp"><option value="9:16" selected>9:16 Portrait</option><option value="16:9">16:9 Landscape</option><option value="1:1">1:1 Square</option></select></div>
     </div>
     <button class="btn" id="i2v-btn" onclick="doI2V()">Animate</button>
     <div id="i2v-err" class="err" style="margin-top:12px"></div>
@@ -608,32 +620,23 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
   </div>
   <div class="pscroll">
     <div style="background:var(--s1);border:1px solid var(--bdr);border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:var(--txt2);line-height:1.6">
-      Upload a <strong style="color:var(--txt)">reference video</strong> to capture the motion style, then an <strong style="color:var(--txt)">image</strong> to apply that motion to.
-    </div>
-    <div class="sec">
-      <label class="lbl">Reference Video <span style="color:var(--txt3);font-weight:400">(motion style to copy)</span></label>
-      <input type="file" id="mot-vid-file" accept="video/*" hidden onchange="motPickVideo(this)">
-      <div class="upload-box" onclick="document.getElementById('mot-vid-file').click()" id="mot-vid-box">
-        <video id="mot-vid-prev" style="width:100%;max-height:180px;object-fit:cover;display:none;border-radius:8px" muted playsinline></video>
-        <div class="uph" id="mot-vid-ph">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="1.5" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-          <span style="font-size:14px">Upload reference video</span>
-          <span style="font-size:12px;color:var(--txt3)">MP4, MOV, WEBM</span>
-        </div>
-      </div>
+      Upload an <strong style="color:var(--txt)">image</strong> and describe how you want it to move. Powered by Kling v1.6 via FAL.ai.
     </div>
     <div class="sec">
       <label class="lbl">Image to Animate</label>
       <input type="file" id="mot-file" accept="image/*" hidden onchange="motPickFile(this)">
       <div class="upload-box" onclick="document.getElementById('mot-file').click()">
         <img id="mot-prev" style="width:100%;max-height:200px;object-fit:cover;display:none" alt="">
-        <div class="uph" id="mot-ph"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span style="font-size:14px">Upload image to animate</span></div>
+        <div class="uph" id="mot-ph"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span style="font-size:14px">Tap to upload image</span></div>
       </div>
     </div>
-    <div class="sec"><label class="lbl">Additional Prompt <span style="color:var(--txt3);font-weight:400">(optional)</span></label><textarea id="mot-prompt" class="inp" rows="2" placeholder="slow motion, cinematic quality..."></textarea></div>
+    <div class="sec"><label class="lbl">Motion Prompt</label><textarea id="mot-prompt" class="inp" rows="3" placeholder="camera slowly zooms in, hair flowing in wind, cinematic..."></textarea></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" class="sec">
-      <div><label class="lbl">Duration</label><select id="mot-dur" class="inp"><option value="5">5 sec</option><option value="10">10 sec</option></select></div>
+      <div><label class="lbl">Duration</label><select id="mot-dur" class="inp"><option value="5">5 sec</option><option value="10" selected>10 sec</option></select></div>
       <div><label class="lbl">Quality</label><select id="mot-mode" class="inp"><option value="standard">Standard</option><option value="pro">Pro</option></select></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" class="sec">
+      <div><label class="lbl">Aspect Ratio</label><select id="mot-ratio" class="inp"><option value="9:16" selected>9:16 Portrait</option><option value="16:9">16:9 Landscape</option><option value="1:1">1:1 Square</option></select></div>
     </div>
     <button class="btn" id="mot-btn" onclick="doMotion()">Apply Motion</button>
     <div id="mot-err" class="err" style="margin-top:12px"></div>
@@ -903,8 +906,7 @@ let sessions = [], activeSession = null, chatHistory = [];
 let libItems = [], libF = 'all';
 let heroSlides = [], heroIdx = 0;
 let ttsBlob = null, mediaBase64 = null, mediaType = null;
-let i2vSrc = null, motSrc = null, refSrc = null, refTargetSrc = null;
-let motVideoSrc = null, motionPreset = 'dolly zoom in, ', refMode = 'style';
+let i2vSrc = null, motSrc = null, refSrc = null, refTargetSrc = null, refMode = 'style';
 let appTemplates = [];
 
 const DEFAULT_SLIDES = [
@@ -1100,6 +1102,19 @@ function go(screen, params = {}) {
   document.getElementById('nb-' + screen)?.classList.add('on');
   if (screen !== 'signin') prevScreen = currentScreen;
   currentScreen = screen;
+
+  // Clear prompt fields when entering a feature screen directly (no params = not from a template)
+  // startTemplate() calls go() then sets fields in a 150ms timeout, so clearing here is safe
+  if (Object.keys(params).length === 0) {
+    const promptMap = {
+      pimg: 'pimg-prompt', pvid: 'pvid-prompt',
+      tts: 'tts-text', i2v: 'i2v-prompt',
+      motion: 'mot-prompt', refimg: 'ref-prompt'
+    };
+    const fieldId = promptMap[screen];
+    if (fieldId) { const f = document.getElementById(fieldId); if (f) f.value = ''; }
+  }
+
   if (screen === 'library') loadLibrary();
   if (screen === 'tts') renderCustomVoices();
   if (screen === 'chat') loadSessions();
@@ -1429,6 +1444,37 @@ async function sendChat() {
   }
 }
 
+// ── FAL IMAGE UPLOAD (converts base64 data URL → public FAL CDN URL for Kling) ──
+async function falUploadImage(dataUrl) {
+  const keys = getKeys();
+  if (!keys.fal) throw new Error('Add your FAL.ai key in Profile > API Keys');
+  // Convert data URL to Blob
+  const [header, b64] = dataUrl.split(',');
+  const mime = header.match(/:(.*?);/)[1];
+  const bytes = atob(b64);
+  const arr = new Uint8Array(bytes.length);
+  for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
+  const blob = new Blob([arr], { type: mime });
+  const ext = mime.split('/')[1] || 'jpg';
+  const file = new File([blob], `upload.${ext}`, { type: mime });
+  // FAL storage upload
+  const form = new FormData(); form.append('file', file);
+  const res = await fetch('https://storage.fal.run/files', {
+    method: 'POST',
+    headers: { 'Authorization': 'Key ' + keys.fal },
+    body: form
+  });
+  const data = await res.json();
+  if (!data.url) throw new Error('Image upload to FAL failed: ' + JSON.stringify(data));
+  return data.url;
+}
+
+// Returns a public URL: uploads to FAL if it's a base64 data URL, returns as-is if already http
+async function toPublicUrl(src) {
+  if (!src) return src;
+  return src.startsWith('data:') ? await falUploadImage(src) : src;
+}
+
 // ── FAL HELPER ──
 async function falQueue(model, body, btnId, label) {
   const keys = getKeys();
@@ -1436,14 +1482,24 @@ async function falQueue(model, body, btnId, label) {
   const hdr = { 'Authorization': 'Key ' + keys.fal, 'Content-Type': 'application/json' };
   const btn = document.getElementById(btnId);
   const sub = await fetch(FAL_Q + model, { method: 'POST', headers: hdr, body: JSON.stringify(body) });
-  const { request_id } = await sub.json();
-  if (!request_id) throw new Error('Failed to submit');
+  const subData = await sub.json();
+  // Surface the real FAL validation error instead of generic 'Failed to submit'
+  if (!subData.request_id) {
+    const msg = subData.detail || subData.error || subData.message
+      || (Array.isArray(subData) && subData[0]?.msg)
+      || JSON.stringify(subData);
+    throw new Error(typeof msg === 'string' ? msg : JSON.stringify(msg));
+  }
+  const { request_id } = subData;
   while (true) {
     await new Promise(r => setTimeout(r, 5000));
     const st = await fetch(`${FAL_Q}${model}/requests/${request_id}/status`, { headers: hdr });
     const s = await st.json();
     if (s.status === 'COMPLETED') break;
-    if (s.status === 'FAILED') throw new Error('Generation failed');
+    if (s.status === 'FAILED') {
+      const reason = s.error || s.detail || s.message || 'Generation failed on FAL servers';
+      throw new Error(typeof reason === 'string' ? reason : JSON.stringify(reason));
+    }
     if (btn) btn.innerHTML = `<div class="spin"></div> ${label} ${s.progress ? Math.round(s.progress*100)+'%' : '...'}`;
   }
   const res = await fetch(`${FAL_Q}${model}/requests/${request_id}`, { headers: hdr });
@@ -1454,23 +1510,48 @@ async function falQueue(model, body, btnId, label) {
 async function doImage() {
   const rawPrompt = document.getElementById('pimg-prompt').value.trim();
   if (!rawPrompt) { alert('Enter a prompt'); return; }
-  // Strip JSON/code characters that FAL rejects
   const prompt = rawPrompt.replace(/[{}"]/g, '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
   const model = document.getElementById('pimg-model').value;
   const style = document.querySelector('#style-chips .chip.on')?.dataset.val || '';
   const btn = document.getElementById('pimg-btn'); const err = document.getElementById('pimg-err'); const res = document.getElementById('pimg-res');
   btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Generating...'; err.style.display = 'none'; res.style.display = 'none';
   try {
-    // Build params — different models use slightly different field names
     const isIdeogram = model.includes('ideogram');
-    const isRecraft = model.includes('recraft');
-    const params = {
-      prompt: style + prompt,
-      ...(isIdeogram ? { aspect_ratio: document.getElementById('pimg-ratio').value } : { image_size: document.getElementById('pimg-ratio').value }),
-      ...(isRecraft ? {} : { negative_prompt: document.getElementById('pimg-neg').value }),
-      num_inference_steps: 28,
-      enable_safety_checker: false
+    const isRecraft  = model.includes('recraft');
+    const isFluxPro  = model.includes('flux-pro') || model.includes('flux/pro');
+    const isUltra    = model.includes('ultra');
+
+    // Ratio value from dropdown is always FLUX format; map to Ideogram's colon format when needed
+    const ratioFlux = document.getElementById('pimg-ratio').value;
+    const ideogramRatioMap = {
+      portrait_16_9: '9:16', portrait_4_3: '3:4',
+      square_hd: '1:1', square: '1:1',
+      landscape_4_3: '4:3', landscape_16_9: '16:9'
     };
+
+    const params = { prompt: style + prompt };
+
+    if (isIdeogram) {
+      params.aspect_ratio = ideogramRatioMap[ratioFlux] || '1:1';
+    } else {
+      params.image_size = ratioFlux;
+    }
+
+    // negative_prompt: not supported by FLUX Pro Ultra; skip for Recraft
+    if (!isRecraft && !isUltra) {
+      params.negative_prompt = document.getElementById('pimg-neg').value;
+    }
+
+    // Steps: not used by Recraft or FLUX Pro (they manage internally)
+    if (!isRecraft && !isFluxPro && !isIdeogram) {
+      params.num_inference_steps = 28;
+    }
+
+    // Safety checker: FLUX base models support it; skip for others
+    if (!isRecraft && !isIdeogram && !isFluxPro) {
+      params.enable_safety_checker = false;
+    }
+
     const data = await falQueue(model, params, 'pimg-btn', 'Generating');
     const url = data.images?.[0]?.url || data.image?.url;
     if (!url) throw new Error('No image returned. Check your FAL key and try again.');
@@ -1487,7 +1568,7 @@ async function doPVid() {
   const btn = document.getElementById('pvid-btn'); const err = document.getElementById('pvid-err'); const res = document.getElementById('pvid-res');
   btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Submitting...'; err.style.display = 'none'; res.style.display = 'none';
   try {
-    const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('pvid-mode').value}/text-to-video`, { prompt, duration: document.getElementById('pvid-dur').value, aspect_ratio: '9:16' }, 'pvid-btn', 'Generating');
+    const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('pvid-mode').value}/text-to-video`, { prompt, duration: document.getElementById('pvid-dur').value, aspect_ratio: document.getElementById('pvid-ratio').value }, 'pvid-btn', 'Generating');
     const url = data.video?.url; if (!url) throw new Error('No video URL');
     document.getElementById('pvid-out').src = url; res.style.display = 'block';
     saveLib('video', url, document.getElementById('pvid-prompt').value); showSaveToast();
@@ -1503,9 +1584,11 @@ function i2vPickFile(inp) { readFile(inp, r => { i2vSrc = r; const p = document.
 async function doI2V() {
   if (!i2vSrc) { alert('Select or upload a source image'); return; }
   const btn = document.getElementById('i2v-btn'); const err = document.getElementById('i2v-err'); const res = document.getElementById('i2v-res');
-  btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Submitting...'; err.style.display = 'none'; res.style.display = 'none';
+  btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Uploading...'; err.style.display = 'none'; res.style.display = 'none';
   try {
-    const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('i2v-mode').value}/image-to-video`, { image_url: i2vSrc, prompt: document.getElementById('i2v-prompt').value, duration: document.getElementById('i2v-dur').value, aspect_ratio: '9:16' }, 'i2v-btn', 'Animating');
+    const imageUrl = await toPublicUrl(i2vSrc);
+    btn.innerHTML = '<div class="spin"></div> Submitting...';
+    const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('i2v-mode').value}/image-to-video`, { image_url: imageUrl, prompt: document.getElementById('i2v-prompt').value, duration: document.getElementById('i2v-dur').value, aspect_ratio: document.getElementById('i2v-ratio').value }, 'i2v-btn', 'Animating');
     const url = data.video?.url; if (!url) throw new Error('No video URL');
     document.getElementById('i2v-out').src = url; res.style.display = 'block';
     saveLib('video', url, document.getElementById('i2v-prompt').value); showSaveToast();
@@ -1531,22 +1614,17 @@ async function doRefImg() {
 }
 
 // ── MOTION ──
-function motPickVideo(inp) {
-  const file = inp.files[0]; if (!file) return;
-  motVideoSrc = URL.createObjectURL(file);
-  const vid = document.getElementById('mot-vid-prev');
-  vid.src = motVideoSrc; vid.style.display = 'block';
-  document.getElementById('mot-vid-ph').style.display = 'none';
-}
 function motPickFile(inp) { readFile(inp, r => { motSrc = r; const p = document.getElementById('mot-prev'); p.src = r; p.style.display = 'block'; document.getElementById('mot-ph').style.display = 'none'; }); }
 async function doMotion() {
   if (!motSrc) { alert('Upload an image to animate'); return; }
   const extra = document.getElementById('mot-prompt').value;
-  const prompt = (motVideoSrc ? 'apply the same motion style as the reference video, ' : '') + extra;
+  const prompt = extra || 'smooth natural motion, cinematic';
   const btn = document.getElementById('mot-btn'); const err = document.getElementById('mot-err'); const res = document.getElementById('mot-res');
-  btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Animating...'; err.style.display = 'none'; res.style.display = 'none';
+  btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Uploading...'; err.style.display = 'none'; res.style.display = 'none';
   try {
-    const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('mot-mode').value}/image-to-video`, { image_url: motSrc, prompt: prompt || 'smooth natural motion, cinematic', duration: document.getElementById('mot-dur').value, aspect_ratio: '9:16' }, 'mot-btn', 'Animating');
+    const imageUrl = await toPublicUrl(motSrc);
+    btn.innerHTML = '<div class="spin"></div> Animating...';
+    const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('mot-mode').value}/image-to-video`, { image_url: imageUrl, prompt, duration: document.getElementById('mot-dur').value, aspect_ratio: document.getElementById('mot-ratio').value }, 'mot-btn', 'Animating');
     const url = data.video?.url; if (!url) throw new Error('No video URL');
     document.getElementById('mot-out').src = url; res.style.display = 'block';
     saveLib('video', url, document.getElementById('mot-prompt').value || 'motion'); showSaveToast();

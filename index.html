@@ -147,7 +147,8 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 .fc{background:var(--s1);border:1px solid var(--bdr);border-radius:14px;padding:13px 12px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .12s;-webkit-tap-highlight-color:transparent}
 .tmpl{display:flex;align-items:center;gap:12px;padding:14px;background:var(--s1);border:1px solid var(--bdr);border-radius:14px;cursor:pointer;transition:background .15s;-webkit-tap-highlight-color:transparent}
 .tmpl:active{background:var(--s2)}
-.tmpl-ic{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tmpl-img{width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0}
+.tmpl-ic{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .tmpl-body{flex:1;min-width:0}
 .tmpl-title{font-size:14px;font-weight:600;color:var(--txt)}
 .tmpl-desc{font-size:12px;color:var(--txt2);margin-top:2px}
@@ -241,10 +242,10 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 
 <!-- ═══════════════ SIGN IN ═══════════════ -->
 <div id="screen-signin" class="screen on">
-  <video class="signin-vid" autoplay muted loop playsinline>
-    <!-- Add login-bg.mp4 to your repo root to enable background video -->
-    <source src="login-bg.mp4" type="video/mp4">
+  <video id="signin-bg-vid" class="signin-vid" autoplay muted loop playsinline>
+    <source src="" type="video/mp4">
   </video>
+  <img id="signin-bg-img" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:.25;display:none" alt="">
   <div class="signin-dotgrid"></div>
   <div class="signin-glow"></div>
   <div class="signin-brand">
@@ -351,43 +352,10 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
       </div>
     </div>
     <!-- TEMPLATES -->
-    <div style="padding:0 16px 120px">
-      <div style="font-size:12px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Start from a template</div>
-      <div style="display:flex;flex-direction:column;gap:10px" id="template-list">
-        <div class="tmpl" onclick="startTemplate('tts','Relaxing bedtime story narrated in a calm, warm voice for children aged 4–8.')">
-          <div class="tmpl-ic" style="background:rgba(120,100,255,.15)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(150,130,255,.9)" stroke-width="1.8" stroke-linecap="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/></svg></div>
-          <div class="tmpl-body"><div class="tmpl-title">Bedtime Narration</div><div class="tmpl-desc">Calm voice · Story · TTS</div></div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </div>
-        <div class="tmpl" onclick="startTemplate('pvid','Cinematic aerial drone shot flying over golden wheat fields at sunset, warm light, 4K')">
-          <div class="tmpl-ic" style="background:rgba(255,160,50,.12)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,180,80,.9)" stroke-width="1.8" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-          <div class="tmpl-body"><div class="tmpl-title">Cinematic Drone Shot</div><div class="tmpl-desc">Aerial · Landscape · Prompt to Video</div></div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </div>
-        <div class="tmpl" onclick="startTemplate('pimg','Hyper-realistic portrait of a woman with glowing skin, soft bokeh background, studio lighting, 8K')">
-          <div class="tmpl-ic" style="background:rgba(50,200,150,.12)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(60,220,160,.9)" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
-          <div class="tmpl-body"><div class="tmpl-title">Hyper-Realistic Portrait</div><div class="tmpl-desc">8K · Studio · Prompt to Image</div></div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </div>
-        <div class="tmpl" onclick="startTemplate('pvid','A lone astronaut walks across a red Martian landscape at dusk, dust particles floating, cinematic wide angle, epic scale')">
-          <div class="tmpl-ic" style="background:rgba(255,80,100,.1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,100,120,.9)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
-          <div class="tmpl-body"><div class="tmpl-title">Sci-fi Short Film</div><div class="tmpl-desc">Mars · Epic · Prompt to Video</div></div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </div>
-        <div class="tmpl" onclick="startTemplate('pimg','Magical enchanted forest at night, glowing mushrooms, fireflies, misty atmosphere, fantasy digital art')">
-          <div class="tmpl-ic" style="background:rgba(80,160,255,.12)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(100,180,255,.9)" stroke-width="1.8" stroke-linecap="round"><path d="M12 22V12"/><path d="M5 12H2a10 10 0 0020 0h-3"/><circle cx="12" cy="5" r="3"/></svg></div>
-          <div class="tmpl-body"><div class="tmpl-title">Enchanted Forest</div><div class="tmpl-desc">Fantasy · Glow · Prompt to Image</div></div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </div>
-        <div class="tmpl" onclick="startTemplate('tts','Breaking news intro with a confident, authoritative voice: Today, scientists have discovered...')">
-          <div class="tmpl-ic" style="background:rgba(255,200,50,.1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,210,70,.9)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-          <div class="tmpl-body"><div class="tmpl-title">News Voiceover</div><div class="tmpl-desc">Authoritative · Broadcast · TTS</div></div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </div>
-      </div>
+    <div id="templates-section" style="padding:0 16px 120px;display:none">
+      <div style="font-size:12px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Templates</div>
+      <div style="display:flex;flex-direction:column;gap:10px" id="template-list"></div>
     </div>
-  </div>
-</div>
 <div id="sovl" onclick="closeSidebar()"></div>
 <div id="sidebar">
   <div style="padding:calc(14px + env(safe-area-inset-top)) 16px 14px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
@@ -493,7 +461,27 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" class="sec">
       <div><label class="lbl">Ratio</label><select id="pimg-ratio" class="inp"><option value="portrait_16_9">9:16 Portrait</option><option value="square_hd" selected>Square</option><option value="landscape_4_3">Landscape</option></select></div>
-      <div><label class="lbl">Model</label><select id="pimg-model" class="inp"><option value="fal-ai/flux/dev">FLUX Dev</option><option value="fal-ai/flux-pro">FLUX Pro</option><option value="fal-ai/flux/schnell">FLUX Schnell</option></select></div>
+      <div><label class="lbl">Model</label><select id="pimg-model" class="inp">
+        <optgroup label="FLUX">
+          <option value="fal-ai/flux/dev">FLUX Dev</option>
+          <option value="fal-ai/flux-pro">FLUX Pro</option>
+          <option value="fal-ai/flux-pro/v1.1">FLUX Pro 1.1</option>
+          <option value="fal-ai/flux-pro/v1.1-ultra">FLUX Pro 1.1 Ultra</option>
+          <option value="fal-ai/flux/schnell">FLUX Schnell (Fast)</option>
+          <option value="fal-ai/flux-realism">FLUX Realism</option>
+          <option value="fal-ai/flux-lora">FLUX LoRA</option>
+        </optgroup>
+        <optgroup label="Stable Diffusion">
+          <option value="fal-ai/stable-diffusion-v3-medium">SD3 Medium</option>
+          <option value="fal-ai/stable-diffusion-xl">SDXL</option>
+          <option value="fal-ai/aura-flow">AuraFlow</option>
+        </optgroup>
+        <optgroup label="Other">
+          <option value="fal-ai/ideogram/v2">Ideogram V2</option>
+          <option value="fal-ai/recraft-v3">Recraft V3</option>
+          <option value="fal-ai/kolors">Kolors</option>
+        </optgroup>
+      </select></div>
     </div>
     <div class="sec"><label class="lbl">Negative Prompt</label><input id="pimg-neg" class="inp" placeholder="blurry, low quality, watermark..."></div>
     <button class="btn" id="pimg-btn" onclick="doImage()">Generate Image</button>
@@ -865,8 +853,9 @@ let currentScreen = 'signin', prevScreen = 'home';
 let sessions = [], activeSession = null, chatHistory = [];
 let heroSlides = [], heroIdx = 0;
 let ttsBlob = null, mediaBase64 = null, mediaType = null;
-let i2vSrc = null, motSrc = null, refSrc = null;
-let motionPreset = 'dolly zoom in, ';
+let i2vSrc = null, motSrc = null, refSrc = null, refTargetSrc = null;
+let motVideoSrc = null, motionPreset = 'dolly zoom in, ', refMode = 'style';
+let appTemplates = [];
 
 const DEFAULT_SLIDES = [
   'https://images.unsplash.com/photo-1686191128892-3b37add4c844?w=700&q=75',
@@ -890,11 +879,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('tts-cnt').textContent = this.value.length + ' characters';
   });
 
+  // Load admin-controlled content (no auth needed — these are public)
+  loadLoginBackground();
+  loadTemplates();
+
   // Check existing session
   const { data: { session } } = await sb.auth.getSession();
   if (session?.user) { currentUser = session.user; initApp(); return; }
 
-  // Listen for auth changes (e.g. OAuth redirect back)
   sb.auth.onAuthStateChange((_event, session) => {
     if (session?.user && currentScreen === 'signin') { currentUser = session.user; initApp(); }
     else if (!session?.user && currentScreen !== 'signin') { currentUser = null; go('signin'); }
@@ -902,6 +894,43 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   go('signin');
 });
+
+async function loadLoginBackground() {
+  try {
+    const { data } = await sb.from('login_background').select('*').eq('active', true).order('created_at', { ascending: false }).limit(1);
+    const bg = data?.[0];
+    if (!bg) return;
+    const vid = document.getElementById('signin-bg-vid');
+    const img = document.getElementById('signin-bg-img');
+    if (bg.type === 'video') {
+      if (vid) { vid.querySelector('source').src = bg.url; vid.load(); vid.style.display = 'block'; }
+      if (img) img.style.display = 'none';
+    } else {
+      if (img) { img.style.cssText = `position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:.25`; img.src = bg.url; img.style.display = 'block'; }
+      if (vid) vid.style.display = 'none';
+    }
+  } catch(e) {}
+}
+
+async function loadTemplates() {
+  try {
+    const { data } = await sb.from('templates').select('*').eq('active', true).order('display_order');
+    if (!data?.length) return;
+    appTemplates = data;
+    const list = document.getElementById('template-list');
+    const section = document.getElementById('templates-section');
+    if (section) section.style.display = 'block';
+    list.innerHTML = data.map((t, i) => `
+      <div class="tmpl" onclick="startTemplate(${i})">
+        ${t.image_url ? `<img class="tmpl-img" src="${t.image_url}" alt="">` : `<div class="tmpl-ic" style="background:rgba(255,255,255,.08)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`}
+        <div class="tmpl-body">
+          <div class="tmpl-title">${t.title}</div>
+          <div class="tmpl-desc">${t.description || t.target_screen}</div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>`).join('');
+  } catch(e) {}
+}
 
 function masked(s) { return s.slice(0,6) + '•'.repeat(8); }
 
@@ -941,22 +970,36 @@ async function loadCustomAvatar() {
 
 async function uploadAvatar(inp) {
   const file = inp.files[0]; if (!file || !currentUser) return;
-  const path = `${currentUser.id}/avatar.${file.name.split('.').pop() || 'jpg'}`;
-  const { error: upErr } = await sb.storage.from('avatars').upload(path, file, { upsert: true, contentType: file.type });
-  if (upErr) { alert('Avatar upload failed: ' + upErr.message + '\n\nMake sure the "avatars" bucket exists in Supabase Storage.'); return; }
-  const { data } = sb.storage.from('avatars').getPublicUrl(path);
-  const url = data.publicUrl + '?t=' + Date.now();
-  await sb.from('user_profiles').upsert({ user_id: currentUser.id, avatar_url: url });
-  updateAvatar(url, '');
+  const ext = file.name.split(".").pop() || "jpg";
+  const path = currentUser.id + "/avatar." + ext;
+  const { error: upErr } = await sb.storage.from("avatars").upload(path, file, { upsert: true, contentType: file.type });
+  if (upErr) { alert("Avatar upload failed: " + upErr.message + "\n\nRun this SQL in Supabase > SQL Editor:\n\ncreate policy \"avatar_insert\" on storage.objects for insert to authenticated with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);\n\ncreate policy \"avatar_select\" on storage.objects for select using (bucket_id = 'avatars');"); return; }
+  const { data } = sb.storage.from("avatars").getPublicUrl(path);
+  const url = data.publicUrl + "?t=" + Date.now();
+  await sb.from("user_profiles").upsert({ user_id: currentUser.id, avatar_url: url }, { onConflict: "user_id" });
+  updateAvatar(url, "");
 }
 
-function startTemplate(screen, prompt) {
-  go(screen);
+function startTemplate(i) {
+  const t = appTemplates[i];
+  if (!t) return;
+  const { target_screen, prompt, image_url } = t;
+  go(target_screen);
   setTimeout(() => {
-    const ids = { tts: 'tts-text', pvid: 'pvid-prompt', pimg: 'pimg-prompt' };
-    const el = document.getElementById(ids[screen]);
-    if (el) { el.value = prompt; el.focus(); }
-  }, 100);
+    const fields = { pimg:'pimg-prompt', pvid:'pvid-prompt', tts:'tts-text', i2v:'i2v-prompt', motion:'mot-prompt', refimg:'ref-prompt' };
+    const el = document.getElementById(fields[target_screen]);
+    if (el) el.value = prompt || '';
+    if (image_url) {
+      const setImg = (src, prevId, phId, varSetter) => {
+        const p = document.getElementById(prevId); if(p){p.src=image_url;p.style.display='block';}
+        const ph = document.getElementById(phId); if(ph) ph.style.display='none';
+        if(varSetter) varSetter(image_url);
+      };
+      if (target_screen==='i2v') setImg(image_url,'i2v-prev','i2v-ph', v=>{ i2vSrc=v; });
+      if (target_screen==='motion') setImg(image_url,'mot-prev','mot-ph', v=>{ motSrc=v; });
+      if (target_screen==='refimg') setImg(image_url,'ref-target-prev','ref-target-ph', v=>{ refTargetSrc=v; });
+    }
+  }, 150);
 }
 
 // ── NAV SCROLL HIDE ──
@@ -1019,8 +1062,7 @@ function toggleTheme() {
 
 // ── HERO ──
 async function initHero() {
-  if (!currentUser) { setHeroSlides(DEFAULT_SLIDES); return; }
-  const { data } = await sb.from('hero_media').select('url').eq('user_id', currentUser.id).order('created_at');
+  const { data } = await sb.from('hero_slides').select('url').order('display_order');
   const urls = data?.length ? data.map(d => d.url) : DEFAULT_SLIDES;
   setHeroSlides(urls);
 }
@@ -1085,9 +1127,9 @@ async function addHeroUrl() {
 async function uploadHeroMedia(inp) {
   const file = inp.files[0]; if (!file || !currentUser) return;
   const path = `${currentUser.id}/${Date.now()}_${file.name}`;
-  const { error } = await sb.storage.from('hero-media').upload(path, file);
+  const { error } = await sb.storage.from('avatars').upload(path, file);
   if (error) { alert('Upload failed: ' + error.message); return; }
-  const { data } = sb.storage.from('hero-media').getPublicUrl(path);
+  const { data } = sb.storage.from('avatars').getPublicUrl(path);
   await sb.from('hero_media').insert({ id: Date.now().toString(), user_id: currentUser.id, url: data.publicUrl });
   loadHeroManage();
   initHero();
@@ -1337,14 +1379,28 @@ async function falQueue(model, body, btnId, label) {
 
 // ── IMAGE ──
 async function doImage() {
-  const prompt = document.getElementById('pimg-prompt').value.trim();
-  if (!prompt) { alert('Enter a prompt'); return; }
+  const rawPrompt = document.getElementById('pimg-prompt').value.trim();
+  if (!rawPrompt) { alert('Enter a prompt'); return; }
+  // Strip JSON/code characters that FAL rejects
+  const prompt = rawPrompt.replace(/[{}"]/g, '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+  const model = document.getElementById('pimg-model').value;
+  const style = document.querySelector('#style-chips .chip.on')?.dataset.val || '';
   const btn = document.getElementById('pimg-btn'); const err = document.getElementById('pimg-err'); const res = document.getElementById('pimg-res');
   btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Generating...'; err.style.display = 'none'; res.style.display = 'none';
-  const style = document.querySelector('#style-chips .chip.on')?.dataset.val || '';
   try {
-    const data = await falQueue(document.getElementById('pimg-model').value, { prompt: style+prompt, negative_prompt: document.getElementById('pimg-neg').value, image_size: document.getElementById('pimg-ratio').value, num_inference_steps: 28, enable_safety_checker: true }, 'pimg-btn', 'Generating');
-    const url = data.images?.[0]?.url; if (!url) throw new Error('No image URL');
+    // Build params — different models use slightly different field names
+    const isIdeogram = model.includes('ideogram');
+    const isRecraft = model.includes('recraft');
+    const params = {
+      prompt: style + prompt,
+      ...(isIdeogram ? { aspect_ratio: document.getElementById('pimg-ratio').value } : { image_size: document.getElementById('pimg-ratio').value }),
+      ...(isRecraft ? {} : { negative_prompt: document.getElementById('pimg-neg').value }),
+      num_inference_steps: 28,
+      enable_safety_checker: false
+    };
+    const data = await falQueue(model, params, 'pimg-btn', 'Generating');
+    const url = data.images?.[0]?.url || data.image?.url;
+    if (!url) throw new Error('No image returned. Check your FAL key and try again.');
     document.getElementById('pimg-out').src = url; res.style.display = 'block';
   } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
   btn.disabled = false; btn.innerHTML = 'Generate Image';
@@ -1471,7 +1527,7 @@ async function doTts() {
     const resp = await fetch('https://api.cartesia.ai/tts/bytes', {
       method: 'POST',
       headers: { 'X-API-Key': keys.car, 'Cartesia-Version': '2024-06-10', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model_id: 'sonic-english', transcript: text, voice: { mode: 'id', id: voiceId }, output_format: { container: 'mp3', encoding: 'mp3', sample_rate: 44100 } })
+      body: JSON.stringify({ model_id: 'sonic-2', transcript: text, voice: { mode: 'id', id: voiceId }, output_format: { container: 'mp3', encoding: 'mp3', sample_rate: 44100 } })
     });
     if (!resp.ok) { const t = await resp.text(); throw new Error(t); }
     const ab = await resp.arrayBuffer();

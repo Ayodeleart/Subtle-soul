@@ -1486,9 +1486,10 @@ async function falQueue(model, body, btnId, label) {
   // Surface the real FAL validation error instead of generic 'Failed to submit'
   if (!subData.request_id) {
     const raw = JSON.stringify(subData, null, 2);
+    alert('FAL submit error:\n' + raw);
     const loc = Array.isArray(subData) ? subData.map(e => (e.loc ? '[' + e.loc.filter(x => x !== 'body').join('.') + '] ' : '') + (e.msg || '')).join(' | ') : null;
     const friendly = subData.detail || subData.error || subData.message || loc || raw;
-    throw new Error((typeof friendly === 'string' ? friendly : raw) + '\n--- raw ---\n' + raw);
+    throw new Error(typeof friendly === 'string' ? friendly : raw);
   }
   const { request_id } = subData;
   while (true) {
@@ -1497,8 +1498,10 @@ async function falQueue(model, body, btnId, label) {
     const s = await st.json();
     if (s.status === 'COMPLETED') break;
     if (s.status === 'FAILED') {
-      const reason = s.error || s.detail || s.message || 'Generation failed on FAL servers';
-      throw new Error(typeof reason === 'string' ? reason : JSON.stringify(reason));
+      const raw2 = JSON.stringify(s, null, 2);
+      alert('FAL job failed:\n' + raw2);
+      const reason = s.error || s.detail || s.message || raw2;
+      throw new Error(typeof reason === 'string' ? reason : raw2);
     }
     if (btn) btn.innerHTML = `<div class="spin"></div> ${label} ${s.progress ? Math.round(s.progress*100)+'%' : '...'}`;
   }

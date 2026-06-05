@@ -145,13 +145,14 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 /* ── FEATURE GRID (ElevenLabs 2-col compact) ── */
 .feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:10px 16px}
 .fc{background:var(--s1);border:1px solid var(--bdr);border-radius:14px;padding:13px 12px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .12s;-webkit-tap-highlight-color:transparent}
-.tmpl{display:flex;align-items:center;gap:12px;padding:14px;background:var(--s1);border:1px solid var(--bdr);border-radius:14px;cursor:pointer;transition:background .15s;-webkit-tap-highlight-color:transparent}
-.tmpl:active{background:var(--s2)}
-.tmpl-img{width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0}
-.tmpl-ic{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.tmpl-body{flex:1;min-width:0}
-.tmpl-title{font-size:14px;font-weight:600;color:var(--txt)}
-.tmpl-desc{font-size:12px;color:var(--txt2);margin-top:2px}
+.tmpl-grid{columns:2;column-gap:8px;padding:0 16px 120px}
+.tmpl{break-inside:avoid;margin-bottom:8px;border-radius:14px;overflow:hidden;cursor:pointer;position:relative;background:var(--s1);-webkit-tap-highlight-color:transparent}
+.tmpl:active{opacity:.85}
+.tmpl-img{width:100%;display:block;border-radius:0}
+.tmpl-ic{width:100%;aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;background:var(--s2)}
+.tmpl-overlay{position:absolute;bottom:0;left:0;right:0;padding:10px 10px 10px;background:linear-gradient(transparent,rgba(0,0,0,.75));pointer-events:none}
+.tmpl-title{font-size:13px;font-weight:600;color:#fff;line-height:1.3}
+.tmpl-desc{font-size:11px;color:rgba(255,255,255,.6);margin-top:2px}
 .fc:active{background:var(--s2)}
 .fc-icon{width:32px;height:32px;border-radius:8px;background:var(--s2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .fc-name{font-size:13px;font-weight:600;color:var(--txt);line-height:1.3}
@@ -352,9 +353,9 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
       </div>
     </div>
     <!-- TEMPLATES -->
-    <div id="templates-section" style="padding:0 16px 120px;display:none">
-      <div style="font-size:12px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Templates</div>
-      <div style="display:flex;flex-direction:column;gap:10px" id="template-list"></div>
+    <div id="templates-section" style="display:none">
+      <div style="font-size:12px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.1em;padding:0 16px;margin-bottom:10px">Templates</div>
+      <div class="tmpl-grid" id="template-list"></div>
     </div>
 <div id="sovl" onclick="closeSidebar()"></div>
 <div id="sidebar">
@@ -851,6 +852,7 @@ const FAL_Q         = 'https://queue.fal.run/';
 let sb, currentUser;
 let currentScreen = 'signin', prevScreen = 'home';
 let sessions = [], activeSession = null, chatHistory = [];
+let libItems = [], libF = 'all';
 let heroSlides = [], heroIdx = 0;
 let ttsBlob = null, mediaBase64 = null, mediaType = null;
 let i2vSrc = null, motSrc = null, refSrc = null, refTargetSrc = null;
@@ -941,12 +943,13 @@ async function loadTemplates() {
     if (section) section.style.display = 'block';
     list.innerHTML = data.map((t, i) => `
       <div class="tmpl" onclick="startTemplate(${i})">
-        ${t.image_url ? `<img class="tmpl-img" src="${t.image_url}" alt="">` : `<div class="tmpl-ic" style="background:rgba(255,255,255,.08)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`}
-        <div class="tmpl-body">
+        ${t.image_url
+          ? `<img class="tmpl-img" src="${t.image_url}" alt="" loading="lazy">`
+          : `<div class="tmpl-ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`}
+        <div class="tmpl-overlay">
           <div class="tmpl-title">${t.title}</div>
-          <div class="tmpl-desc">${t.description || t.target_screen}</div>
+          ${t.description ? `<div class="tmpl-desc">${t.description}</div>` : ''}
         </div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
       </div>`).join('');
   } catch(e) {}
 }
@@ -1039,15 +1042,15 @@ function startTemplate(i) {
     lastY = y;
   }
 })();
-const INNER = ['signin','chat','tts','pimg','pvid','i2v','motion','refimg','keys','heromanage'];
+const INNER = ['signin','chat','tts','pimg','pvid','i2v','motion','refimg','keys','heromanage','library'];
 function go(screen, params = {}) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
-  document.getElementById('screen-' + screen)?.classList.add('on');
-  const HIDE_NAV = [...(typeof INNER !== 'undefined' ? INNER : []), 'signin', 'splash'];
-  document.getElementById('bnav').classList.toggle('hide', HIDE_NAV.includes(screen));
+  const el = document.getElementById('screen-' + screen);
+  if (el) el.classList.add('on');
+  document.getElementById('bnav').classList.toggle('hide', screen === 'signin' || INNER.includes(screen));
   document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
   document.getElementById('nb-' + screen)?.classList.add('on');
-  if (screen !== 'signin' && screen !== 'splash') prevScreen = currentScreen;
+  if (screen !== 'signin') prevScreen = currentScreen;
   currentScreen = screen;
   if (screen === 'library') loadLibrary();
   if (screen === 'chat') loadSessions();
@@ -1056,9 +1059,9 @@ function go(screen, params = {}) {
   if (screen === 'i2v' && params.src) {
     i2vSrc = params.src;
     const p = document.getElementById('i2v-prev');
-    p.src = params.src; p.style.display = 'block';
-    document.getElementById('i2v-ph').style.display = 'none';
-    document.querySelectorAll('#i2v-samples .sc').forEach(s => s.classList.remove('on'));
+    if (p) { p.src = params.src; p.style.display = 'block'; }
+    const ph = document.getElementById('i2v-ph');
+    if (ph) ph.style.display = 'none';
   }
 }
 function show(s) {

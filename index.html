@@ -1481,19 +1481,14 @@ async function falQueue(model, body, btnId, label) {
   if (!keys.fal) throw new Error('Add your FAL.ai key in Profile > API Keys');
   const hdr = { 'Authorization': 'Key ' + keys.fal, 'Content-Type': 'application/json' };
   const btn = document.getElementById(btnId);
-  const sub = await fetch(FAL_Q + model, { method: 'POST', headers: hdr, body: JSON.stringify(body) });
+  const sub = await fetch(FAL_Q + model, { method: 'POST', headers: hdr, body: JSON.stringify({ input: body }) });
   const subData = await sub.json();
-  // Surface the real FAL validation error instead of generic 'Failed to submit'
   if (!subData.request_id) {
-    const raw = JSON.stringify(subData, null, 2);
-    try { await navigator.clipboard.writeText('FAL SUBMIT ERROR:\n' + raw); } catch(_){}
-    let debugEl = document.getElementById('fal-debug');
-    if (!debugEl) { debugEl = document.createElement('div'); debugEl.id = 'fal-debug'; debugEl.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#000;color:#0f0;font-family:monospace;font-size:11px;padding:16px;overflow:auto;white-space:pre-wrap;word-break:break-all'; document.body.appendChild(debugEl); }
-    debugEl.textContent = 'FAL SUBMIT ERROR (tap to close):\n\n' + raw;
-    debugEl.onclick = () => debugEl.remove();
-    const loc = Array.isArray(subData) ? subData.map(e => (e.loc ? '[' + e.loc.filter(x => x !== 'body').join('.') + '] ' : '') + (e.msg || '')).join(' | ') : null;
-    const friendly = subData.detail || subData.error || subData.message || loc || raw;
-    throw new Error(typeof friendly === 'string' ? friendly : raw);
+    const raw = JSON.stringify(subData);
+    const msg = subData.detail || subData.error || subData.message
+      || (Array.isArray(subData) ? subData.map(e => (e.loc ? '['+e.loc.filter(x=>x!=='body').join('.')+'] ' : '') + (e.msg||'')).join(' | ') : null)
+      || raw;
+    throw new Error(typeof msg === 'string' ? msg : raw);
   }
   const { request_id } = subData;
   while (true) {
@@ -1502,14 +1497,8 @@ async function falQueue(model, body, btnId, label) {
     const s = await st.json();
     if (s.status === 'COMPLETED') break;
     if (s.status === 'FAILED') {
-      const raw2 = JSON.stringify(s, null, 2);
-      try { await navigator.clipboard.writeText('FAL FAILED:\n' + raw2); } catch(_){}
-      let debugEl2 = document.getElementById('fal-debug');
-      if (!debugEl2) { debugEl2 = document.createElement('div'); debugEl2.id = 'fal-debug'; debugEl2.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#000;color:#0f0;font-family:monospace;font-size:11px;padding:16px;overflow:auto;white-space:pre-wrap;word-break:break-all'; document.body.appendChild(debugEl2); }
-      debugEl2.textContent = 'FAL JOB FAILED (tap to close):\n\n' + raw2;
-      debugEl2.onclick = () => debugEl2.remove();
-      const reason = s.error || s.detail || s.message || raw2;
-      throw new Error(typeof reason === 'string' ? reason : raw2);
+      const reason = s.error || s.detail || s.message || 'Generation failed on FAL servers';
+      throw new Error(typeof reason === 'string' ? reason : JSON.stringify(reason));
     }
     if (btn) btn.innerHTML = `<div class="spin"></div> ${label} ${s.progress ? Math.round(s.progress*100)+'%' : '...'}`;
   }

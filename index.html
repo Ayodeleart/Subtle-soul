@@ -561,6 +561,9 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
     <span class="hdr-title">Prompt to Video</span>
   </div>
   <div class="pscroll">
+    <div style="background:rgba(255,180,0,.12);border:1px solid rgba(255,180,0,.3);border-radius:12px;padding:11px 14px;margin-bottom:16px;font-size:13px;color:#f5c842;line-height:1.6">
+      ⏳ Kling takes ~6 minutes. <strong>Keep this screen open</strong> while generating — don't lock your phone.
+    </div>
     <div class="sec"><label class="lbl">Video Prompt</label><textarea id="pvid-prompt" class="inp" rows="5" placeholder="A woman walking through a neon-lit city at night, cinematic, slow motion..."></textarea></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" class="sec">
       <div><label class="lbl">Duration</label><select id="pvid-dur" class="inp"><option value="5">5 sec</option><option value="10" selected>10 sec</option></select></div>
@@ -1479,31 +1482,61 @@ async function toPublicUrl(src) {
 async function falQueue(model, body, btnId, label) {
   const keys = getKeys();
   if (!keys.fal) throw new Error('Add your FAL.ai key in Profile > API Keys');
-  const hdr = { 'Authorization': 'Key ' + keys.fal, 'Content-Type': 'application/json' };
+  // POST needs Content-Type. GET/status requests must NOT send it — FAL rejects GET+Content-Type with a schema error.
+  const authOnly = { 'Authorization': 'Key ' + keys.fal };
+  const postHdr  = { 'Authorization': 'Key ' + keys.fal, 'Content-Type': 'application/json' };
   const btn = document.getElementById(btnId);
-  const sub = await fetch(FAL_Q + model, { method: 'POST', headers: hdr, body: JSON.stringify({ input: body }) });
+
+  // ── 1. SUBMIT ──
+  const sub     = await fetch(FAL_Q + model, { method: 'POST', headers: postHdr, body: JSON.stringify(body) });
   const subData = await sub.json();
   if (!subData.request_id) {
-    const raw = JSON.stringify(subData);
-    const msg = subData.detail || subData.error || subData.message
-      || (Array.isArray(subData) ? subData.map(e => (e.loc ? '['+e.loc.filter(x=>x!=='body').join('.')+'] ' : '') + (e.msg||'')).join(' | ') : null)
-      || raw;
-    throw new Error(typeof msg === 'string' ? msg : raw);
+    let msg = subData.detail || subData.error || subData.message || JSON.stringify(subData);
+    if (Array.isArray(msg)) msg = msg.map(m => m.msg || JSON.stringify(m)).join('; ');
+    throw new Error(String(msg));
   }
   const { request_id } = subData;
-  while (true) {
-    await new Promise(r => setTimeout(r, 5000));
-    const st = await fetch(`${FAL_Q}${model}/requests/${request_id}/status`, { headers: hdr });
-    const s = await st.json();
-    if (s.status === 'COMPLETED') break;
-    if (s.status === 'FAILED') {
-      const reason = s.error || s.detail || s.message || 'Generation failed on FAL servers';
-      throw new Error(typeof reason === 'string' ? reason : JSON.stringify(reason));
+
+  // ── 2. POLL STATUS — GET only, no Content-Type ──
+  let pollCount = 0;
+  while (pollCount < 300) {                          // 300 × 8 s = 40 min max
+    await new Promise(r => setTimeout(r, 8000));
+    pollCount++;
+    let s;
+    try {
+      const st = await fetch(`${FAL_Q}${model}/requests/${request_id}/status`, { headers: authOnly });
+      if (!st.ok) { if (btn) btn.innerHTML = `<div class="spin"></div> ${label} (retrying...)`; continue; }
+      s = await st.json();
+    } catch (_) {
+      if (btn) btn.innerHTML = `<div class="spin"></div> ${label} (retrying...)`;
+      continue;
     }
-    if (btn) btn.innerHTML = `<div class="spin"></div> ${label} ${s.progress ? Math.round(s.progress*100)+'%' : '...'}`;
+
+    if (s.status === 'COMPLETED') {
+      // ── 3. FETCH RESULT ──
+      // If FAL already embedded the output in the status response, use it directly
+      if (s.output)      return s.output;
+      if (s.payload)     return s.payload;
+      // Otherwise fetch from the result endpoint — GET only, no Content-Type
+      const resultUrl = s.response_url || `${FAL_Q}${model}/requests/${request_id}`;
+      const res    = await fetch(resultUrl, { headers: authOnly });
+      const result = await res.json();
+      // Handle all shapes: direct output, or {data:{...}}, or {output:{...}}
+      return result.data ?? result.output ?? result;
+    }
+
+    if (s.status === 'FAILED') {
+      let reason = s.error || s.detail || s.message || 'Generation failed on FAL';
+      if (Array.isArray(reason)) reason = reason.map(m => m.msg || JSON.stringify(m)).join('; ');
+      throw new Error(String(reason));
+    }
+
+    // Still running — show queue position if available
+    const info = s.queue_position != null ? ` (queue #${s.queue_position})` : '';
+    if (btn) btn.innerHTML = `<div class="spin"></div> ${label}${info}`;
   }
-  const res = await fetch(`${FAL_Q}${model}/requests/${request_id}`, { headers: hdr });
-  return await res.json();
+
+  throw new Error('Timed out after 40 min. Your video may still be processing — check your FAL dashboard.');
 }
 
 // ── IMAGE ──
@@ -1567,13 +1600,15 @@ async function doPVid() {
   if (!prompt) { alert('Enter a prompt'); return; }
   const btn = document.getElementById('pvid-btn'); const err = document.getElementById('pvid-err'); const res = document.getElementById('pvid-res');
   btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Submitting...'; err.style.display = 'none'; res.style.display = 'none';
+  let wakeLock = null; try { wakeLock = await navigator.wakeLock?.request('screen'); } catch(_) {}
   try {
     const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('pvid-mode').value}/text-to-video`, { prompt, duration: document.getElementById('pvid-dur').value, aspect_ratio: document.getElementById('pvid-ratio').value }, 'pvid-btn', 'Generating');
-    const url = data.video?.url; if (!url) throw new Error('No video URL');
+    const url = data.video?.url; if (!url) throw new Error('No video URL in response: ' + JSON.stringify(data));
     document.getElementById('pvid-out').src = url; res.style.display = 'block';
-    saveLib('video', url, document.getElementById('pvid-prompt').value); showSaveToast();
+    saveLib('video', url, prompt); showSaveToast();
   } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
   btn.disabled = false; btn.innerHTML = 'Generate Video';
+  try { wakeLock?.release(); } catch(_) {}
 }
 function pickSample(el, url, prefix) {
   document.querySelectorAll(`#${prefix}-samples .sc`).forEach(s => s.classList.remove('on'));
@@ -1585,15 +1620,17 @@ async function doI2V() {
   if (!i2vSrc) { alert('Select or upload a source image'); return; }
   const btn = document.getElementById('i2v-btn'); const err = document.getElementById('i2v-err'); const res = document.getElementById('i2v-res');
   btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Uploading...'; err.style.display = 'none'; res.style.display = 'none';
+  let wakeLock = null; try { wakeLock = await navigator.wakeLock?.request('screen'); } catch(_) {}
   try {
     const imageUrl = await toPublicUrl(i2vSrc);
     btn.innerHTML = '<div class="spin"></div> Submitting...';
     const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('i2v-mode').value}/image-to-video`, { image_url: imageUrl, prompt: document.getElementById('i2v-prompt').value, duration: document.getElementById('i2v-dur').value, aspect_ratio: document.getElementById('i2v-ratio').value }, 'i2v-btn', 'Animating');
-    const url = data.video?.url; if (!url) throw new Error('No video URL');
+    const url = data.video?.url; if (!url) throw new Error('No video URL in response: ' + JSON.stringify(data));
     document.getElementById('i2v-out').src = url; res.style.display = 'block';
     saveLib('video', url, document.getElementById('i2v-prompt').value); showSaveToast();
   } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
   btn.disabled = false; btn.innerHTML = 'Animate';
+  try { wakeLock?.release(); } catch(_) {}
 }
 function refPickFile(inp) { readFile(inp, r => { refSrc = r; const p = document.getElementById('ref-prev'); p.src = r; p.style.display = 'block'; document.getElementById('ref-ph').style.display = 'none'; }); }
 function pickRefMode(el) { document.querySelectorAll('#ref-mode-chips .chip').forEach(c => c.classList.remove('on')); el.classList.add('on'); refMode = el.dataset.mode; }
@@ -1621,15 +1658,17 @@ async function doMotion() {
   const prompt = extra || 'smooth natural motion, cinematic';
   const btn = document.getElementById('mot-btn'); const err = document.getElementById('mot-err'); const res = document.getElementById('mot-res');
   btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Uploading...'; err.style.display = 'none'; res.style.display = 'none';
+  let wakeLock = null; try { wakeLock = await navigator.wakeLock?.request('screen'); } catch(_) {}
   try {
     const imageUrl = await toPublicUrl(motSrc);
     btn.innerHTML = '<div class="spin"></div> Animating...';
     const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('mot-mode').value}/image-to-video`, { image_url: imageUrl, prompt, duration: document.getElementById('mot-dur').value, aspect_ratio: document.getElementById('mot-ratio').value }, 'mot-btn', 'Animating');
-    const url = data.video?.url; if (!url) throw new Error('No video URL');
+    const url = data.video?.url; if (!url) throw new Error('No video URL in response: ' + JSON.stringify(data));
     document.getElementById('mot-out').src = url; res.style.display = 'block';
-    saveLib('video', url, document.getElementById('mot-prompt').value || 'motion'); showSaveToast();
+    saveLib('video', url, extra || 'motion'); showSaveToast();
   } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
   btn.disabled = false; btn.innerHTML = 'Apply Motion';
+  try { wakeLock?.release(); } catch(_) {}
 }
 
 // ── CHANGE PASSWORD ──

@@ -6,11 +6,11 @@
 <meta name="theme-color" content="#080808">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Subtle & Soul">
+<meta name="apple-mobile-web-app-title" content="Goat Face">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="logo-pwa.png">
 <link rel="icon" href="logo-main.png">
-<title>Subtle &amp; Soul</title>
+<title>Goat Face</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
@@ -208,6 +208,12 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 .mc{padding:10px 6px;border-radius:10px;background:var(--s2);border:1px solid var(--bdr);color:var(--txt2);font-size:12px;cursor:pointer;transition:all .15s;font-weight:500;text-align:center}
 .mc.on{background:var(--s3);border-color:var(--txt3);color:var(--txt)}
 
+/* ── SPLASH SCREEN ── */
+#splash{position:fixed;inset:0;z-index:9999;background:#f0ead8;display:block;transition:opacity .5s ease}
+#splash.fade{opacity:0;pointer-events:none}
+#splash img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:splashFade .5s ease both}
+@keyframes splashFade{from{opacity:0}to{opacity:1}}
+
 /* ── SIGN IN PAGE (Manus style) ── */
 #screen-signin{position:relative;overflow:hidden;background:#0f0f0f;min-height:100dvh;flex-direction:column;align-items:center;justify-content:flex-end}
 .signin-dotgrid{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1px);background-size:22px 22px;z-index:1}
@@ -250,17 +256,22 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 <!-- Save toast -->
 <div id="save-toast"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Saved to Library</div>
 
+<!-- ═══════════════ SPLASH ═══════════════ -->
+<div id="splash">
+  <img src="splash.jpg" alt="Goat Face">
+</div>
+
 <!-- ═══════════════ SIGN IN ═══════════════ -->
 <div id="screen-signin" class="screen on">
-  <video id="signin-bg-vid" class="signin-vid" autoplay muted loop playsinline>
+  <video id="signin-bg-vid" class="signin-vid" autoplay muted loop playsinline style="display:none">
     <source src="" type="video/mp4">
   </video>
-  <img id="signin-bg-img" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:.25;display:none" alt="">
+  <img id="signin-bg-img" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:.45;display:block" src="login-bg.jpg" alt="">
   <div class="signin-dotgrid"></div>
   <div class="signin-glow"></div>
   <div class="signin-brand">
-    <img src="logo-main.png" alt="Subtle & Soul" onerror="this.style.display='none'">
-    <h1>Welcome to<br>Subtle &amp; Soul</h1>
+    <img src="logo-main.png" alt="Goat Face" onerror="this.style.display='none'">
+    <h1>Welcome to<br>Goat Face</h1>
   </div>
   <div class="signin-bottom">
     <button class="sbtn" onclick="signInFacebook()">
@@ -278,7 +289,7 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
     </button>
     <div class="signin-footer">
       <a onclick="openUrl('#')">Terms of Service</a> &nbsp;·&nbsp; <a onclick="openUrl('#')">Privacy Policy</a><br>
-      Octopus Fur 2026
+      ©ctopusfur 2026
     </div>
   </div>
 </div>
@@ -353,8 +364,8 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
         <div class="fc-name">Image to Video</div>
       </div>
       <div class="fc" onclick="go('motion')">
-        <div class="fc-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--txt2)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
-        <div class="fc-name">Motion</div>
+        <div class="fc-icon" style="font-size:20px;line-height:1">🔞</div>
+        <div class="fc-name">NSFW</div>
       </div>
       <div class="fc" onclick="go('refimg')">
         <div class="fc-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--txt2)" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="7" width="14" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2H5a2 2 0 00-2 2v9a2 2 0 002 2h2"/></svg></div>
@@ -423,7 +434,7 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
         <input id="tts-voice-id" class="inp" placeholder="e.g. a0e99841-438c-4a64-b679-ae501e7d6091" autocomplete="off" oninput="this.value=this.value.trim()">
         <div style="margin-top:12px">
           <label class="lbl">Preset Voices</label>
-          <div style="display:flex;flex-direction:column;gap:6px" id="voice-presets">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" id="voice-presets">
             <button class="vc" data-id="a0e99841-438c-4a64-b679-ae501e7d6091" onclick="pickPresetVoice(this)">
               <div><div class="vc-n">Barbra</div><div class="vc-d">American · Warm Female</div></div>
             </button>
@@ -473,6 +484,13 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
           <p style="font-size:11px;color:var(--txt3);margin-top:8px">Preset IDs are from Cartesia's public library. They may not work if unavailable on your account.</p>
         </div>
       </div>
+    </div>
+    <div class="sec">
+      <label class="lbl">Provider</label>
+      <select id="tts-provider" class="inp" onchange="ttsProviderChange()">
+        <option value="cartesia">Cartesia (sonic-2)</option>
+        <option value="elevenlabs">ElevenLabs (turbo v2.5)</option>
+      </select>
     </div>
     <div class="sec">
       <label class="lbl">Text</label>
@@ -615,25 +633,44 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
   </div>
 </div>
 
-<!-- ═══════════════ MOTION ═══════════════ -->
+<!-- ═══════════════ NSFW ═══════════════ -->
 <div id="screen-motion" class="screen">
   <div class="hdr">
     <button class="ib" onclick="goBack()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
-    <span class="hdr-title">Motion</span>
+    <span class="hdr-title">NSFW</span>
   </div>
   <div class="pscroll">
-    <div style="background:var(--s1);border:1px solid var(--bdr);border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:var(--txt2);line-height:1.6">
-      Upload an <strong style="color:var(--txt)">image</strong> and describe how you want it to move. Powered by Kling v1.6 via FAL.ai.
+    <div style="background:rgba(255,85,102,.08);border:1px solid rgba(255,85,102,.2);border-radius:12px;padding:11px 14px;margin-bottom:16px;font-size:13px;color:var(--red);line-height:1.6">
+      🔞 Adult content only. All generations are locked to NSFW mode. Face Lock reference is applied automatically when set.
     </div>
+    <!-- Nude toggle -->
+    <div class="psec" style="margin-bottom:16px">
+      <div class="pr" style="cursor:default">
+        <div class="pr-l" style="font-size:15px">Nude Mode</div>
+        <button class="tgl" id="nsfw-nude-tgl" onclick="this.classList.toggle('on');localStorage.setItem('nsfw_nude',this.classList.contains('on')?'1':'0')"><div class="tgl-k"></div></button>
+      </div>
+      <div style="padding:4px 16px 12px;font-size:12px;color:var(--txt3)">When ON, generations include explicit nudity.</div>
+    </div>
+    <!-- Source image -->
     <div class="sec">
-      <label class="lbl">Image to Animate</label>
+      <label class="lbl">Source Image <span style="color:var(--txt3);font-weight:400">(required — use face lock ref or upload)</span></label>
       <input type="file" id="mot-file" accept="image/*" hidden onchange="motPickFile(this)">
       <div class="upload-box" onclick="document.getElementById('mot-file').click()">
         <img id="mot-prev" style="width:100%;max-height:200px;object-fit:cover;display:none" alt="">
-        <div class="uph" id="mot-ph"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span style="font-size:14px">Tap to upload image</span></div>
+        <div class="uph" id="mot-ph">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <span style="font-size:14px">Tap to upload image</span>
+          <span style="font-size:12px">or use face lock reference below</span>
+        </div>
       </div>
+      <button onclick="useFaceLockAsMotSrc()" style="background:var(--s2);border:1px solid var(--bdr);border-radius:10px;padding:10px 14px;color:var(--txt);font-size:13px;cursor:pointer;width:100%;margin-top:6px;font-weight:500">Use Face Lock Reference</button>
     </div>
-    <div class="sec"><label class="lbl">Motion Prompt</label><textarea id="mot-prompt" class="inp" rows="3" placeholder="camera slowly zooms in, hair flowing in wind, cinematic..."></textarea></div>
+    <!-- Scene prompt — user writes scene, NSFW is locked -->
+    <div class="sec">
+      <label class="lbl">Scene Description <span style="color:var(--txt3);font-weight:400">(describe the scene only)</span></label>
+      <textarea id="mot-prompt" class="inp" rows="4" placeholder="lying on a bed, soft lighting, intimate bedroom setting..."></textarea>
+      <p style="font-size:11px;color:var(--txt3);margin-top:4px">NSFW/nude prompt is automatically prepended. Just describe the scene.</p>
+    </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" class="sec">
       <div><label class="lbl">Duration</label><select id="mot-dur" class="inp"><option value="5">5 sec</option><option value="10" selected>10 sec</option></select></div>
       <div><label class="lbl">Quality</label><select id="mot-mode" class="inp"><option value="standard">Standard</option><option value="pro">Pro</option></select></div>
@@ -641,9 +678,9 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" class="sec">
       <div><label class="lbl">Aspect Ratio</label><select id="mot-ratio" class="inp"><option value="9:16" selected>9:16 Portrait</option><option value="16:9">16:9 Landscape</option><option value="1:1">1:1 Square</option></select></div>
     </div>
-    <button class="btn" id="mot-btn" onclick="doMotion()">Apply Motion</button>
+    <button class="btn" id="mot-btn" onclick="doNsfw()">Generate Image</button>
     <div id="mot-err" class="err" style="margin-top:12px"></div>
-    <div id="mot-res" style="display:none;margin-top:12px"><div class="res-wrap"><video id="mot-out" controls loop playsinline></video><div class="res-actions"><button class="ra" onclick="saveLib('video',document.getElementById('mot-out').src,'motion')">Save</button><button class="ra" onclick="dlFileSafe(document.getElementById('mot-out').src,'motion.mp4')">Download</button></div></div></div>
+    <div id="mot-res" style="display:none;margin-top:12px"><div class="res-wrap"><img id="mot-out-img" style="width:100%;border-radius:16px" alt=""><div class="res-actions"><button class="ra" onclick="saveLib('image',document.getElementById('mot-out-img').src,'nsfw')">Save</button><button class="ra" onclick="dlFileSafe(document.getElementById('mot-out-img').src,'nsfw.jpg')">Download</button></div></div></div>
   </div>
 </div>
 
@@ -765,9 +802,21 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
 
     <!-- Hero Media -->
     <div class="psec">
+      <div class="psec-h">Admin</div>
+      <div class="pr" onclick="go('branding')">
+        <div class="pr-l"><div class="pr-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 1 0 4.93 19.07"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div>App Branding</div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
       <div class="pr" onclick="go('heromanage')">
         <div class="pr-l"><div class="pr-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>Hero Slideshow</div>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="pr" onclick="go('facelock')">
+        <div class="pr-l"><div class="pr-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M16 3.5c1.5.5 3 2 3 4.5"/></svg></div>Face Lock</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span id="prof-facelock-status" style="font-size:12px;color:var(--txt3)">Off</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
       </div>
     </div>
 
@@ -802,9 +851,9 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
       <p style="font-size:13px;color:var(--txt2);line-height:1.6">Keys are stored only in your browser's local storage. They are never sent to any server other than the respective API providers.</p>
     </div>
     <div class="sec">
-      <label class="lbl">Anthropic Key <span style="color:var(--txt3);font-weight:400;font-size:10px">(AI Chat)</span></label>
-      <input class="inp" id="key-ant" type="password" placeholder="sk-ant-api03-..." autocomplete="off">
-      <p style="font-size:11px;color:var(--txt3);margin-top:4px">Get from console.anthropic.com</p>
+      <label class="lbl">Groq Key <span style="color:var(--txt3);font-weight:400;font-size:10px">(AI Chat)</span></label>
+      <input class="inp" id="key-groq" type="password" placeholder="gsk_..." autocomplete="off">
+      <p style="font-size:11px;color:var(--txt3);margin-top:4px">Get from console.groq.com — free tier available</p>
     </div>
     <div class="sec">
       <label class="lbl">FAL.ai Key <span style="color:var(--txt3);font-weight:400;font-size:10px">(Images & Videos)</span></label>
@@ -815,6 +864,11 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
       <label class="lbl">Cartesia Key <span style="color:var(--txt3);font-weight:400;font-size:10px">(Text to Speech)</span></label>
       <input class="inp" id="key-car" type="password" placeholder="sk_car_..." autocomplete="off">
       <p style="font-size:11px;color:var(--txt3);margin-top:4px">Get from app.cartesia.ai</p>
+    </div>
+    <div class="sec">
+      <label class="lbl">ElevenLabs Key <span style="color:var(--txt3);font-weight:400;font-size:10px">(Text to Speech)</span></label>
+      <input class="inp" id="key-elabs" type="password" placeholder="sk_..." autocomplete="off">
+      <p style="font-size:11px;color:var(--txt3);margin-top:4px">Get from elevenlabs.io — alternative TTS provider</p>
     </div>
     <button class="btn" onclick="saveKeys()">Save Keys</button>
     <div id="keys-saved" style="text-align:center;font-size:13px;color:var(--grn);display:none;margin-top:12px">Keys saved</div>
@@ -848,6 +902,158 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
     </div>
     <label class="lbl">Current Slides</label>
     <div id="hm-list"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ FACE LOCK ═══════════════ -->
+<div id="screen-facelock" class="screen">
+  <div class="hdr">
+    <button class="ib" onclick="goBack()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+    <span class="hdr-title">Face Lock</span>
+  </div>
+  <div class="pscroll">
+    <div style="background:var(--s1);border:1px solid var(--bdr);border-radius:14px;padding:14px 16px;margin-bottom:16px">
+      <p style="font-size:13px;color:var(--txt2);line-height:1.7">Upload reference images for Face, Body, and Environment. When Face Lock is <strong style="color:var(--txt)">ON</strong>, these references shape every generation. Upload only what you want locked — Environment is optional.</p>
+    </div>
+    <!-- Toggle -->
+    <div class="psec" style="margin-bottom:16px">
+      <div class="pr" style="cursor:default">
+        <div class="pr-l" style="font-size:15px">Enable Face Lock</div>
+        <button class="tgl" id="facelock-tgl" onclick="toggleFaceLock()"><div class="tgl-k"></div></button>
+      </div>
+    </div>
+    <!-- Face Reference -->
+    <div class="sec">
+      <label class="lbl">Face Reference <span style="color:var(--txt3);font-weight:400">(required for face lock)</span></label>
+      <input type="file" id="fl-face-file" accept="image/*" hidden onchange="uploadFaceLockRef(this,'face')">
+      <div class="upload-box" onclick="document.getElementById('fl-face-file').click()" style="position:relative">
+        <img id="fl-face-prev" style="width:100%;max-height:180px;object-fit:cover;display:none;border-radius:14px" alt="">
+        <div class="uph" id="fl-face-ph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span style="font-size:14px">Upload face photo</span></div>
+      </div>
+      <button onclick="clearFaceLockRef('face')" style="background:none;border:none;color:var(--txt3);font-size:12px;cursor:pointer;padding:4px 0;text-align:left">Clear face</button>
+    </div>
+    <!-- Body Shape Reference -->
+    <div class="sec">
+      <label class="lbl">Body Shape Reference</label>
+      <input type="file" id="fl-body-file" accept="image/*" hidden onchange="uploadFaceLockRef(this,'body')">
+      <div class="upload-box" onclick="document.getElementById('fl-body-file').click()">
+        <img id="fl-body-prev" style="width:100%;max-height:180px;object-fit:cover;display:none;border-radius:14px" alt="">
+        <div class="uph" id="fl-body-ph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="1.5" stroke-linecap="round"><path d="M12 2a5 5 0 010 10M4 22v-2a8 8 0 0116 0v2"/></svg><span style="font-size:14px">Upload body shape photo</span></div>
+      </div>
+      <button onclick="clearFaceLockRef('body')" style="background:none;border:none;color:var(--txt3);font-size:12px;cursor:pointer;padding:4px 0;text-align:left">Clear body</button>
+    </div>
+    <!-- Environment Reference -->
+    <div class="sec">
+      <label class="lbl">Environment / Room <span style="color:var(--txt3);font-weight:400">(optional)</span></label>
+      <input type="file" id="fl-env-file" accept="image/*" hidden onchange="uploadFaceLockRef(this,'env')">
+      <div class="upload-box" onclick="document.getElementById('fl-env-file').click()">
+        <img id="fl-env-prev" style="width:100%;max-height:180px;object-fit:cover;display:none;border-radius:14px" alt="">
+        <div class="uph" id="fl-env-ph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--txt3)" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg><span style="font-size:14px">Upload room / environment photo</span><span style="font-size:12px">Only used if uploaded</span></div>
+      </div>
+      <button onclick="clearFaceLockRef('env')" style="background:none;border:none;color:var(--txt3);font-size:12px;cursor:pointer;padding:4px 0;text-align:left">Clear environment</button>
+    </div>
+    <!-- Prompt Lock -->
+    <div class="sec">
+      <label class="lbl">Face Prompt Lock</label>
+      <textarea id="facelock-prompt" class="inp" rows="4" placeholder="Describe the face for text-only generations..."></textarea>
+      <p style="font-size:11px;color:var(--txt3);margin-top:4px">Used when no face image is uploaded. Prepended to every generation prompt.</p>
+    </div>
+    <button class="btn" onclick="saveFaceLock()">Save</button>
+    <div id="facelock-saved" style="text-align:center;font-size:13px;color:var(--grn);display:none;margin-top:12px">Saved</div>
+    <div style="margin-top:20px;background:var(--s1);border:1px solid var(--bdr);border-radius:14px;overflow:hidden">
+      <div class="psec-h" style="padding:10px 16px">Saved Profiles</div>
+      <div id="facelock-profiles" style="padding:0 16px 12px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ BRANDING ADMIN ═══════════════ -->
+<div id="screen-branding" class="screen">
+  <div class="hdr">
+    <button class="ib" onclick="goBack()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+    <span class="hdr-title">App Branding</span>
+  </div>
+  <div class="pscroll">
+    <div style="background:var(--s1);border:1px solid var(--bdr);border-radius:14px;padding:14px 16px;margin-bottom:20px">
+      <p style="font-size:13px;color:var(--txt2);line-height:1.7">Upload login backgrounds and logos for each app separately. Changes go live immediately on the sign-in screen. The active app is determined by the <code style="background:var(--s2);padding:1px 5px;border-radius:4px;font-size:12px">app_name</code> column in your Supabase <code style="background:var(--s2);padding:1px 5px;border-radius:4px;font-size:12px">login_background</code> table.</p>
+    </div>
+
+    <!-- ── GOAT FACE ── -->
+    <div style="background:var(--s1);border:1px solid var(--bdr);border-radius:16px;overflow:hidden;margin-bottom:20px">
+      <div style="padding:14px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px">
+        <img src="logo-main.png" style="height:22px;width:auto" onerror="this.style.display='none'" alt="">
+        <span style="font-weight:700;font-size:15px">Goat Face</span>
+      </div>
+      <div style="padding:14px 16px;display:flex;flex-direction:column;gap:14px">
+        <div>
+          <label class="lbl">Login Background</label>
+          <div id="gf-bg-prev" style="width:100%;height:120px;border-radius:12px;background:var(--s2);overflow:hidden;margin-bottom:8px;position:relative">
+            <img id="gf-bg-img" style="width:100%;height:100%;object-fit:cover;display:none" alt="">
+            <div id="gf-bg-ph" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--txt3);font-size:13px">No background set</div>
+          </div>
+          <input type="file" id="gf-bg-file" accept="image/*,video/*" hidden onchange="uploadBrandingBg(this,'goat_face')">
+          <div style="display:flex;gap:8px">
+            <button class="btn-ghost" style="flex:1;padding:10px" onclick="document.getElementById('gf-bg-file').click()">Upload Image</button>
+            <button class="btn-ghost" style="flex:1;padding:10px" onclick="clearBrandingBg('goat_face')">Clear</button>
+          </div>
+        </div>
+        <div>
+          <label class="lbl">App Logo</label>
+          <div style="display:flex;align-items:center;gap:12px;background:var(--s2);border-radius:12px;padding:12px;margin-bottom:8px">
+            <img id="gf-logo-img" src="logo-main.png" style="height:40px;width:auto;border-radius:8px" alt="">
+            <div style="font-size:12px;color:var(--txt2)">Current: logo-main.png</div>
+          </div>
+          <input type="file" id="gf-logo-file" accept="image/*" hidden onchange="uploadBrandingLogo(this,'goat_face')">
+          <button class="btn-ghost" style="width:100%;padding:10px" onclick="document.getElementById('gf-logo-file').click()">Replace Logo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SUBTLE & SOUL ── -->
+    <div style="background:var(--s1);border:1px solid var(--bdr);border-radius:16px;overflow:hidden;margin-bottom:20px">
+      <div style="padding:14px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px">
+        <div style="width:22px;height:22px;background:var(--s3);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--txt3);font-weight:700">S</div>
+        <span style="font-weight:700;font-size:15px">Subtle &amp; Soul</span>
+      </div>
+      <div style="padding:14px 16px;display:flex;flex-direction:column;gap:14px">
+        <div>
+          <label class="lbl">Login Background</label>
+          <div id="ss-bg-prev" style="width:100%;height:120px;border-radius:12px;background:var(--s2);overflow:hidden;margin-bottom:8px;position:relative">
+            <img id="ss-bg-img" style="width:100%;height:100%;object-fit:cover;display:none" alt="">
+            <div id="ss-bg-ph" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--txt3);font-size:13px">No background set</div>
+          </div>
+          <input type="file" id="ss-bg-file" accept="image/*,video/*" hidden onchange="uploadBrandingBg(this,'subtle_soul')">
+          <div style="display:flex;gap:8px">
+            <button class="btn-ghost" style="flex:1;padding:10px" onclick="document.getElementById('ss-bg-file').click()">Upload Image</button>
+            <button class="btn-ghost" style="flex:1;padding:10px" onclick="clearBrandingBg('subtle_soul')">Clear</button>
+          </div>
+        </div>
+        <div>
+          <label class="lbl">App Logo</label>
+          <div style="background:var(--s2);border-radius:12px;padding:12px;margin-bottom:8px">
+            <input id="ss-logo-url" class="inp" placeholder="https://... logo URL for Subtle & Soul" style="background:var(--s3)">
+          </div>
+          <button class="btn-ghost" style="width:100%;padding:10px" onclick="saveSsLogoUrl()">Save Logo URL</button>
+        </div>
+        <div>
+          <label class="lbl">Templates</label>
+          <div id="branding-tmpl-list" style="margin-bottom:8px;font-size:13px;color:var(--txt3)">Loading...</div>
+          <div style="display:flex;flex-direction:column;gap:8px;background:var(--s2);border-radius:12px;padding:12px">
+            <label class="lbl" style="margin:0">Add Template</label>
+            <input id="tmpl-title" class="inp" placeholder="Title" style="background:var(--s3)">
+            <input id="tmpl-img" class="inp" placeholder="Image URL" style="background:var(--s3)">
+            <input id="tmpl-prompt" class="inp" placeholder="Prompt" style="background:var(--s3)">
+            <select id="tmpl-screen" class="inp" style="background:var(--s3)">
+              <option value="pimg">Prompt to Image</option>
+              <option value="pvid">Prompt to Video</option>
+              <option value="tts">Text to Speech</option>
+            </select>
+            <button class="btn-ghost" onclick="addBrandingTemplate()">Add Template</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="branding-status" style="text-align:center;font-size:13px;color:var(--grn);display:none;padding:8px">Saved successfully</div>
   </div>
 </div>
 
@@ -894,9 +1100,17 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
  create table hero_media (id text primary key, user_id text not null, url text not null, created_at timestamptz default now());
  create table user_profiles (user_id text primary key, avatar_url text, updated_at timestamptz default now());
 
- SUPABASE STORAGE — create buckets:
- - hero-media (public)
- - avatars (public)
+ -- FACE LOCK TABLES (new — do not conflict with above):
+ create table face_profiles (id uuid primary key default gen_random_uuid(), user_id uuid references auth.users not null, name text not null, lock_prompt text not null, reference_image_url text, is_active boolean default false, created_at timestamptz default now());
+ alter table face_profiles enable row level security;
+ create policy "Users manage own face profiles" on face_profiles for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+ create table face_generations (id uuid primary key default gen_random_uuid(), user_id uuid references auth.users not null, face_profile_id uuid references face_profiles(id) on delete set null, type text not null, output_url text not null, prompt_used text, created_at timestamptz default now());
+ alter table face_generations enable row level security;
+ create policy "Users manage own face generations" on face_generations for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+ SUPABASE STORAGE — uses existing "avatars" bucket (public):
+ All avatar, hero media, and logo uploads go into the same "avatars" bucket using user_id sub-paths.
 */
 
 const SB_URL        = 'https://qmwlphribvncdtgzbixt.supabase.co';
@@ -920,7 +1134,12 @@ const DEFAULT_SLIDES = [
 ];
 
 function getKeys() {
-  return { ant: localStorage.getItem('key_ant')||'', fal: localStorage.getItem('key_fal')||'', car: localStorage.getItem('key_car')||'' };
+  return {
+    groq: localStorage.getItem('key_groq')||'',
+    fal:  localStorage.getItem('key_fal')||'',
+    car:  localStorage.getItem('key_car')||'',
+    elabs: localStorage.getItem('key_elabs')||''
+  };
 }
 
 // ── INIT ──
@@ -964,9 +1183,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadLoginBackground() {
   try {
     const { data, error } = await sb.from('login_background')
-      .select('*').eq('active', true)
+      .select('*').eq('active', true).eq('app_name', 'goat_face')
       .order('created_at', { ascending: false }).limit(1);
-    if (error || !data?.length) return;
+    if (error || !data?.length) return; // keep default login-bg.jpg
     const bg = data[0];
     if (!bg?.url) return;
     const vid = document.getElementById('signin-bg-vid');
@@ -975,15 +1194,124 @@ async function loadLoginBackground() {
       if (vid) { vid.querySelector('source').src = bg.url; vid.load(); vid.style.display = 'block'; }
       if (img) img.style.display = 'none';
     } else {
-      if (img) {
-        img.onload = () => { img.style.display = 'block'; };
-        img.src = bg.url;
-        // If already cached, show immediately
-        if (img.complete) img.style.display = 'block';
-      }
+      if (img) { img.onload = () => { img.style.display = 'block'; }; img.src = bg.url; if (img.complete) img.style.display = 'block'; }
       if (vid) vid.style.display = 'none';
     }
   } catch(e) { console.warn('loadLoginBackground:', e); }
+}
+
+// ── BRANDING ADMIN ──
+async function loadBrandingScreen() {
+  // Load current Goat Face bg
+  try {
+    const { data } = await sb.from('login_background').select('url').eq('active', true).eq('app_name', 'goat_face').order('created_at', { ascending: false }).limit(1);
+    if (data?.[0]?.url) {
+      const img = document.getElementById('gf-bg-img');
+      const ph  = document.getElementById('gf-bg-ph');
+      if (img) { img.src = data[0].url; img.style.display = 'block'; }
+      if (ph)  ph.style.display = 'none';
+    }
+  } catch(e) {}
+  // Load current Subtle & Soul bg
+  try {
+    const { data } = await sb.from('login_background').select('url').eq('active', true).eq('app_name', 'subtle_soul').order('created_at', { ascending: false }).limit(1);
+    if (data?.[0]?.url) {
+      const img = document.getElementById('ss-bg-img');
+      const ph  = document.getElementById('ss-bg-ph');
+      if (img) { img.src = data[0].url; img.style.display = 'block'; }
+      if (ph)  ph.style.display = 'none';
+    }
+  } catch(e) {}
+  // Load templates
+  loadBrandingTemplates();
+}
+
+async function uploadBrandingBg(inp, appName) {
+  const file = inp.files[0]; if (!file || !currentUser) return;
+  const isVideo = file.type.startsWith('video/');
+  const ext = file.name.split('.').pop() || (isVideo ? 'mp4' : 'jpg');
+  const path = `branding/${appName}_bg_${Date.now()}.${ext}`;
+  const { error } = await sb.storage.from('avatars').upload(path, file, { upsert: true, contentType: file.type });
+  if (error) { alert('Upload failed: ' + error.message); return; }
+  const { data } = sb.storage.from('avatars').getPublicUrl(path);
+  const url = data.publicUrl;
+  // Deactivate old, insert new
+  await sb.from('login_background').update({ active: false }).eq('app_name', appName);
+  await sb.from('login_background').insert({ url, type: isVideo ? 'video' : 'image', active: true, app_name: appName });
+  // Update preview
+  const prefix = appName === 'goat_face' ? 'gf' : 'ss';
+  const img = document.getElementById(`${prefix}-bg-img`);
+  const ph  = document.getElementById(`${prefix}-bg-ph`);
+  if (img && !isVideo) { img.src = url; img.style.display = 'block'; }
+  if (ph) ph.style.display = 'none';
+  showBrandingStatus();
+}
+
+async function clearBrandingBg(appName) {
+  await sb.from('login_background').update({ active: false }).eq('app_name', appName);
+  const prefix = appName === 'goat_face' ? 'gf' : 'ss';
+  const img = document.getElementById(`${prefix}-bg-img`);
+  const ph  = document.getElementById(`${prefix}-bg-ph`);
+  if (img) { img.src = ''; img.style.display = 'none'; }
+  if (ph) ph.style.display = 'flex';
+  showBrandingStatus();
+}
+
+async function uploadBrandingLogo(inp, appName) {
+  const file = inp.files[0]; if (!file || !currentUser) return;
+  const path = `branding/${appName}_logo_${Date.now()}.${file.name.split('.').pop()||'png'}`;
+  const { error } = await sb.storage.from('avatars').upload(path, file, { upsert: true, contentType: file.type });
+  if (error) { alert('Upload failed: ' + error.message); return; }
+  const { data } = sb.storage.from('avatars').getPublicUrl(path);
+  if (appName === 'goat_face') {
+    const img = document.getElementById('gf-logo-img');
+    if (img) img.src = data.publicUrl;
+  }
+  showBrandingStatus();
+}
+
+function saveSsLogoUrl() {
+  const url = document.getElementById('ss-logo-url')?.value.trim();
+  if (url) localStorage.setItem('ss_logo_url', url);
+  showBrandingStatus();
+}
+
+async function loadBrandingTemplates() {
+  const list = document.getElementById('branding-tmpl-list'); if (!list) return;
+  const { data } = await sb.from('templates').select('id,title,target_screen,active').order('display_order');
+  if (!data?.length) { list.textContent = 'No templates yet.'; return; }
+  list.innerHTML = data.map(t => `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bdr)">
+      <div><span style="font-size:13px;color:var(--txt)">${esc(t.title)}</span><span style="font-size:11px;color:var(--txt3);margin-left:8px">${esc(t.target_screen)}</span></div>
+      <button onclick="deleteBrandingTemplate('${t.id}')" style="background:none;border:none;color:var(--red);font-size:12px;cursor:pointer;padding:4px 8px">Delete</button>
+    </div>`).join('');
+}
+
+async function addBrandingTemplate() {
+  const title  = document.getElementById('tmpl-title').value.trim();
+  const img    = document.getElementById('tmpl-img').value.trim();
+  const prompt = document.getElementById('tmpl-prompt').value.trim();
+  const screen = document.getElementById('tmpl-screen').value;
+  if (!title || !prompt) { alert('Title and prompt are required'); return; }
+  const maxOrder = await sb.from('templates').select('display_order').order('display_order', { ascending: false }).limit(1);
+  const order = (maxOrder.data?.[0]?.display_order || 0) + 1;
+  await sb.from('templates').insert({ title, image_url: img || null, prompt, target_screen: screen, display_order: order, active: true });
+  ['tmpl-title','tmpl-img','tmpl-prompt'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  loadBrandingTemplates();
+  showBrandingStatus();
+}
+
+async function deleteBrandingTemplate(id) {
+  if (!confirm('Delete this template?')) return;
+  await sb.from('templates').delete().eq('id', id);
+  loadBrandingTemplates();
+}
+
+function showBrandingStatus() {
+  const el = document.getElementById('branding-status');
+  if (!el) return;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 2200);
 }
 
 async function loadTemplates() {
@@ -1009,6 +1337,120 @@ async function loadTemplates() {
 
 function masked(s) { return s.slice(0,6) + '•'.repeat(8); }
 
+// ── SPLASH ──
+(function() {
+  const splash = document.getElementById('splash');
+  if (!splash) return;
+  setTimeout(() => {
+    splash.classList.add('fade');
+    setTimeout(() => { splash.style.display = 'none'; }, 500);
+  }, 2200);
+})();
+
+// ── FACE LOCK ──
+const DEFAULT_FACE_PROMPT = 'a goat with distinctive large curved silver mirror-tile horns, reflective mosaic-tile face, dramatic lighting, photorealistic, ultra-detailed, ';
+function getFaceLock() {
+  return {
+    on:          localStorage.getItem('fl_on') === '1',
+    prompt:      localStorage.getItem('fl_prompt') || DEFAULT_FACE_PROMPT,
+    faceUrl:     localStorage.getItem('fl_face_url') || null,
+    bodyUrl:     localStorage.getItem('fl_body_url') || null,
+    envUrl:      localStorage.getItem('fl_env_url') || null
+  };
+}
+function applyFaceLockPrompt(userPrompt) {
+  const fl = getFaceLock();
+  if (!fl.on) return userPrompt;
+  return fl.prompt.trim() + ', ' + userPrompt;
+}
+function getFaceLockRefImages() {
+  // Returns array of public image URLs for reference-based generation
+  const fl = getFaceLock();
+  if (!fl.on) return {};
+  return { face: fl.faceUrl, body: fl.bodyUrl, env: fl.envUrl };
+}
+function toggleFaceLock() {
+  const tgl = document.getElementById('facelock-tgl');
+  const isOn = tgl.classList.toggle('on');
+  localStorage.setItem('fl_on', isOn ? '1' : '0');
+  updateFaceLockStatus();
+}
+function updateFaceLockStatus() {
+  const fl = getFaceLock();
+  const status = document.getElementById('prof-facelock-status');
+  const tgl = document.getElementById('facelock-tgl');
+  if (status) status.textContent = fl.on ? 'On' : 'Off';
+  if (tgl) tgl.classList.toggle('on', fl.on);
+}
+function loadFaceLockScreen() {
+  const fl = getFaceLock();
+  const tgl = document.getElementById('facelock-tgl');
+  const promptEl = document.getElementById('facelock-prompt');
+  if (tgl) tgl.classList.toggle('on', fl.on);
+  if (promptEl) promptEl.value = fl.prompt;
+  // Restore preview thumbs
+  if (fl.faceUrl) { const el = document.getElementById('fl-face-prev'); if(el){el.src=fl.faceUrl;el.style.display='block';} const ph=document.getElementById('fl-face-ph');if(ph)ph.style.display='none'; }
+  if (fl.bodyUrl) { const el = document.getElementById('fl-body-prev'); if(el){el.src=fl.bodyUrl;el.style.display='block';} const ph=document.getElementById('fl-body-ph');if(ph)ph.style.display='none'; }
+  if (fl.envUrl)  { const el = document.getElementById('fl-env-prev');  if(el){el.src=fl.envUrl;el.style.display='block';}  const ph=document.getElementById('fl-env-ph');if(ph)ph.style.display='none'; }
+  updateFaceLockStatus();
+  loadFaceLockProfiles();
+}
+function saveFaceLock() {
+  const promptEl = document.getElementById('facelock-prompt');
+  const prompt = promptEl?.value.trim() || DEFAULT_FACE_PROMPT;
+  localStorage.setItem('fl_prompt', prompt);
+  const saved = document.getElementById('facelock-saved');
+  if (saved) { saved.style.display = 'block'; setTimeout(() => saved.style.display = 'none', 2000); }
+  updateFaceLockStatus();
+}
+async function uploadFaceLockRef(inp, slot) {
+  // slot: 'face' | 'body' | 'env'
+  const file = inp.files[0]; if (!file || !currentUser) return;
+  const path = `${currentUser.id}/facelock_${slot}_${Date.now()}.${file.name.split('.').pop()||'jpg'}`;
+  const { error } = await sb.storage.from('avatars').upload(path, file, { upsert: true, contentType: file.type });
+  if (error) { alert('Upload failed: ' + error.message); return; }
+  const { data } = sb.storage.from('avatars').getPublicUrl(path);
+  const url = data.publicUrl;
+  localStorage.setItem(`fl_${slot}_url`, url);
+  const prev = document.getElementById(`fl-${slot}-prev`);
+  const ph = document.getElementById(`fl-${slot}-ph`);
+  if (prev) { prev.src = url; prev.style.display = 'block'; }
+  if (ph) ph.style.display = 'none';
+  showSaveToast();
+}
+function clearFaceLockRef(slot) {
+  localStorage.removeItem(`fl_${slot}_url`);
+  const prev = document.getElementById(`fl-${slot}-prev`);
+  const ph = document.getElementById(`fl-${slot}-ph`);
+  if (prev) { prev.src = ''; prev.style.display = 'none'; }
+  if (ph) ph.style.display = 'flex';
+}
+async function loadFaceLockProfiles() {
+  if (!currentUser) return;
+  const { data } = await sb.from('face_profiles').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
+  const list = document.getElementById('facelock-profiles');
+  if (!list) return;
+  if (!data?.length) { list.innerHTML = '<div style="font-size:13px;color:var(--txt3);padding:8px 0">No saved profiles yet.</div>'; return; }
+  list.innerHTML = data.map(p => `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bdr)">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:14px;font-weight:600;color:var(--txt)">${esc(p.name)}</div>
+        <div style="font-size:11px;color:var(--txt3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.lock_prompt)}</div>
+      </div>
+      <button onclick="loadFaceProfile('${esc(p.lock_prompt)}')" style="background:var(--s2);border:1px solid var(--bdr);border-radius:8px;padding:6px 12px;color:var(--txt);font-size:12px;cursor:pointer;flex-shrink:0;margin-left:8px">Use</button>
+    </div>`).join('');
+}
+function loadFaceProfile(prompt) {
+  const promptEl = document.getElementById('facelock-prompt');
+  if (promptEl) promptEl.value = prompt;
+  localStorage.setItem('fl_prompt', prompt);
+  localStorage.setItem('fl_on', '1');
+  updateFaceLockStatus();
+  const tgl = document.getElementById('facelock-tgl');
+  if (tgl) tgl.classList.add('on');
+  showSaveToast();
+}
+
 function initApp() {
   const u = currentUser;
   const name = u.user_metadata?.full_name || u.email?.split('@')[0] || '';
@@ -1020,11 +1462,13 @@ function initApp() {
   document.getElementById('prof-id').textContent = 'ID · ' + u.id.slice(-8);
   // Load saved keys
   const k = getKeys();
-  if (k.ant) document.getElementById('key-ant').value = masked(k.ant);
+  if (k.groq) document.getElementById('key-groq').value = masked(k.groq);
   if (k.fal) document.getElementById('key-fal').value = masked(k.fal);
   if (k.car) document.getElementById('key-car').value = masked(k.car);
+  if (k.elabs) document.getElementById('key-elabs').value = masked(k.elabs);
   loadCustomAvatar();
   initHero();
+  updateFaceLockStatus();
   go('home');
 }
 
@@ -1095,7 +1539,7 @@ function startTemplate(i) {
     lastY = y;
   }
 })();
-const INNER = ['signin','chat','tts','pimg','pvid','i2v','motion','refimg','keys','heromanage','library'];
+const INNER = ['signin','chat','tts','pimg','pvid','i2v','motion','refimg','keys','heromanage','library','facelock','branding'];
 function go(screen, params = {}) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
   const el = document.getElementById('screen-' + screen);
@@ -1123,6 +1567,8 @@ function go(screen, params = {}) {
   if (screen === 'chat') loadSessions();
   if (screen === 'heromanage') loadHeroManage();
   if (screen === 'signin') loadLoginBackground();
+  if (screen === 'facelock') loadFaceLockScreen();
+  if (screen === 'branding') loadBrandingScreen();
   if (screen === 'i2v' && params.src) {
     i2vSrc = params.src;
     const p = document.getElementById('i2v-prev');
@@ -1300,12 +1746,14 @@ async function signOut() {
 
 // ── API KEYS ──
 function saveKeys() {
-  const a = document.getElementById('key-ant').value.trim();
+  const g = document.getElementById('key-groq').value.trim();
   const f = document.getElementById('key-fal').value.trim();
   const c = document.getElementById('key-car').value.trim();
-  if (a && !a.includes('•')) localStorage.setItem('key_ant', a);
+  const e = document.getElementById('key-elabs').value.trim();
+  if (g && !g.includes('•')) localStorage.setItem('key_groq', g);
   if (f && !f.includes('•')) localStorage.setItem('key_fal', f);
   if (c && !c.includes('•')) localStorage.setItem('key_car', c);
+  if (e && !e.includes('•')) localStorage.setItem('key_elabs', e);
   const el = document.getElementById('keys-saved');
   el.style.display = 'block';
   setTimeout(() => el.style.display = 'none', 2500);
@@ -1404,7 +1852,7 @@ async function sendChat() {
   const text = inp.value.trim();
   if (!text && !mediaBase64) return;
   const keys = getKeys();
-  if (!keys.ant) { alert('Add your Anthropic API key in Profile > API Keys'); return; }
+  if (!keys.groq) { alert('Add your Groq API key in Profile > API Keys'); return; }
   if (!activeSession) await newChat();
 
   inp.value = ''; inp.style.height = 'auto';
@@ -1430,14 +1878,14 @@ async function sendChat() {
 
   const typingBubble = appendMsg('assistant', '', true);
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
-      headers: { 'x-api-key': keys.ant, 'anthropic-version': '2023-06-01', 'content-type': 'application/json', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-opus-4-6', max_tokens: 1024, messages: chatHistory })
+      headers: { 'Authorization': 'Bearer ' + keys.groq, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 1024, messages: chatHistory.map(m => ({ role: m.role, content: typeof m.content === 'string' ? m.content : (m.content.find?.(c=>c.type==='text')?.text || '') })) })
     });
     const data = await resp.json();
     typingBubble.closest('.msg-group').remove();
-    const reply = data.content?.[0]?.text || (data.error?.message ? 'Error: ' + data.error.message : 'No response.');
+    const reply = data.choices?.[0]?.message?.content || (data.error?.message ? 'Error: ' + data.error.message : 'No response.');
     appendMsg('assistant', reply);
     chatHistory.push({ role: 'assistant', content: reply });
     await sb.from('chat_messages').insert({ session_id: activeSession, role: 'assistant', content: reply });
@@ -1562,7 +2010,7 @@ async function doImage() {
       landscape_4_3: '4:3', landscape_16_9: '16:9'
     };
 
-    const params = { prompt: style + prompt };
+    const params = { prompt: style + applyFaceLockPrompt(prompt) };
 
     if (isIdeogram) {
       params.aspect_ratio = ideogramRatioMap[ratioFlux] || '1:1';
@@ -1602,7 +2050,7 @@ async function doPVid() {
   btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Submitting...'; err.style.display = 'none'; res.style.display = 'none';
   let wakeLock = null; try { wakeLock = await navigator.wakeLock?.request('screen'); } catch(_) {}
   try {
-    const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('pvid-mode').value}/text-to-video`, { prompt, duration: document.getElementById('pvid-dur').value, aspect_ratio: document.getElementById('pvid-ratio').value }, 'pvid-btn', 'Generating');
+    const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('pvid-mode').value}/text-to-video`, { prompt: applyFaceLockPrompt(prompt), duration: document.getElementById('pvid-dur').value, aspect_ratio: document.getElementById('pvid-ratio').value }, 'pvid-btn', 'Generating');
     const url = data.video?.url; if (!url) throw new Error('No video URL in response: ' + JSON.stringify(data));
     document.getElementById('pvid-out').src = url; res.style.display = 'block';
     saveLib('video', url, prompt); showSaveToast();
@@ -1624,7 +2072,7 @@ async function doI2V() {
   try {
     const imageUrl = await toPublicUrl(i2vSrc);
     btn.innerHTML = '<div class="spin"></div> Submitting...';
-    const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('i2v-mode').value}/image-to-video`, { image_url: imageUrl, prompt: document.getElementById('i2v-prompt').value, duration: document.getElementById('i2v-dur').value, aspect_ratio: document.getElementById('i2v-ratio').value }, 'i2v-btn', 'Animating');
+    const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('i2v-mode').value}/image-to-video`, { image_url: imageUrl, prompt: applyFaceLockPrompt(document.getElementById('i2v-prompt').value), duration: document.getElementById('i2v-dur').value, aspect_ratio: document.getElementById('i2v-ratio').value }, 'i2v-btn', 'Animating');
     const url = data.video?.url; if (!url) throw new Error('No video URL in response: ' + JSON.stringify(data));
     document.getElementById('i2v-out').src = url; res.style.display = 'block';
     saveLib('video', url, document.getElementById('i2v-prompt').value); showSaveToast();
@@ -1652,6 +2100,68 @@ async function doRefImg() {
 
 // ── MOTION ──
 function motPickFile(inp) { readFile(inp, r => { motSrc = r; const p = document.getElementById('mot-prev'); p.src = r; p.style.display = 'block'; document.getElementById('mot-ph').style.display = 'none'; }); }
+function ttsProviderChange() {
+  const p = document.getElementById('tts-provider').value;
+  const voiceSection = document.getElementById('tts-voice-section');
+  if (voiceSection) voiceSection.style.display = p === 'cartesia' ? '' : 'none';
+  document.getElementById('tts-voice-id').placeholder = p === 'elevenlabs' ? 'ElevenLabs Voice ID (e.g. EXAVITQu4vr4xnSDxMaL)' : 'e.g. a0e99841-438c-4a64-b679-ae501e7d6091';
+}
+
+function useFaceLockAsMotSrc() {
+  const fl = getFaceLock();
+  if (!fl.faceUrl) { alert('No face reference uploaded in Face Lock. Go to Profile → Face Lock and upload a face photo first.'); return; }
+  motSrc = fl.faceUrl;
+  const prev = document.getElementById('mot-prev');
+  const ph = document.getElementById('mot-ph');
+  if (prev) { prev.src = fl.faceUrl; prev.style.display = 'block'; }
+  if (ph) ph.style.display = 'none';
+}
+
+async function doNsfw() {
+  const scenePrompt = document.getElementById('mot-prompt').value.trim();
+  const nudeOn = localStorage.getItem('nsfw_nude') === '1';
+  const keys = getKeys();
+  if (!keys.fal) { alert('Add your FAL.ai key in Profile > API Keys'); return; }
+  const btn = document.getElementById('mot-btn');
+  const err = document.getElementById('mot-err');
+  const res = document.getElementById('mot-res');
+  btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Generating...';
+  err.style.display = 'none'; res.style.display = 'none';
+
+  // Build locked NSFW prompt — user only writes scene
+  const nsfwBase = nudeOn
+    ? 'NSFW, explicit nudity, fully nude, realistic skin texture, intimate, '
+    : 'NSFW, suggestive, sensual, intimate, revealing, ';
+  const fullPrompt = applyFaceLockPrompt(nsfwBase + scenePrompt);
+
+  try {
+    let result;
+    if (motSrc) {
+      // Use img2img with face/body reference
+      result = await falQueue('fal-ai/flux/dev/image-to-image', {
+        image_url: motSrc,
+        prompt: fullPrompt,
+        strength: 0.75,
+        num_inference_steps: 28,
+        enable_safety_checker: false
+      }, 'mot-btn', 'Generating');
+    } else {
+      result = await falQueue('fal-ai/flux/dev', {
+        prompt: fullPrompt,
+        num_inference_steps: 28,
+        enable_safety_checker: false
+      }, 'mot-btn', 'Generating');
+    }
+    const url = result?.images?.[0]?.url || result?.image?.url;
+    if (!url) throw new Error('No image returned');
+    document.getElementById('mot-out-img').src = url;
+    res.style.display = 'block';
+    saveLib('image', url, 'nsfw');
+    showSaveToast();
+  } catch(e) { err.textContent = 'Error: ' + e.message; err.style.display = 'block'; }
+  btn.disabled = false; btn.innerHTML = 'Generate Image';
+}
+
 async function doMotion() {
   if (!motSrc) { alert('Upload an image to animate'); return; }
   const extra = document.getElementById('mot-prompt').value;
@@ -1662,7 +2172,7 @@ async function doMotion() {
   try {
     const imageUrl = await toPublicUrl(motSrc);
     btn.innerHTML = '<div class="spin"></div> Animating...';
-    const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('mot-mode').value}/image-to-video`, { image_url: imageUrl, prompt, duration: document.getElementById('mot-dur').value, aspect_ratio: document.getElementById('mot-ratio').value }, 'mot-btn', 'Animating');
+    const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('mot-mode').value}/image-to-video`, { image_url: imageUrl, prompt: applyFaceLockPrompt(prompt), duration: document.getElementById('mot-dur').value, aspect_ratio: document.getElementById('mot-ratio').value }, 'mot-btn', 'Animating');
     const url = data.video?.url; if (!url) throw new Error('No video URL in response: ' + JSON.stringify(data));
     document.getElementById('mot-out').src = url; res.style.display = 'block';
     saveLib('video', url, extra || 'motion'); showSaveToast();
@@ -1746,24 +2256,36 @@ function pickPresetVoice(el) {
 async function doTts() {
   const text = document.getElementById('tts-text').value.trim();
   const voiceId = document.getElementById('tts-voice-id').value.trim();
+  const provider = document.getElementById('tts-provider').value;
   if (!text) { alert('Enter some text'); return; }
   if (!voiceId) { alert('Enter or select a Voice ID'); return; }
   const keys = getKeys();
-  if (!keys.car) { alert('Add your Cartesia key in Profile > API Keys'); return; }
   const btn = document.getElementById('tts-btn'); const err = document.getElementById('tts-err'); const res = document.getElementById('tts-res');
   btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Generating...'; err.style.display = 'none'; res.style.display = 'none';
   try {
-    const resp = await fetch('https://api.cartesia.ai/tts/bytes', {
-      method: 'POST',
-      headers: { 'X-API-Key': keys.car, 'Cartesia-Version': '2024-06-10', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model_id: 'sonic-2', transcript: text, voice: { mode: 'id', id: voiceId }, output_format: { container: 'mp3', encoding: 'mp3', sample_rate: 44100 } })
-    });
-    if (!resp.ok) { const t = await resp.text(); throw new Error(t); }
-    const ab = await resp.arrayBuffer();
+    let ab;
+    if (provider === 'elevenlabs') {
+      if (!keys.elabs) throw new Error('Add your ElevenLabs key in Profile > API Keys');
+      const resp = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+        method: 'POST',
+        headers: { 'xi-api-key': keys.elabs, 'Content-Type': 'application/json', 'Accept': 'audio/mpeg' },
+        body: JSON.stringify({ text, model_id: 'eleven_turbo_v2_5', voice_settings: { stability: 0.5, similarity_boost: 0.75 } })
+      });
+      if (!resp.ok) { const t = await resp.text(); throw new Error(t); }
+      ab = await resp.arrayBuffer();
+    } else {
+      if (!keys.car) throw new Error('Add your Cartesia key in Profile > API Keys');
+      const resp = await fetch('https://api.cartesia.ai/tts/bytes', {
+        method: 'POST',
+        headers: { 'X-API-Key': keys.car, 'Cartesia-Version': '2024-06-10', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model_id: 'sonic-2', transcript: text, voice: { mode: 'id', id: voiceId }, output_format: { container: 'mp3', encoding: 'mp3', sample_rate: 44100 } })
+      });
+      if (!resp.ok) { const t = await resp.text(); throw new Error(t); }
+      ab = await resp.arrayBuffer();
+    }
     ttsBlob = new Blob([ab], { type: 'audio/mpeg' });
     document.getElementById('tts-audio').src = URL.createObjectURL(ttsBlob);
     res.style.display = 'block';
-    // Auto-save to library as data URL so it persists
     const reader = new FileReader();
     reader.onload = e => { saveLib('audio', e.target.result, text.slice(0, 80)); showSaveToast(); };
     reader.readAsDataURL(ttsBlob);

@@ -416,21 +416,14 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
   </div>
   <div class="pscroll">
     <div class="sec">
-      <label class="lbl">Provider</label>
-      <select id="tts-provider" class="inp" onchange="ttsProviderChange()">
-        <option value="cartesia">Cartesia (sonic-2)</option>
-        <option value="elevenlabs">ElevenLabs (turbo v2.5)</option>
-      </select>
-    </div>
-    <div class="sec">
       <label class="lbl">Voice</label>
       <div style="background:var(--s1);border:1px solid var(--bdr);border-radius:14px;padding:14px 16px;margin-bottom:8px">
-        <p style="font-size:13px;color:var(--txt2);line-height:1.6;margin-bottom:12px">Enter a Voice ID from your provider — Cartesia at <strong style="color:var(--txt)">app.cartesia.ai</strong>, ElevenLabs at <strong style="color:var(--txt)">elevenlabs.io</strong>.</p>
+        <p style="font-size:13px;color:var(--txt2);line-height:1.6;margin-bottom:12px">Enter a Cartesia Voice ID from your account at <strong style="color:var(--txt)">app.cartesia.ai</strong> — including any voices you've cloned.</p>
         <label class="lbl">Voice ID</label>
         <input id="tts-voice-id" class="inp" placeholder="e.g. a0e99841-438c-4a64-b679-ae501e7d6091" autocomplete="off" oninput="this.value=this.value.trim()">
-        <div id="tts-voice-section" style="margin-top:12px">
+        <div style="margin-top:12px">
           <label class="lbl">Preset Voices</label>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" id="voice-presets">
+          <div style="display:flex;flex-direction:column;gap:6px" id="voice-presets">
             <button class="vc" data-id="a0e99841-438c-4a64-b679-ae501e7d6091" onclick="pickPresetVoice(this)">
               <div><div class="vc-n">Barbra</div><div class="vc-d">American · Warm Female</div></div>
             </button>
@@ -466,7 +459,7 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
             </button>
           </div>
           <!-- Custom voices saved by user -->
-          <div id="custom-voice-list" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px"></div>
+          <div id="custom-voice-list" style="display:flex;flex-direction:column;gap:6px;margin-top:6px"></div>
           <!-- Add custom voice -->
           <div style="margin-top:10px;padding:12px;background:var(--s2);border:1px solid var(--bdr);border-radius:12px">
             <label class="lbl" style="margin-bottom:6px">Add Your Own Voice</label>
@@ -809,9 +802,10 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
       <p style="font-size:13px;color:var(--txt2);line-height:1.6">Keys are stored only in your browser's local storage. They are never sent to any server other than the respective API providers.</p>
     </div>
     <div class="sec">
-      <label class="lbl">Groq Key <span style="color:var(--txt3);font-weight:400;font-size:10px">(AI Chat)</span></label>
+      <label class="lbl">Groq Key <span style="color:var(--txt3);font-weight:400;font-size:10px">(AI Chat — free tier)</span></label>
       <input class="inp" id="key-groq" type="password" placeholder="gsk_..." autocomplete="off">
       <p style="font-size:11px;color:var(--txt3);margin-top:4px">Get from console.groq.com — free tier available</p>
+      <p style="font-size:11px;color:var(--txt3);margin-top:4px">Get from console.anthropic.com</p>
     </div>
     <div class="sec">
       <label class="lbl">FAL.ai Key <span style="color:var(--txt3);font-weight:400;font-size:10px">(Images & Videos)</span></label>
@@ -822,11 +816,6 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
       <label class="lbl">Cartesia Key <span style="color:var(--txt3);font-weight:400;font-size:10px">(Text to Speech)</span></label>
       <input class="inp" id="key-car" type="password" placeholder="sk_car_..." autocomplete="off">
       <p style="font-size:11px;color:var(--txt3);margin-top:4px">Get from app.cartesia.ai</p>
-    </div>
-    <div class="sec">
-      <label class="lbl">ElevenLabs Key <span style="color:var(--txt3);font-weight:400;font-size:10px">(Text to Speech)</span></label>
-      <input class="inp" id="key-elabs" type="password" placeholder="sk_..." autocomplete="off">
-      <p style="font-size:11px;color:var(--txt3);margin-top:4px">Get from elevenlabs.io — alternative TTS provider</p>
     </div>
     <button class="btn" onclick="saveKeys()">Save Keys</button>
     <div id="keys-saved" style="text-align:center;font-size:13px;color:var(--grn);display:none;margin-top:12px">Keys saved</div>
@@ -932,7 +921,7 @@ const DEFAULT_SLIDES = [
 ];
 
 function getKeys() {
-  return { groq: localStorage.getItem('key_groq')||'', fal: localStorage.getItem('key_fal')||'', car: localStorage.getItem('key_car')||'', elabs: localStorage.getItem('key_elabs')||'' };
+  return { groq: localStorage.getItem('key_groq')||'', fal: localStorage.getItem('key_fal')||'', car: localStorage.getItem('key_car')||'' };
 }
 
 // ── INIT ──
@@ -1032,10 +1021,9 @@ function initApp() {
   document.getElementById('prof-id').textContent = 'ID · ' + u.id.slice(-8);
   // Load saved keys
   const k = getKeys();
-  if (k.groq)  document.getElementById('key-groq').value  = masked(k.groq);
-  if (k.fal)   document.getElementById('key-fal').value   = masked(k.fal);
-  if (k.car)   document.getElementById('key-car').value   = masked(k.car);
-  if (k.elabs) document.getElementById('key-elabs').value = masked(k.elabs);
+  if (k.groq) document.getElementById('key-groq').value = masked(k.groq);
+  if (k.fal) document.getElementById('key-fal').value = masked(k.fal);
+  if (k.car) document.getElementById('key-car').value = masked(k.car);
   loadCustomAvatar();
   initHero();
   go('home');
@@ -1316,11 +1304,9 @@ function saveKeys() {
   const g = document.getElementById('key-groq').value.trim();
   const f = document.getElementById('key-fal').value.trim();
   const c = document.getElementById('key-car').value.trim();
-  const e = document.getElementById('key-elabs').value.trim();
   if (g && !g.includes('•')) localStorage.setItem('key_groq', g);
   if (f && !f.includes('•')) localStorage.setItem('key_fal', f);
   if (c && !c.includes('•')) localStorage.setItem('key_car', c);
-  if (e && !e.includes('•')) localStorage.setItem('key_elabs', e);
   const el = document.getElementById('keys-saved');
   el.style.display = 'block';
   setTimeout(() => el.style.display = 'none', 2500);
@@ -1424,14 +1410,12 @@ async function sendChat() {
 
   inp.value = ''; inp.style.height = 'auto';
 
-  let msgContent = mediaBase64
-    ? [{ type: 'image', source: { type: 'base64', media_type: mediaType, data: mediaBase64 } }, ...(text ? [{ type: 'text', text }] : [])]
-    : text;
+  // Groq doesn't support image inputs — use text only
   const userText = text || '[image]';
   clearMedia();
 
   appendMsg('user', userText);
-  chatHistory.push({ role: 'user', content: msgContent });
+  chatHistory.push({ role: 'user', content: userText });
   await sb.from('chat_messages').insert({ session_id: activeSession, role: 'user', content: userText });
 
   if (chatHistory.length === 1) {
@@ -1448,7 +1432,7 @@ async function sendChat() {
     const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + keys.groq, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 1024, messages: chatHistory.map(m => ({ role: m.role, content: typeof m.content === 'string' ? m.content : (m.content.find?.(c=>c.type==='text')?.text || '') })) })
+      body: JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 1024, messages: chatHistory })
     });
     const data = await resp.json();
     typingBubble.closest('.msg-group').remove();
@@ -1493,6 +1477,31 @@ async function toPublicUrl(src) {
   return src.startsWith('data:') ? await falUploadImage(src) : src;
 }
 
+// ── VIDEO BLOB LOADER ──
+// iOS Safari often fails to play FAL CDN video URLs directly in <video> elements.
+// We fetch the video as a blob and use a local blob URL instead — always works.
+async function loadVideoEl(elementId, url, fallbackErrEl) {
+  const el = document.getElementById(elementId);
+  // Try direct URL first (fast, works on most devices)
+  el.src = url;
+  el.onerror = async () => {
+    // Direct URL failed — fetch as blob (fixes iOS Safari CDN issue)
+    el.onerror = null;
+    try {
+      const r = await fetch(url);
+      if (!r.ok) throw new Error('fetch failed');
+      const blob = await r.blob();
+      el.src = URL.createObjectURL(blob);
+    } catch (_) {
+      // Blob also failed — show a direct open link as last resort
+      if (fallbackErrEl) {
+        fallbackErrEl.innerHTML = `Video ready but can't embed. <a href="${url}" target="_blank" style="color:var(--acc);font-weight:600">Tap here to open & save it →</a>`;
+        fallbackErrEl.style.display = 'block';
+      }
+    }
+  };
+}
+
 // ── FAL HELPER ──
 async function falQueue(model, body, btnId, label) {
   const keys = getKeys();
@@ -1520,10 +1529,13 @@ async function falQueue(model, body, btnId, label) {
     let s;
     try {
       const st = await fetch(`${FAL_Q}${model}/requests/${request_id}/status`, { headers: authOnly });
-      if (!st.ok) { if (btn) btn.innerHTML = `<div class="spin"></div> ${label} (retrying...)`; continue; }
+      if (!st.ok) {
+        if (btn) btn.innerHTML = `<div class="spin"></div> ${label} · waiting...`;
+        continue;
+      }
       s = await st.json();
     } catch (_) {
-      if (btn) btn.innerHTML = `<div class="spin"></div> ${label} (retrying...)`;
+      if (btn) btn.innerHTML = `<div class="spin"></div> ${label} · waiting...`;
       continue;
     }
 
@@ -1619,7 +1631,8 @@ async function doPVid() {
   try {
     const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('pvid-mode').value}/text-to-video`, { prompt, duration: document.getElementById('pvid-dur').value, aspect_ratio: document.getElementById('pvid-ratio').value }, 'pvid-btn', 'Generating');
     const url = data.video?.url; if (!url) throw new Error('No video URL in response: ' + JSON.stringify(data));
-    document.getElementById('pvid-out').src = url; res.style.display = 'block';
+    res.style.display = 'block';
+    await loadVideoEl('pvid-out', url, document.getElementById('pvid-err'));
     saveLib('video', url, prompt); showSaveToast();
   } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
   btn.disabled = false; btn.innerHTML = 'Generate Video';
@@ -1641,7 +1654,8 @@ async function doI2V() {
     btn.innerHTML = '<div class="spin"></div> Submitting...';
     const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('i2v-mode').value}/image-to-video`, { image_url: imageUrl, prompt: document.getElementById('i2v-prompt').value, duration: document.getElementById('i2v-dur').value, aspect_ratio: document.getElementById('i2v-ratio').value }, 'i2v-btn', 'Animating');
     const url = data.video?.url; if (!url) throw new Error('No video URL in response: ' + JSON.stringify(data));
-    document.getElementById('i2v-out').src = url; res.style.display = 'block';
+    res.style.display = 'block';
+    await loadVideoEl('i2v-out', url, document.getElementById('i2v-err'));
     saveLib('video', url, document.getElementById('i2v-prompt').value); showSaveToast();
   } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
   btn.disabled = false; btn.innerHTML = 'Animate';
@@ -1679,7 +1693,8 @@ async function doMotion() {
     btn.innerHTML = '<div class="spin"></div> Animating...';
     const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('mot-mode').value}/image-to-video`, { image_url: imageUrl, prompt, duration: document.getElementById('mot-dur').value, aspect_ratio: document.getElementById('mot-ratio').value }, 'mot-btn', 'Animating');
     const url = data.video?.url; if (!url) throw new Error('No video URL in response: ' + JSON.stringify(data));
-    document.getElementById('mot-out').src = url; res.style.display = 'block';
+    res.style.display = 'block';
+    await loadVideoEl('mot-out', url, document.getElementById('mot-err'));
     saveLib('video', url, extra || 'motion'); showSaveToast();
   } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
   btn.disabled = false; btn.innerHTML = 'Apply Motion';
@@ -1758,51 +1773,27 @@ function pickPresetVoice(el) {
   el.insertAdjacentHTML('beforeend', '<svg class="vc-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--txt)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>');
 }
 
-function ttsProviderChange() {
-  const p = document.getElementById('tts-provider').value;
-  const voiceSection = document.getElementById('tts-voice-section');
-  if (voiceSection) voiceSection.style.display = p === 'elevenlabs' ? 'none' : '';
-  document.getElementById('tts-voice-id').placeholder = p === 'elevenlabs'
-    ? 'ElevenLabs Voice ID (e.g. EXAVITQu4vr4xnSDxMaL)'
-    : 'e.g. a0e99841-438c-4a64-b679-ae501e7d6091';
-}
-
 async function doTts() {
-  const text    = document.getElementById('tts-text').value.trim();
+  const text = document.getElementById('tts-text').value.trim();
   const voiceId = document.getElementById('tts-voice-id').value.trim();
-  const provider = document.getElementById('tts-provider')?.value || 'cartesia';
-  if (!text)    { alert('Enter some text'); return; }
+  if (!text) { alert('Enter some text'); return; }
   if (!voiceId) { alert('Enter or select a Voice ID'); return; }
   const keys = getKeys();
-  const btn = document.getElementById('tts-btn');
-  const err = document.getElementById('tts-err');
-  const res = document.getElementById('tts-res');
-  btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Generating...';
-  err.style.display = 'none'; res.style.display = 'none';
+  if (!keys.car) { alert('Add your Cartesia key in Profile > API Keys'); return; }
+  const btn = document.getElementById('tts-btn'); const err = document.getElementById('tts-err'); const res = document.getElementById('tts-res');
+  btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Generating...'; err.style.display = 'none'; res.style.display = 'none';
   try {
-    let ab;
-    if (provider === 'elevenlabs') {
-      if (!keys.elabs) throw new Error('Add your ElevenLabs key in Profile > API Keys');
-      const resp = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
-        method: 'POST',
-        headers: { 'xi-api-key': keys.elabs, 'Content-Type': 'application/json', 'Accept': 'audio/mpeg' },
-        body: JSON.stringify({ text, model_id: 'eleven_turbo_v2_5', voice_settings: { stability: 0.5, similarity_boost: 0.75 } })
-      });
-      if (!resp.ok) { const t = await resp.text(); throw new Error(t); }
-      ab = await resp.arrayBuffer();
-    } else {
-      if (!keys.car) throw new Error('Add your Cartesia key in Profile > API Keys');
-      const resp = await fetch('https://api.cartesia.ai/tts/bytes', {
-        method: 'POST',
-        headers: { 'X-API-Key': keys.car, 'Cartesia-Version': '2024-06-10', 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model_id: 'sonic-2', transcript: text, voice: { mode: 'id', id: voiceId }, output_format: { container: 'mp3', encoding: 'mp3', sample_rate: 44100 } })
-      });
-      if (!resp.ok) { const t = await resp.text(); throw new Error(t); }
-      ab = await resp.arrayBuffer();
-    }
+    const resp = await fetch('https://api.cartesia.ai/tts/bytes', {
+      method: 'POST',
+      headers: { 'X-API-Key': keys.car, 'Cartesia-Version': '2024-06-10', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model_id: 'sonic-2', transcript: text, voice: { mode: 'id', id: voiceId }, output_format: { container: 'mp3', encoding: 'mp3', sample_rate: 44100 } })
+    });
+    if (!resp.ok) { const t = await resp.text(); throw new Error(t); }
+    const ab = await resp.arrayBuffer();
     ttsBlob = new Blob([ab], { type: 'audio/mpeg' });
     document.getElementById('tts-audio').src = URL.createObjectURL(ttsBlob);
     res.style.display = 'block';
+    // Auto-save to library as data URL so it persists
     const reader = new FileReader();
     reader.onload = e => { saveLib('audio', e.target.result, text.slice(0, 80)); showSaveToast(); };
     reader.readAsDataURL(ttsBlob);

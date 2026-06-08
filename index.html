@@ -389,6 +389,11 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
     <button class="ib" onclick="goBack()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
     <button class="ib" onclick="openSidebar()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
     <span class="hdr-title" id="chat-title">AI Chat</span>
+    <!-- AI model switcher -->
+    <select id="chat-model" class="inp" style="font-size:11px;padding:5px 8px;height:auto;width:auto;flex-shrink:0;border-radius:20px" onchange="chatModelChanged()">
+      <option value="groq">Groq</option>
+      <option value="gemini">Gemini 👁</option>
+    </select>
     <button class="ib" onclick="newChat()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
   </div>
   <div class="chat-wrap">
@@ -809,6 +814,11 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
       <p style="font-size:13px;color:var(--txt2);line-height:1.6">Keys are stored only in your browser's local storage. They are never sent to any server other than the respective API providers.</p>
     </div>
     <div class="sec">
+      <label class="lbl">Gemini Key <span style="color:var(--txt3);font-weight:400;font-size:10px">(Chat + Image understanding — free)</span></label>
+      <input class="inp" id="key-gem" type="password" placeholder="AIza..." autocomplete="off">
+      <p style="font-size:11px;color:var(--txt3);margin-top:4px">Get free at aistudio.google.com — 1,500 requests/day</p>
+    </div>
+    <div class="sec">
       <label class="lbl">Groq Key <span style="color:var(--txt3);font-weight:400;font-size:10px">(AI Chat)</span></label>
       <input class="inp" id="key-groq" type="password" placeholder="gsk_..." autocomplete="off">
       <p style="font-size:11px;color:var(--txt3);margin-top:4px">Get from console.groq.com — free tier available</p>
@@ -932,7 +942,7 @@ const DEFAULT_SLIDES = [
 ];
 
 function getKeys() {
-  return { groq: localStorage.getItem('key_groq')||'', fal: localStorage.getItem('key_fal')||'', car: localStorage.getItem('key_car')||'', elabs: localStorage.getItem('key_elabs')||'' };
+  return { gem: localStorage.getItem('key_gem')||'', groq: localStorage.getItem('key_groq')||'', fal: localStorage.getItem('key_fal')||'', car: localStorage.getItem('key_car')||'', elabs: localStorage.getItem('key_elabs')||'' };
 }
 
 // ── INIT ──
@@ -1032,6 +1042,7 @@ function initApp() {
   document.getElementById('prof-id').textContent = 'ID · ' + u.id.slice(-8);
   // Load saved keys
   const k = getKeys();
+  if (k.gem)   document.getElementById('key-gem').value   = masked(k.gem);
   if (k.groq)  document.getElementById('key-groq').value  = masked(k.groq);
   if (k.fal)   document.getElementById('key-fal').value   = masked(k.fal);
   if (k.car)   document.getElementById('key-car').value   = masked(k.car);
@@ -1313,10 +1324,12 @@ async function signOut() {
 
 // ── API KEYS ──
 function saveKeys() {
+  const gem = document.getElementById('key-gem').value.trim();
   const g = document.getElementById('key-groq').value.trim();
   const f = document.getElementById('key-fal').value.trim();
   const c = document.getElementById('key-car').value.trim();
   const e = document.getElementById('key-elabs').value.trim();
+  if (gem && !gem.includes('•')) localStorage.setItem('key_gem', gem);
   if (g && !g.includes('•')) localStorage.setItem('key_groq', g);
   if (f && !f.includes('•')) localStorage.setItem('key_fal', f);
   if (c && !c.includes('•')) localStorage.setItem('key_car', c);
@@ -1414,24 +1427,35 @@ function attachMedia(inp) {
 }
 function clearMedia() { mediaBase64 = null; mediaType = null; document.getElementById('chat-media-prev').style.display = 'none'; document.getElementById('chat-file').value = ''; }
 
+function chatModelChanged() {
+  const model = document.getElementById('chat-model').value;
+  const attachBtn = document.querySelector('.chat-attach');
+  // Gemini supports images, Groq does not
+  if (attachBtn) attachBtn.style.opacity = model === 'gemini' ? '1' : '0.4';
+}
+
 async function sendChat() {
   const inp = document.getElementById('chat-inp');
   const text = inp.value.trim();
   if (!text && !mediaBase64) return;
   const keys = getKeys();
-  if (!keys.groq) { alert('Add your Groq API key in Profile > API Keys'); return; }
-  if (!activeSession) await newChat();
+  const model = document.getElementById('chat-model').value;
 
+  if (model === 'gemini') {
+    if (!keys.gem) { alert('Add your Gemini API key in Profile > API Keys'); return; }
+  } else {
+    if (!keys.groq) { alert('Add your Groq API key in Profile > API Keys'); return; }
+  }
+
+  if (!activeSession) await newChat();
   inp.value = ''; inp.style.height = 'auto';
 
-  let msgContent = mediaBase64
-    ? [{ type: 'image', source: { type: 'base64', media_type: mediaType, data: mediaBase64 } }, ...(text ? [{ type: 'text', text }] : [])]
-    : text;
-  const userText = text || '[image]';
+  const userText = text || '[image attached]';
+  const imgData = mediaBase64; const imgType = mediaType;
   clearMedia();
 
   appendMsg('user', userText);
-  chatHistory.push({ role: 'user', content: msgContent });
+  chatHistory.push({ role: 'user', content: text || '[image]', _imgData: imgData, _imgType: imgType });
   await sb.from('chat_messages').insert({ session_id: activeSession, role: 'user', content: userText });
 
   if (chatHistory.length === 1) {
@@ -1445,14 +1469,38 @@ async function sendChat() {
 
   const typingBubble = appendMsg('assistant', '', true);
   try {
-    const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + keys.groq, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 1024, messages: chatHistory.map(m => ({ role: m.role, content: typeof m.content === 'string' ? m.content : (m.content.find?.(c=>c.type==='text')?.text || '') })) })
-    });
-    const data = await resp.json();
+    let reply;
+
+    if (model === 'gemini') {
+      // Build Gemini contents array from history
+      const contents = chatHistory.map(m => {
+        const parts = [];
+        if (m._imgData) parts.push({ inline_data: { mime_type: m._imgType || 'image/jpeg', data: m._imgData } });
+        if (m.content && m.content !== '[image]') parts.push({ text: m.content });
+        if (!parts.length) parts.push({ text: m.content || '' });
+        return { role: m.role === 'assistant' ? 'model' : 'user', parts };
+      });
+      const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${keys.gem}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents, generationConfig: { maxOutputTokens: 1024 } })
+      });
+      const data = await resp.json();
+      reply = data.candidates?.[0]?.content?.parts?.[0]?.text
+        || (data.error?.message ? 'Error: ' + data.error.message : 'No response.');
+
+    } else {
+      // Groq — text only
+      const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + keys.groq, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 1024, messages: chatHistory.map(m => ({ role: m.role, content: m.content || '' })) })
+      });
+      const data = await resp.json();
+      reply = data.choices?.[0]?.message?.content || (data.error?.message ? 'Error: ' + data.error.message : 'No response.');
+    }
+
     typingBubble.closest('.msg-group').remove();
-    const reply = data.choices?.[0]?.message?.content || (data.error?.message ? 'Error: ' + data.error.message : 'No response.');
     appendMsg('assistant', reply);
     chatHistory.push({ role: 'assistant', content: reply });
     await sb.from('chat_messages').insert({ session_id: activeSession, role: 'assistant', content: reply });
@@ -1598,9 +1646,12 @@ async function pollinationsImage(model, prompt, ratioFlux) {
   };
   const [w, h] = sizeMap[ratioFlux] || [1024, 1024];
   const polModel = model.replace('pollinations:', '');
-  // Return URL directly — Pollinations serves the image at this URL.
-  // We don't verify with Image() because iOS Safari has CORS issues with that approach.
-  return `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?model=${polModel}&width=${w}&height=${h}&nologo=true&seed=${Math.floor(Math.random()*99999)}&enhance=true`;
+  const remoteUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?model=${polModel}&width=${w}&height=${h}&nologo=true&seed=${Math.floor(Math.random()*99999)}&enhance=true`;
+  // Fetch as blob — iOS Safari can't display cross-origin images set directly as src
+  const r = await fetch(remoteUrl);
+  if (!r.ok) throw new Error(`Pollinations error ${r.status}. Try again.`);
+  const blob = await r.blob();
+  return { blobUrl: URL.createObjectURL(blob), remoteUrl };
 }
 
 // ── VIDEO BLOB LOADER (fixes iOS Safari "Load failed" on FAL CDN video URLs) ──
@@ -1638,7 +1689,11 @@ async function doImage() {
     if (model.startsWith('pollinations:')) {
       // ── FREE: Pollinations AI ──
       btn.innerHTML = '<div class="spin"></div> Generating (free, ~30s)...';
-      url = await pollinationsImage(model, style + prompt, ratioFlux);
+      const { blobUrl, remoteUrl } = await pollinationsImage(model, style + prompt, ratioFlux);
+      url = blobUrl;
+      document.getElementById('pimg-out').src = blobUrl;
+      res.style.display = 'block';
+      saveLib('image', remoteUrl, rawPrompt); showSaveToast();
 
     } else {
       // ── FAL: use direct fal.run (synchronous — no queue polling needed for images) ──
@@ -1655,13 +1710,13 @@ async function doImage() {
       if (!isRecraft && !isIdeogram && !isFluxPro)      params.enable_safety_checker = false;
 
       const data = await falRun(model, params);
-      url = data.images?.[0]?.url || data.image?.url;
+      const url = data.images?.[0]?.url || data.image?.url;
       if (!url) throw new Error('No image URL in response: ' + JSON.stringify(data));
+      document.getElementById('pimg-out').src = url;
+      res.style.display = 'block';
+      saveLib('image', url, rawPrompt); showSaveToast();
     }
 
-    document.getElementById('pimg-out').src = url;
-    res.style.display = 'block';
-    saveLib('image', url, rawPrompt); showSaveToast();
   } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
   btn.disabled = false; btn.innerHTML = 'Generate Image';
 }

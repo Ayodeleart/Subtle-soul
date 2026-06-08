@@ -416,14 +416,21 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
   </div>
   <div class="pscroll">
     <div class="sec">
+      <label class="lbl">Provider</label>
+      <select id="tts-provider" class="inp" onchange="ttsProviderChange()">
+        <option value="cartesia">Cartesia (sonic-2)</option>
+        <option value="elevenlabs">ElevenLabs (turbo v2.5)</option>
+      </select>
+    </div>
+    <div class="sec">
       <label class="lbl">Voice</label>
       <div style="background:var(--s1);border:1px solid var(--bdr);border-radius:14px;padding:14px 16px;margin-bottom:8px">
-        <p style="font-size:13px;color:var(--txt2);line-height:1.6;margin-bottom:12px">Enter a Cartesia Voice ID from your account at <strong style="color:var(--txt)">app.cartesia.ai</strong> — including any voices you've cloned.</p>
+        <p style="font-size:13px;color:var(--txt2);line-height:1.6;margin-bottom:12px">Enter a Voice ID from your provider — Cartesia at <strong style="color:var(--txt)">app.cartesia.ai</strong>, ElevenLabs at <strong style="color:var(--txt)">elevenlabs.io</strong>.</p>
         <label class="lbl">Voice ID</label>
         <input id="tts-voice-id" class="inp" placeholder="e.g. a0e99841-438c-4a64-b679-ae501e7d6091" autocomplete="off" oninput="this.value=this.value.trim()">
-        <div style="margin-top:12px">
+        <div id="tts-voice-section" style="margin-top:12px">
           <label class="lbl">Preset Voices</label>
-          <div style="display:flex;flex-direction:column;gap:6px" id="voice-presets">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" id="voice-presets">
             <button class="vc" data-id="a0e99841-438c-4a64-b679-ae501e7d6091" onclick="pickPresetVoice(this)">
               <div><div class="vc-n">Barbra</div><div class="vc-d">American · Warm Female</div></div>
             </button>
@@ -459,7 +466,7 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
             </button>
           </div>
           <!-- Custom voices saved by user -->
-          <div id="custom-voice-list" style="display:flex;flex-direction:column;gap:6px;margin-top:6px"></div>
+          <div id="custom-voice-list" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px"></div>
           <!-- Add custom voice -->
           <div style="margin-top:10px;padding:12px;background:var(--s2);border:1px solid var(--bdr);border-radius:12px">
             <label class="lbl" style="margin-bottom:6px">Add Your Own Voice</label>
@@ -517,21 +524,21 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
         <option value="landscape_16_9">16:9 Landscape</option>
       </select></div>
       <div><label class="lbl">Model</label><select id="pimg-model" class="inp">
-        <optgroup label="FLUX">
+        <optgroup label="⚡ Free (No API Key)">
+          <option value="pollinations:flux">Pollinations FLUX (Free)</option>
+          <option value="pollinations:flux-realism">Pollinations Realism (Free)</option>
+          <option value="pollinations:turbo">Pollinations Turbo (Free)</option>
+        </optgroup>
+        <optgroup label="FLUX (FAL Key Required)">
           <option value="fal-ai/flux/dev">FLUX Dev</option>
           <option value="fal-ai/flux-pro">FLUX Pro</option>
           <option value="fal-ai/flux-pro/v1.1">FLUX Pro 1.1</option>
           <option value="fal-ai/flux-pro/v1.1-ultra">FLUX Pro 1.1 Ultra</option>
           <option value="fal-ai/flux/schnell">FLUX Schnell (Fast)</option>
           <option value="fal-ai/flux-realism">FLUX Realism</option>
-          <option value="fal-ai/flux-lora">FLUX LoRA</option>
         </optgroup>
-        <optgroup label="Stable Diffusion">
+        <optgroup label="Other (FAL Key Required)">
           <option value="fal-ai/stable-diffusion-v3-medium">SD3 Medium</option>
-          <option value="fal-ai/stable-diffusion-xl">SDXL</option>
-          <option value="fal-ai/aura-flow">AuraFlow</option>
-        </optgroup>
-        <optgroup label="Other">
           <option value="fal-ai/ideogram/v2">Ideogram V2</option>
           <option value="fal-ai/recraft-v3">Recraft V3</option>
           <option value="fal-ai/kolors">Kolors</option>
@@ -802,10 +809,9 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
       <p style="font-size:13px;color:var(--txt2);line-height:1.6">Keys are stored only in your browser's local storage. They are never sent to any server other than the respective API providers.</p>
     </div>
     <div class="sec">
-      <label class="lbl">Groq Key <span style="color:var(--txt3);font-weight:400;font-size:10px">(AI Chat — free tier)</span></label>
+      <label class="lbl">Groq Key <span style="color:var(--txt3);font-weight:400;font-size:10px">(AI Chat)</span></label>
       <input class="inp" id="key-groq" type="password" placeholder="gsk_..." autocomplete="off">
       <p style="font-size:11px;color:var(--txt3);margin-top:4px">Get from console.groq.com — free tier available</p>
-      <p style="font-size:11px;color:var(--txt3);margin-top:4px">Get from console.anthropic.com</p>
     </div>
     <div class="sec">
       <label class="lbl">FAL.ai Key <span style="color:var(--txt3);font-weight:400;font-size:10px">(Images & Videos)</span></label>
@@ -816,6 +822,11 @@ select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+x
       <label class="lbl">Cartesia Key <span style="color:var(--txt3);font-weight:400;font-size:10px">(Text to Speech)</span></label>
       <input class="inp" id="key-car" type="password" placeholder="sk_car_..." autocomplete="off">
       <p style="font-size:11px;color:var(--txt3);margin-top:4px">Get from app.cartesia.ai</p>
+    </div>
+    <div class="sec">
+      <label class="lbl">ElevenLabs Key <span style="color:var(--txt3);font-weight:400;font-size:10px">(Text to Speech)</span></label>
+      <input class="inp" id="key-elabs" type="password" placeholder="sk_..." autocomplete="off">
+      <p style="font-size:11px;color:var(--txt3);margin-top:4px">Get from elevenlabs.io — alternative TTS provider</p>
     </div>
     <button class="btn" onclick="saveKeys()">Save Keys</button>
     <div id="keys-saved" style="text-align:center;font-size:13px;color:var(--grn);display:none;margin-top:12px">Keys saved</div>
@@ -921,7 +932,7 @@ const DEFAULT_SLIDES = [
 ];
 
 function getKeys() {
-  return { groq: localStorage.getItem('key_groq')||'', fal: localStorage.getItem('key_fal')||'', car: localStorage.getItem('key_car')||'' };
+  return { groq: localStorage.getItem('key_groq')||'', fal: localStorage.getItem('key_fal')||'', car: localStorage.getItem('key_car')||'', elabs: localStorage.getItem('key_elabs')||'' };
 }
 
 // ── INIT ──
@@ -1021,9 +1032,10 @@ function initApp() {
   document.getElementById('prof-id').textContent = 'ID · ' + u.id.slice(-8);
   // Load saved keys
   const k = getKeys();
-  if (k.groq) document.getElementById('key-groq').value = masked(k.groq);
-  if (k.fal) document.getElementById('key-fal').value = masked(k.fal);
-  if (k.car) document.getElementById('key-car').value = masked(k.car);
+  if (k.groq)  document.getElementById('key-groq').value  = masked(k.groq);
+  if (k.fal)   document.getElementById('key-fal').value   = masked(k.fal);
+  if (k.car)   document.getElementById('key-car').value   = masked(k.car);
+  if (k.elabs) document.getElementById('key-elabs').value = masked(k.elabs);
   loadCustomAvatar();
   initHero();
   go('home');
@@ -1304,9 +1316,11 @@ function saveKeys() {
   const g = document.getElementById('key-groq').value.trim();
   const f = document.getElementById('key-fal').value.trim();
   const c = document.getElementById('key-car').value.trim();
+  const e = document.getElementById('key-elabs').value.trim();
   if (g && !g.includes('•')) localStorage.setItem('key_groq', g);
   if (f && !f.includes('•')) localStorage.setItem('key_fal', f);
   if (c && !c.includes('•')) localStorage.setItem('key_car', c);
+  if (e && !e.includes('•')) localStorage.setItem('key_elabs', e);
   const el = document.getElementById('keys-saved');
   el.style.display = 'block';
   setTimeout(() => el.style.display = 'none', 2500);
@@ -1410,12 +1424,14 @@ async function sendChat() {
 
   inp.value = ''; inp.style.height = 'auto';
 
-  // Groq doesn't support image inputs — use text only
+  let msgContent = mediaBase64
+    ? [{ type: 'image', source: { type: 'base64', media_type: mediaType, data: mediaBase64 } }, ...(text ? [{ type: 'text', text }] : [])]
+    : text;
   const userText = text || '[image]';
   clearMedia();
 
   appendMsg('user', userText);
-  chatHistory.push({ role: 'user', content: userText });
+  chatHistory.push({ role: 'user', content: msgContent });
   await sb.from('chat_messages').insert({ session_id: activeSession, role: 'user', content: userText });
 
   if (chatHistory.length === 1) {
@@ -1432,7 +1448,7 @@ async function sendChat() {
     const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + keys.groq, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 1024, messages: chatHistory })
+      body: JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 1024, messages: chatHistory.map(m => ({ role: m.role, content: typeof m.content === 'string' ? m.content : (m.content.find?.(c=>c.type==='text')?.text || '') })) })
     });
     const data = await resp.json();
     typingBubble.closest('.msg-group').remove();
@@ -1477,36 +1493,10 @@ async function toPublicUrl(src) {
   return src.startsWith('data:') ? await falUploadImage(src) : src;
 }
 
-// ── VIDEO BLOB LOADER ──
-// iOS Safari often fails to play FAL CDN video URLs directly in <video> elements.
-// We fetch the video as a blob and use a local blob URL instead — always works.
-async function loadVideoEl(elementId, url, fallbackErrEl) {
-  const el = document.getElementById(elementId);
-  // Try direct URL first (fast, works on most devices)
-  el.src = url;
-  el.onerror = async () => {
-    // Direct URL failed — fetch as blob (fixes iOS Safari CDN issue)
-    el.onerror = null;
-    try {
-      const r = await fetch(url);
-      if (!r.ok) throw new Error('fetch failed');
-      const blob = await r.blob();
-      el.src = URL.createObjectURL(blob);
-    } catch (_) {
-      // Blob also failed — show a direct open link as last resort
-      if (fallbackErrEl) {
-        fallbackErrEl.innerHTML = `Video ready but can't embed. <a href="${url}" target="_blank" style="color:var(--acc);font-weight:600">Tap here to open & save it →</a>`;
-        fallbackErrEl.style.display = 'block';
-      }
-    }
-  };
-}
-
 // ── FAL HELPER ──
 async function falQueue(model, body, btnId, label) {
   const keys = getKeys();
   if (!keys.fal) throw new Error('Add your FAL.ai key in Profile > API Keys');
-  // POST needs Content-Type. GET/status requests must NOT send it — FAL rejects GET+Content-Type with a schema error.
   const authOnly = { 'Authorization': 'Key ' + keys.fal };
   const postHdr  = { 'Authorization': 'Key ' + keys.fal, 'Content-Type': 'application/json' };
   const btn = document.getElementById(btnId);
@@ -1520,50 +1510,122 @@ async function falQueue(model, body, btnId, label) {
     throw new Error(String(msg));
   }
   const { request_id } = subData;
+  // FAL gives us the exact result URL in the submission response — use it if available
+  const resultUrl = subData.response_url || `${FAL_Q}${model}/requests/${request_id}`;
 
-  // ── 2. POLL STATUS — GET only, no Content-Type ──
+  // ── 2. POLL THE RESULT ENDPOINT DIRECTLY ──
+  // We poll /requests/{id} (not /status) because:
+  // - It returns status info while the job is running
+  // - It returns the actual result when complete
+  // - The /status endpoint can return 404 after the job completes and leaves the queue,
+  //   causing the app to loop forever even though the video is ready
   let pollCount = 0;
-  while (pollCount < 300) {                          // 300 × 8 s = 40 min max
+  while (pollCount < 300) {  // 300 × 8s = 40 min max
     await new Promise(r => setTimeout(r, 8000));
     pollCount++;
-    let s;
+
+    let data;
     try {
-      const st = await fetch(`${FAL_Q}${model}/requests/${request_id}/status`, { headers: authOnly });
-      if (!st.ok) {
-        if (btn) btn.innerHTML = `<div class="spin"></div> ${label} · waiting...`;
+      const res = await fetch(resultUrl, { headers: authOnly });
+      // 404 / non-200 = job not ready yet, keep waiting
+      if (!res.ok) {
+        if (btn) btn.innerHTML = `<div class="spin"></div> ${label} · processing...`;
         continue;
       }
-      s = await st.json();
+      data = await res.json();
     } catch (_) {
-      if (btn) btn.innerHTML = `<div class="spin"></div> ${label} · waiting...`;
+      if (btn) btn.innerHTML = `<div class="spin"></div> ${label} · processing...`;
       continue;
     }
 
-    if (s.status === 'COMPLETED') {
-      // ── 3. FETCH RESULT ──
-      // If FAL already embedded the output in the status response, use it directly
-      if (s.output)      return s.output;
-      if (s.payload)     return s.payload;
-      // Otherwise fetch from the result endpoint — GET only, no Content-Type
-      const resultUrl = s.response_url || `${FAL_Q}${model}/requests/${request_id}`;
-      const res    = await fetch(resultUrl, { headers: authOnly });
-      const result = await res.json();
-      // Handle all shapes: direct output, or {data:{...}}, or {output:{...}}
-      return result.data ?? result.output ?? result;
+    // Unwrap FAL's envelope shapes: {data:{...}}, {output:{...}}, or direct
+    const output = data.data ?? data.output ?? data;
+
+    // ── Job failed ──
+    if (data.status === 'FAILED' || output.error) {
+      const reason = output.error || data.error || data.detail || 'Generation failed';
+      throw new Error(typeof reason === 'string' ? reason : JSON.stringify(reason));
     }
 
-    if (s.status === 'FAILED') {
-      let reason = s.error || s.detail || s.message || 'Generation failed on FAL';
-      if (Array.isArray(reason)) reason = reason.map(m => m.msg || JSON.stringify(m)).join('; ');
-      throw new Error(String(reason));
+    // ── Still in queue / processing ──
+    if (data.status === 'IN_QUEUE' || data.status === 'IN_PROGRESS') {
+      const pos = data.queue_position != null ? ` (queue #${data.queue_position})` : '';
+      if (btn) btn.innerHTML = `<div class="spin"></div> ${label}${pos}`;
+      continue;
     }
 
-    // Still running — show queue position if available
-    const info = s.queue_position != null ? ` (queue #${s.queue_position})` : '';
-    if (btn) btn.innerHTML = `<div class="spin"></div> ${label}${info}`;
+    // ── Has a result — check for video or image URL ──
+    if (output.video?.url || output.images?.[0]?.url || output.image?.url) {
+      return output;
+    }
+
+    // ── COMPLETED status with no embedded output — shouldn't happen but handle it ──
+    if (data.status === 'COMPLETED') {
+      return output; // return whatever we have, let caller handle it
+    }
+
+    // Still waiting
+    if (btn) btn.innerHTML = `<div class="spin"></div> ${label} · processing...`;
   }
 
-  throw new Error('Timed out after 40 min. Your video may still be processing — check your FAL dashboard.');
+  throw new Error('Timed out. Your video is likely ready — check your FAL dashboard at fal.ai');
+}
+
+// ── FAL DIRECT RUN (synchronous — for images, returns result immediately, no polling) ──
+async function falRun(model, body) {
+  const keys = getKeys();
+  if (!keys.fal) throw new Error('Add your FAL.ai key in Profile > API Keys');
+  const resp = await fetch('https://fal.run/' + model, {
+    method: 'POST',
+    headers: { 'Authorization': 'Key ' + keys.fal, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  const data = await resp.json();
+  if (!resp.ok) {
+    let msg = data.detail || data.error || data.message || JSON.stringify(data);
+    if (Array.isArray(msg)) msg = msg.map(m => m.msg || JSON.stringify(m)).join('; ');
+    throw new Error(String(msg));
+  }
+  return data.data ?? data.output ?? data;
+}
+
+// ── POLLINATIONS AI (completely free, no key needed) ──
+async function pollinationsImage(model, prompt, ratioFlux) {
+  const sizeMap = {
+    portrait_16_9: [768, 1365], portrait_4_3: [768, 1024],
+    square_hd: [1024, 1024], square: [1024, 1024],
+    landscape_4_3: [1024, 768], landscape_16_9: [1365, 768]
+  };
+  const [w, h] = sizeMap[ratioFlux] || [1024, 1024];
+  const polModel = model.replace('pollinations:', '');
+  const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?model=${polModel}&width=${w}&height=${h}&nologo=true&seed=${Math.floor(Math.random()*99999)}`;
+  // Verify the image loads
+  await new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload  = resolve;
+    img.onerror = () => reject(new Error('Pollinations failed to generate image. Try again.'));
+    img.src = url;
+  });
+  return url;
+}
+
+// ── VIDEO BLOB LOADER (fixes iOS Safari "Load failed" on FAL CDN video URLs) ──
+async function loadVideoEl(elementId, url, fallbackErrEl) {
+  const el = document.getElementById(elementId);
+  el.src = url;
+  el.onerror = async () => {
+    el.onerror = null;
+    try {
+      const r = await fetch(url);
+      if (!r.ok) throw new Error('fetch failed');
+      el.src = URL.createObjectURL(await r.blob());
+    } catch (_) {
+      if (fallbackErrEl) {
+        fallbackErrEl.innerHTML = `Video ready! <a href="${url}" target="_blank" style="color:var(--acc);font-weight:600;text-decoration:underline">Tap here to open & save →</a>`;
+        fallbackErrEl.style.display = 'block';
+      }
+    }
+  };
 }
 
 // ── IMAGE ──
@@ -1573,49 +1635,37 @@ async function doImage() {
   const prompt = rawPrompt.replace(/[{}"]/g, '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
   const model = document.getElementById('pimg-model').value;
   const style = document.querySelector('#style-chips .chip.on')?.dataset.val || '';
+  const ratioFlux = document.getElementById('pimg-ratio').value;
   const btn = document.getElementById('pimg-btn'); const err = document.getElementById('pimg-err'); const res = document.getElementById('pimg-res');
   btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Generating...'; err.style.display = 'none'; res.style.display = 'none';
   try {
-    const isIdeogram = model.includes('ideogram');
-    const isRecraft  = model.includes('recraft');
-    const isFluxPro  = model.includes('flux-pro') || model.includes('flux/pro');
-    const isUltra    = model.includes('ultra');
+    let url;
 
-    // Ratio value from dropdown is always FLUX format; map to Ideogram's colon format when needed
-    const ratioFlux = document.getElementById('pimg-ratio').value;
-    const ideogramRatioMap = {
-      portrait_16_9: '9:16', portrait_4_3: '3:4',
-      square_hd: '1:1', square: '1:1',
-      landscape_4_3: '4:3', landscape_16_9: '16:9'
-    };
+    if (model.startsWith('pollinations:')) {
+      // ── FREE: Pollinations AI ──
+      url = await pollinationsImage(model, style + prompt, ratioFlux);
 
-    const params = { prompt: style + prompt };
-
-    if (isIdeogram) {
-      params.aspect_ratio = ideogramRatioMap[ratioFlux] || '1:1';
     } else {
-      params.image_size = ratioFlux;
+      // ── FAL: use direct fal.run (synchronous — no queue polling needed for images) ──
+      const isIdeogram = model.includes('ideogram');
+      const isRecraft  = model.includes('recraft');
+      const isFluxPro  = model.includes('flux-pro') || model.includes('flux/pro');
+      const isUltra    = model.includes('ultra');
+      const ideogramRatioMap = { portrait_16_9:'9:16', portrait_4_3:'3:4', square_hd:'1:1', square:'1:1', landscape_4_3:'4:3', landscape_16_9:'16:9' };
+      const params = { prompt: style + prompt };
+      if (isIdeogram)  params.aspect_ratio = ideogramRatioMap[ratioFlux] || '1:1';
+      else             params.image_size    = ratioFlux;
+      if (!isRecraft && !isUltra)                       params.negative_prompt      = document.getElementById('pimg-neg').value;
+      if (!isRecraft && !isFluxPro && !isIdeogram)      params.num_inference_steps  = 28;
+      if (!isRecraft && !isIdeogram && !isFluxPro)      params.enable_safety_checker = false;
+
+      const data = await falRun(model, params);
+      url = data.images?.[0]?.url || data.image?.url;
+      if (!url) throw new Error('No image URL in response: ' + JSON.stringify(data));
     }
 
-    // negative_prompt: not supported by FLUX Pro Ultra; skip for Recraft
-    if (!isRecraft && !isUltra) {
-      params.negative_prompt = document.getElementById('pimg-neg').value;
-    }
-
-    // Steps: not used by Recraft or FLUX Pro (they manage internally)
-    if (!isRecraft && !isFluxPro && !isIdeogram) {
-      params.num_inference_steps = 28;
-    }
-
-    // Safety checker: FLUX base models support it; skip for others
-    if (!isRecraft && !isIdeogram && !isFluxPro) {
-      params.enable_safety_checker = false;
-    }
-
-    const data = await falQueue(model, params, 'pimg-btn', 'Generating');
-    const url = data.images?.[0]?.url || data.image?.url;
-    if (!url) throw new Error('No image returned. Check your FAL key and try again.');
-    document.getElementById('pimg-out').src = url; res.style.display = 'block';
+    document.getElementById('pimg-out').src = url;
+    res.style.display = 'block';
     saveLib('image', url, rawPrompt); showSaveToast();
   } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
   btn.disabled = false; btn.innerHTML = 'Generate Image';
@@ -1630,9 +1680,9 @@ async function doPVid() {
   let wakeLock = null; try { wakeLock = await navigator.wakeLock?.request('screen'); } catch(_) {}
   try {
     const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('pvid-mode').value}/text-to-video`, { prompt, duration: document.getElementById('pvid-dur').value, aspect_ratio: document.getElementById('pvid-ratio').value }, 'pvid-btn', 'Generating');
-    const url = data.video?.url; if (!url) throw new Error('No video URL in response: ' + JSON.stringify(data));
+    const url = data.video?.url; if (!url) throw new Error('No video URL — response: ' + JSON.stringify(data));
     res.style.display = 'block';
-    await loadVideoEl('pvid-out', url, document.getElementById('pvid-err'));
+    await loadVideoEl('pvid-out', url, err);
     saveLib('video', url, prompt); showSaveToast();
   } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
   btn.disabled = false; btn.innerHTML = 'Generate Video';
@@ -1653,11 +1703,10 @@ async function doI2V() {
     const imageUrl = await toPublicUrl(i2vSrc);
     btn.innerHTML = '<div class="spin"></div> Submitting...';
     const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('i2v-mode').value}/image-to-video`, { image_url: imageUrl, prompt: document.getElementById('i2v-prompt').value, duration: document.getElementById('i2v-dur').value, aspect_ratio: document.getElementById('i2v-ratio').value }, 'i2v-btn', 'Animating');
-    const url = data.video?.url; if (!url) throw new Error('No video URL in response: ' + JSON.stringify(data));
+    const url = data.video?.url; if (!url) throw new Error('No video URL — response: ' + JSON.stringify(data));
     res.style.display = 'block';
-    await loadVideoEl('i2v-out', url, document.getElementById('i2v-err'));
-    saveLib('video', url, document.getElementById('i2v-prompt').value); showSaveToast();
-  } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
+    await loadVideoEl('i2v-out', url, err);
+    saveLib('video', url, document.getElementById('i2v-prompt').value); showSaveToast();  } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
   btn.disabled = false; btn.innerHTML = 'Animate';
   try { wakeLock?.release(); } catch(_) {}
 }
@@ -1671,7 +1720,7 @@ async function doRefImg() {
   const btn = document.getElementById('ref-btn'); const err = document.getElementById('ref-err'); const res = document.getElementById('ref-res');
   btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Transforming...'; err.style.display = 'none'; res.style.display = 'none';
   try {
-    const data = await falQueue('fal-ai/flux/dev/image-to-image', { image_url: refTargetSrc, prompt, strength: parseFloat(document.getElementById('ref-strength').value), num_inference_steps: 28 }, 'ref-btn', 'Transforming');
+    const data = await falRun('fal-ai/flux/dev/image-to-image', { image_url: refTargetSrc, prompt, strength: parseFloat(document.getElementById('ref-strength').value), num_inference_steps: 28 });
     const url = data.images?.[0]?.url; if (!url) throw new Error('No image URL');
     document.getElementById('ref-out').src = url; res.style.display = 'block';
     saveLib('image', url, extraPrompt); showSaveToast();
@@ -1692,11 +1741,10 @@ async function doMotion() {
     const imageUrl = await toPublicUrl(motSrc);
     btn.innerHTML = '<div class="spin"></div> Animating...';
     const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('mot-mode').value}/image-to-video`, { image_url: imageUrl, prompt, duration: document.getElementById('mot-dur').value, aspect_ratio: document.getElementById('mot-ratio').value }, 'mot-btn', 'Animating');
-    const url = data.video?.url; if (!url) throw new Error('No video URL in response: ' + JSON.stringify(data));
+    const url = data.video?.url; if (!url) throw new Error('No video URL — response: ' + JSON.stringify(data));
     res.style.display = 'block';
-    await loadVideoEl('mot-out', url, document.getElementById('mot-err'));
-    saveLib('video', url, extra || 'motion'); showSaveToast();
-  } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
+    await loadVideoEl('mot-out', url, err);
+    saveLib('video', url, extra || 'motion'); showSaveToast();  } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
   btn.disabled = false; btn.innerHTML = 'Apply Motion';
   try { wakeLock?.release(); } catch(_) {}
 }
@@ -1773,27 +1821,51 @@ function pickPresetVoice(el) {
   el.insertAdjacentHTML('beforeend', '<svg class="vc-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--txt)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>');
 }
 
+function ttsProviderChange() {
+  const p = document.getElementById('tts-provider').value;
+  const voiceSection = document.getElementById('tts-voice-section');
+  if (voiceSection) voiceSection.style.display = p === 'elevenlabs' ? 'none' : '';
+  document.getElementById('tts-voice-id').placeholder = p === 'elevenlabs'
+    ? 'ElevenLabs Voice ID (e.g. EXAVITQu4vr4xnSDxMaL)'
+    : 'e.g. a0e99841-438c-4a64-b679-ae501e7d6091';
+}
+
 async function doTts() {
-  const text = document.getElementById('tts-text').value.trim();
+  const text    = document.getElementById('tts-text').value.trim();
   const voiceId = document.getElementById('tts-voice-id').value.trim();
-  if (!text) { alert('Enter some text'); return; }
+  const provider = document.getElementById('tts-provider')?.value || 'cartesia';
+  if (!text)    { alert('Enter some text'); return; }
   if (!voiceId) { alert('Enter or select a Voice ID'); return; }
   const keys = getKeys();
-  if (!keys.car) { alert('Add your Cartesia key in Profile > API Keys'); return; }
-  const btn = document.getElementById('tts-btn'); const err = document.getElementById('tts-err'); const res = document.getElementById('tts-res');
-  btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Generating...'; err.style.display = 'none'; res.style.display = 'none';
+  const btn = document.getElementById('tts-btn');
+  const err = document.getElementById('tts-err');
+  const res = document.getElementById('tts-res');
+  btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Generating...';
+  err.style.display = 'none'; res.style.display = 'none';
   try {
-    const resp = await fetch('https://api.cartesia.ai/tts/bytes', {
-      method: 'POST',
-      headers: { 'X-API-Key': keys.car, 'Cartesia-Version': '2024-06-10', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model_id: 'sonic-2', transcript: text, voice: { mode: 'id', id: voiceId }, output_format: { container: 'mp3', encoding: 'mp3', sample_rate: 44100 } })
-    });
-    if (!resp.ok) { const t = await resp.text(); throw new Error(t); }
-    const ab = await resp.arrayBuffer();
+    let ab;
+    if (provider === 'elevenlabs') {
+      if (!keys.elabs) throw new Error('Add your ElevenLabs key in Profile > API Keys');
+      const resp = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+        method: 'POST',
+        headers: { 'xi-api-key': keys.elabs, 'Content-Type': 'application/json', 'Accept': 'audio/mpeg' },
+        body: JSON.stringify({ text, model_id: 'eleven_turbo_v2_5', voice_settings: { stability: 0.5, similarity_boost: 0.75 } })
+      });
+      if (!resp.ok) { const t = await resp.text(); throw new Error(t); }
+      ab = await resp.arrayBuffer();
+    } else {
+      if (!keys.car) throw new Error('Add your Cartesia key in Profile > API Keys');
+      const resp = await fetch('https://api.cartesia.ai/tts/bytes', {
+        method: 'POST',
+        headers: { 'X-API-Key': keys.car, 'Cartesia-Version': '2024-06-10', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model_id: 'sonic-2', transcript: text, voice: { mode: 'id', id: voiceId }, output_format: { container: 'mp3', encoding: 'mp3', sample_rate: 44100 } })
+      });
+      if (!resp.ok) { const t = await resp.text(); throw new Error(t); }
+      ab = await resp.arrayBuffer();
+    }
     ttsBlob = new Blob([ab], { type: 'audio/mpeg' });
     document.getElementById('tts-audio').src = URL.createObjectURL(ttsBlob);
     res.style.display = 'block';
-    // Auto-save to library as data URL so it persists
     const reader = new FileReader();
     reader.onload = e => { saveLib('audio', e.target.result, text.slice(0, 80)); showSaveToast(); };
     reader.readAsDataURL(ttsBlob);

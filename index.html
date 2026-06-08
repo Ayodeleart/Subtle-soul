@@ -1598,15 +1598,9 @@ async function pollinationsImage(model, prompt, ratioFlux) {
   };
   const [w, h] = sizeMap[ratioFlux] || [1024, 1024];
   const polModel = model.replace('pollinations:', '');
-  const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?model=${polModel}&width=${w}&height=${h}&nologo=true&seed=${Math.floor(Math.random()*99999)}`;
-  // Verify the image loads
-  await new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload  = resolve;
-    img.onerror = () => reject(new Error('Pollinations failed to generate image. Try again.'));
-    img.src = url;
-  });
-  return url;
+  // Return URL directly — Pollinations serves the image at this URL.
+  // We don't verify with Image() because iOS Safari has CORS issues with that approach.
+  return `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?model=${polModel}&width=${w}&height=${h}&nologo=true&seed=${Math.floor(Math.random()*99999)}&enhance=true`;
 }
 
 // ── VIDEO BLOB LOADER (fixes iOS Safari "Load failed" on FAL CDN video URLs) ──
@@ -1643,6 +1637,7 @@ async function doImage() {
 
     if (model.startsWith('pollinations:')) {
       // ── FREE: Pollinations AI ──
+      btn.innerHTML = '<div class="spin"></div> Generating (free, ~30s)...';
       url = await pollinationsImage(model, style + prompt, ratioFlux);
 
     } else {
@@ -1675,11 +1670,16 @@ async function doImage() {
 async function doPVid() {
   const prompt = document.getElementById('pvid-prompt').value.trim();
   if (!prompt) { alert('Enter a prompt'); return; }
+  const dur  = document.getElementById('pvid-dur').value;
+  const mode = document.getElementById('pvid-mode').value;
+  const cost = mode === 'pro' ? (dur === '5' ? '$0.56' : '$1.12') : (dur === '5' ? '$0.28' : '$0.56');
+  const ok = confirm(`This will use ~${cost} of your FAL credits.\n\n${dur}s · ${mode} quality\n\nContinue?`);
+  if (!ok) return;
   const btn = document.getElementById('pvid-btn'); const err = document.getElementById('pvid-err'); const res = document.getElementById('pvid-res');
   btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Submitting...'; err.style.display = 'none'; res.style.display = 'none';
   let wakeLock = null; try { wakeLock = await navigator.wakeLock?.request('screen'); } catch(_) {}
   try {
-    const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('pvid-mode').value}/text-to-video`, { prompt, duration: document.getElementById('pvid-dur').value, aspect_ratio: document.getElementById('pvid-ratio').value }, 'pvid-btn', 'Generating');
+    const data = await falQueue(`fal-ai/kling-video/v1.6/${mode}/text-to-video`, { prompt, duration: dur, aspect_ratio: document.getElementById('pvid-ratio').value }, 'pvid-btn', 'Generating');
     const url = data.video?.url; if (!url) throw new Error('No video URL — response: ' + JSON.stringify(data));
     res.style.display = 'block';
     await loadVideoEl('pvid-out', url, err);
@@ -1696,17 +1696,22 @@ function pickSample(el, url, prefix) {
 function i2vPickFile(inp) { readFile(inp, r => { i2vSrc = r; const p = document.getElementById('i2v-prev'); p.src = r; p.style.display = 'block'; document.getElementById('i2v-ph').style.display = 'none'; document.querySelectorAll('#i2v-samples .sc').forEach(s => s.classList.remove('on')); }); }
 async function doI2V() {
   if (!i2vSrc) { alert('Select or upload a source image'); return; }
+  const dur  = document.getElementById('i2v-dur').value;
+  const mode = document.getElementById('i2v-mode').value;
+  const cost = mode === 'pro' ? (dur === '5' ? '$0.56' : '$1.12') : (dur === '5' ? '$0.28' : '$0.56');
+  if (!confirm(`This will use ~${cost} of your FAL credits.\n\n${dur}s · ${mode} quality\n\nContinue?`)) return;
   const btn = document.getElementById('i2v-btn'); const err = document.getElementById('i2v-err'); const res = document.getElementById('i2v-res');
   btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Uploading...'; err.style.display = 'none'; res.style.display = 'none';
   let wakeLock = null; try { wakeLock = await navigator.wakeLock?.request('screen'); } catch(_) {}
   try {
     const imageUrl = await toPublicUrl(i2vSrc);
     btn.innerHTML = '<div class="spin"></div> Submitting...';
-    const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('i2v-mode').value}/image-to-video`, { image_url: imageUrl, prompt: document.getElementById('i2v-prompt').value, duration: document.getElementById('i2v-dur').value, aspect_ratio: document.getElementById('i2v-ratio').value }, 'i2v-btn', 'Animating');
+    const data = await falQueue(`fal-ai/kling-video/v1.6/${mode}/image-to-video`, { image_url: imageUrl, prompt: document.getElementById('i2v-prompt').value, duration: dur, aspect_ratio: document.getElementById('i2v-ratio').value }, 'i2v-btn', 'Animating');
     const url = data.video?.url; if (!url) throw new Error('No video URL — response: ' + JSON.stringify(data));
     res.style.display = 'block';
     await loadVideoEl('i2v-out', url, err);
-    saveLib('video', url, document.getElementById('i2v-prompt').value); showSaveToast();  } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
+    saveLib('video', url, document.getElementById('i2v-prompt').value); showSaveToast();
+  } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
   btn.disabled = false; btn.innerHTML = 'Animate';
   try { wakeLock?.release(); } catch(_) {}
 }
@@ -1732,6 +1737,10 @@ async function doRefImg() {
 function motPickFile(inp) { readFile(inp, r => { motSrc = r; const p = document.getElementById('mot-prev'); p.src = r; p.style.display = 'block'; document.getElementById('mot-ph').style.display = 'none'; }); }
 async function doMotion() {
   if (!motSrc) { alert('Upload an image to animate'); return; }
+  const dur  = document.getElementById('mot-dur').value;
+  const mode = document.getElementById('mot-mode').value;
+  const cost = mode === 'pro' ? (dur === '5' ? '$0.56' : '$1.12') : (dur === '5' ? '$0.28' : '$0.56');
+  if (!confirm(`This will use ~${cost} of your FAL credits.\n\n${dur}s · ${mode} quality\n\nContinue?`)) return;
   const extra = document.getElementById('mot-prompt').value;
   const prompt = extra || 'smooth natural motion, cinematic';
   const btn = document.getElementById('mot-btn'); const err = document.getElementById('mot-err'); const res = document.getElementById('mot-res');
@@ -1740,11 +1749,12 @@ async function doMotion() {
   try {
     const imageUrl = await toPublicUrl(motSrc);
     btn.innerHTML = '<div class="spin"></div> Animating...';
-    const data = await falQueue(`fal-ai/kling-video/v1.6/${document.getElementById('mot-mode').value}/image-to-video`, { image_url: imageUrl, prompt, duration: document.getElementById('mot-dur').value, aspect_ratio: document.getElementById('mot-ratio').value }, 'mot-btn', 'Animating');
+    const data = await falQueue(`fal-ai/kling-video/v1.6/${mode}/image-to-video`, { image_url: imageUrl, prompt, duration: dur, aspect_ratio: document.getElementById('mot-ratio').value }, 'mot-btn', 'Animating');
     const url = data.video?.url; if (!url) throw new Error('No video URL — response: ' + JSON.stringify(data));
     res.style.display = 'block';
     await loadVideoEl('mot-out', url, err);
-    saveLib('video', url, extra || 'motion'); showSaveToast();  } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
+    saveLib('video', url, extra || 'motion'); showSaveToast();
+  } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
   btn.disabled = false; btn.innerHTML = 'Apply Motion';
   try { wakeLock?.release(); } catch(_) {}
 }

@@ -302,6 +302,28 @@ hr{border:none;border-top:1px solid var(--bdr);margin:4px 0}
   <div id="tab-3" class="panel-body" style="display:none">
     <div style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(245,158,11,.12);color:#f59e0b;margin-bottom:16px">🔥 4PF App</div>
 
+    <div class="divider">Hero Slides</div>
+    <div class="card">
+      <div class="card-hdr"><div class="card-hdr-title">Upload Hero Slide</div><span style="font-size:11px;color:var(--txt3)">Auto-rotates on home screen</span></div>
+      <div class="card-body">
+        <div id="fpf-hero-msg" class="msg"></div>
+        <div>
+          <label>Image or Short Video</label>
+          <div class="upload-zone" onclick="document.getElementById('fpf-hero-file').click()">
+            <input type="file" id="fpf-hero-file" accept="image/*,video/mp4,video/webm,video/quicktime" onchange="fpfPreviewHero(this)">
+            <div class="upload-zone-icon" id="fpf-hero-icon">🖼️</div>
+            <div id="fpf-hero-file-name" class="upload-zone-label">Tap to choose image or video</div>
+          </div>
+        </div>
+        <div><label>Display Order</label><input type="number" id="fpf-hero-order" value="0" min="0"></div>
+        <button class="btn-primary" style="background:#f59e0b;color:#000" id="fpf-hero-btn" onclick="fpfUploadHeroSlide()">
+          Upload 4PF Hero Slide
+        </button>
+      </div>
+    </div>
+    <div class="section-title" style="margin-top:16px">Current 4PF Slides (<span id="fpf-hero-count">0</span>)</div>
+    <div id="fpf-hero-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px"></div>
+
     <div class="divider">Login / Lock Screen</div>
     <div class="card">
       <div class="card-hdr"><div class="card-hdr-title">Upload Login Background</div></div>
@@ -615,8 +637,61 @@ function switchTab(idx, el) {
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   el.classList.add('on');
   [0,1,2,3,4].forEach(i=>{const e=document.getElementById('tab-'+i);if(e)e.style.display=i===idx?'block':'none';});
-  if (idx===3 && !window._fpfLoaded) { window._fpfLoaded=true; fpfLoadLoginBgs(); fpfLoadTemplates(); }
+  if (idx===3 && !window._fpfLoaded) { window._fpfLoaded=true; fpfLoadHeroSlides(); fpfLoadLoginBgs(); fpfLoadTemplates(); }
   if (idx===4 && !window._ctrlLoaded) { window._ctrlLoaded=true; load4pfStats(); loadHeySettings(); }
+}
+
+// ── 4PF HERO SLIDES ──
+let fpfHeroFile = null;
+function fpfPreviewHero(inp) {
+  fpfHeroFile = inp.files[0];
+  if (!fpfHeroFile) return;
+  document.getElementById('fpf-hero-file-name').textContent = fpfHeroFile.name;
+  document.getElementById('fpf-hero-icon').style.display = 'none';
+}
+async function fpfUploadHeroSlide() {
+  if (!fpfHeroFile) { showMsg('fpf-hero-msg','err','Choose a file first'); return; }
+  const btn = document.getElementById('fpf-hero-btn'); btn.disabled=true; btn.textContent='Uploading...';
+  try {
+    const ext = fpfHeroFile.name.split('.').pop();
+    const path = 'hero/4pf_' + Date.now() + '.' + ext;
+    const { error: upErr } = await sb4pf.storage.from('octopusfur-media').upload(path, fpfHeroFile, { contentType: fpfHeroFile.type });
+    if (upErr) throw upErr;
+    const { data } = sb4pf.storage.from('octopusfur-media').getPublicUrl(path);
+    const order = parseInt(document.getElementById('fpf-hero-order').value) || 0;
+    const { error: dbErr } = await sb4pf.from('hero_slides').insert({ url: data.publicUrl, display_order: order, app_name: '4pf' });
+    if (dbErr) throw dbErr;
+    showMsg('fpf-hero-msg','ok','✓ Hero slide uploaded');
+    document.getElementById('fpf-hero-file').value='';
+    document.getElementById('fpf-hero-file-name').textContent='Tap to choose image or video';
+    document.getElementById('fpf-hero-icon').style.display='block';
+    fpfHeroFile=null; fpfLoadHeroSlides();
+  } catch(e) { showMsg('fpf-hero-msg','err',e.message); }
+  btn.disabled=false; btn.textContent='Upload 4PF Hero Slide';
+}
+async function fpfLoadHeroSlides() {
+  const { data } = await sb4pf.from('hero_slides').select('*').eq('app_name','4pf').order('display_order');
+  document.getElementById('fpf-hero-count').textContent = data?.length || 0;
+  const grid = document.getElementById('fpf-hero-grid');
+  if (!data?.length) { grid.innerHTML='<div style="color:var(--txt3);font-size:13px;grid-column:1/-1;padding:8px 0">No slides yet.</div>'; return; }
+  grid.innerHTML = data.map(s => {
+    const isVid = s.url.match(/\.(mp4|webm|mov)/i);
+    return `<div style="background:var(--s2);border-radius:12px;overflow:hidden">
+      ${isVid ? `<video src="${s.url}" muted autoplay loop playsinline style="width:100%;aspect-ratio:16/9;object-fit:cover"></video>`
+               : `<img src="${s.url}" style="width:100%;aspect-ratio:16/9;object-fit:cover" loading="lazy" alt="">`}
+      <div style="padding:8px 10px;display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:11px;color:var(--txt2)">Order: ${s.display_order}</span>
+        <button style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:7px;padding:4px 10px;color:#f87171;font-size:11px;cursor:pointer" onclick="fpfDeleteHeroSlide('${s.id}','${s.url}')">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+async function fpfDeleteHeroSlide(id, url) {
+  if (!confirm('Delete this slide?')) return;
+  const path = url.split('/octopusfur-media/')[1]?.split('?')[0];
+  if (path) await sb4pf.storage.from('octopusfur-media').remove([path]);
+  await sb4pf.from('hero_slides').delete().eq('id', id);
+  fpfLoadHeroSlides();
 }
 </script>
 <script>
@@ -1078,8 +1153,61 @@ function switchTab(idx, el) {
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   el.classList.add('on');
   [0,1,2,3,4].forEach(i=>{const e=document.getElementById('tab-'+i);if(e)e.style.display=i===idx?'block':'none';});
-  if (idx===3 && !window._fpfLoaded) { window._fpfLoaded=true; fpfLoadLoginBgs(); fpfLoadTemplates(); }
+  if (idx===3 && !window._fpfLoaded) { window._fpfLoaded=true; fpfLoadHeroSlides(); fpfLoadLoginBgs(); fpfLoadTemplates(); }
   if (idx===4 && !window._ctrlLoaded) { window._ctrlLoaded=true; load4pfStats(); loadHeySettings(); }
+}
+
+// ── 4PF HERO SLIDES ──
+let fpfHeroFile = null;
+function fpfPreviewHero(inp) {
+  fpfHeroFile = inp.files[0];
+  if (!fpfHeroFile) return;
+  document.getElementById('fpf-hero-file-name').textContent = fpfHeroFile.name;
+  document.getElementById('fpf-hero-icon').style.display = 'none';
+}
+async function fpfUploadHeroSlide() {
+  if (!fpfHeroFile) { showMsg('fpf-hero-msg','err','Choose a file first'); return; }
+  const btn = document.getElementById('fpf-hero-btn'); btn.disabled=true; btn.textContent='Uploading...';
+  try {
+    const ext = fpfHeroFile.name.split('.').pop();
+    const path = 'hero/4pf_' + Date.now() + '.' + ext;
+    const { error: upErr } = await sb4pf.storage.from('octopusfur-media').upload(path, fpfHeroFile, { contentType: fpfHeroFile.type });
+    if (upErr) throw upErr;
+    const { data } = sb4pf.storage.from('octopusfur-media').getPublicUrl(path);
+    const order = parseInt(document.getElementById('fpf-hero-order').value) || 0;
+    const { error: dbErr } = await sb4pf.from('hero_slides').insert({ url: data.publicUrl, display_order: order, app_name: '4pf' });
+    if (dbErr) throw dbErr;
+    showMsg('fpf-hero-msg','ok','✓ Hero slide uploaded');
+    document.getElementById('fpf-hero-file').value='';
+    document.getElementById('fpf-hero-file-name').textContent='Tap to choose image or video';
+    document.getElementById('fpf-hero-icon').style.display='block';
+    fpfHeroFile=null; fpfLoadHeroSlides();
+  } catch(e) { showMsg('fpf-hero-msg','err',e.message); }
+  btn.disabled=false; btn.textContent='Upload 4PF Hero Slide';
+}
+async function fpfLoadHeroSlides() {
+  const { data } = await sb4pf.from('hero_slides').select('*').eq('app_name','4pf').order('display_order');
+  document.getElementById('fpf-hero-count').textContent = data?.length || 0;
+  const grid = document.getElementById('fpf-hero-grid');
+  if (!data?.length) { grid.innerHTML='<div style="color:var(--txt3);font-size:13px;grid-column:1/-1;padding:8px 0">No slides yet.</div>'; return; }
+  grid.innerHTML = data.map(s => {
+    const isVid = s.url.match(/\.(mp4|webm|mov)/i);
+    return `<div style="background:var(--s2);border-radius:12px;overflow:hidden">
+      ${isVid ? `<video src="${s.url}" muted autoplay loop playsinline style="width:100%;aspect-ratio:16/9;object-fit:cover"></video>`
+               : `<img src="${s.url}" style="width:100%;aspect-ratio:16/9;object-fit:cover" loading="lazy" alt="">`}
+      <div style="padding:8px 10px;display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:11px;color:var(--txt2)">Order: ${s.display_order}</span>
+        <button style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:7px;padding:4px 10px;color:#f87171;font-size:11px;cursor:pointer" onclick="fpfDeleteHeroSlide('${s.id}','${s.url}')">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+async function fpfDeleteHeroSlide(id, url) {
+  if (!confirm('Delete this slide?')) return;
+  const path = url.split('/octopusfur-media/')[1]?.split('?')[0];
+  if (path) await sb4pf.storage.from('octopusfur-media').remove([path]);
+  await sb4pf.from('hero_slides').delete().eq('id', id);
+  fpfLoadHeroSlides();
 }
 </script>
 </body>
